@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.ReservationHebergementFormController" spacing="20" styleClass="modal-pane" prefWidth="500">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    
+    <Label fx:id="lblTitle" text="Nouvelle Réservation" styleClass="modal-title"/>
+    
+    <GridPane vgap="15" hgap="15">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        
+        <Label text="Date Début" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <DatePicker fx:id="dpDateDebut" maxWidth="Infinity"/>
+            <Label fx:id="lblErrorDateDebut" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Date Fin" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <DatePicker fx:id="dpDateFin" maxWidth="Infinity"/>
+            <Label fx:id="lblErrorDateFin" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Nb Personnes" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <TextField fx:id="tfNbPersonnes" promptText="Nombre de passagers"/>
+            <Label fx:id="lblErrorNbPersonnes" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Statut" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <ComboBox fx:id="cbStatut" promptText="Statut de la réservation" maxWidth="Infinity"/>
+            <Label fx:id="lblErrorStatut" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="ID Client" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <TextField fx:id="tfIdClient" promptText="Identifiant client"/>
+            <Label fx:id="lblErrorIdClient" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Hébergement" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <ComboBox fx:id="cbHebergement" promptText="Choisir un hébergement" maxWidth="Infinity"/>
+            <Label fx:id="lblErrorHebergement" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+    </GridPane>
+    
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel" styleClass="btn-secondary"/>
+        <Button text="Réserver" onAction="#handleSave" styleClass="btn-primary"/>
+    </HBox>
+    
+</VBox>

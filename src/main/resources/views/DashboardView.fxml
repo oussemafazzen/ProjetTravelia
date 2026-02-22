@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="0" styleClass="dashboard-container" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17">
+    <!-- HERO SECTION -->
+    <HBox alignment="CENTER" spacing="40" styleClass="hero-container">
+        <VBox maxWidth="600" spacing="25" HBox.hgrow="ALWAYS">
+            <Text styleClass="hero-title" text="Bienvenue sur Travelia" />
+            <Text styleClass="hero-subtitle" text="Votre plateforme complète de gestion de voyages &amp; loisirs" />
+            <Text styleClass="hero-description" text="Gérez facilement vos clients, réservations, hébergements, activités et avis en un seul endroit." wrappingWidth="500" />
+            <!-- Commencer is a link or button in screenshot -->
+            <Button onAction="#handleGetStarted" styleClass="hero-button" text="Commencer →" />
+        </VBox>
+        
+        <!-- Hero Image Placeholder (Figma Bridge Image) -->
+        <StackPane prefHeight="300" prefWidth="500" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 24; -fx-border-color: rgba(255,255,255,0.2); -fx-border-width: 1;" styleClass="image-container" HBox.hgrow="SOMETIMES">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="292.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/pexels-jean-paul-wettstein-677916508-20380395.jpg" />
+               </image>
+            </ImageView>
+         </children>
+        </StackPane>
+    </HBox>
+
+    <!-- MODULES HEADER -->
+    <VBox alignment="CENTER" spacing="10" style="-fx-padding: 60 0 40 0;">
+        <Text style="-fx-font-size: 32px; -fx-font-weight: 800; -fx-fill: #1e293b;" text="Modules Disponibles" />
+        <Text style="-fx-font-size: 16px; -fx-fill: #64748b;" text="Explorez toutes les fonctionnalités de Travelia" />
+    </VBox>
+
+    <!-- MODULES GRID -->
+    <GridPane alignment="CENTER" hgap="30" styleClass="module-grid" vgap="30">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="31" />
+            <ColumnConstraints percentWidth="31" />
+            <ColumnConstraints percentWidth="31" />
+        </columnConstraints>
+
+        <!-- Use fx:id or handle directly in main controller if needed -->
+        <VBox spacing="20" styleClass="module-card" GridPane.columnIndex="0">
+            <HBox maxWidth="50" styleClass="icon-box, icon-blue">
+                <Text fill="white" style="-fx-font-size: 24px;" text="👥" />
+            </HBox>
+            <Text styleClass="card-title" text="Clients &amp; Préférences" />
+            <Text styleClass="card-description" text="Gérez vos clients et leurs préférences de voyage personnalisées" wrappingWidth="220" />
+            <Button onAction="#handleClients" styleClass="card-link" text="Accéder au module →" />
+        </VBox>
+
+        <VBox spacing="20" styleClass="module-card" GridPane.columnIndex="1">
+            <HBox maxWidth="50" styleClass="icon-box, icon-purple">
+                <Text fill="white" style="-fx-font-size: 24px;" text="📅" />
+            </HBox>
+            <Text styleClass="card-title" text="Réservations &amp; Billets" />
+            <Text styleClass="card-description" text="Suivez toutes les réservations et gérez les billets de transport" wrappingWidth="220" />
+            <Button onAction="#handleReservations" styleClass="card-link" text="Accéder au module →" />
+        </VBox>
+
+        <VBox spacing="20" styleClass="module-card" GridPane.columnIndex="2">
+            <HBox maxWidth="50" styleClass="icon-box, icon-orange">
+                <Text fill="white" style="-fx-font-size: 24px;" text="🏠" />
+            </HBox>
+            <Text styleClass="card-title" text="Hébergement &amp; Logement" />
+            <Text styleClass="card-description" text="Administrez les hébergements et les réservations de chambres" wrappingWidth="220" />
+            <Button onAction="#handleHebergement" styleClass="card-link" text="Accéder au module →" />
+        </VBox>
+
+        <VBox spacing="20" styleClass="module-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <HBox maxWidth="50" styleClass="icon-box, icon-green">
+                <Text fill="white" style="-fx-font-size: 24px;" text="📍" />
+            </HBox>
+            <Text styleClass="card-title" text="Activités Touristiques" />
+            <Text styleClass="card-description" text="Organisez des activités et inscriptions pour vos clients" wrappingWidth="220" />
+            <Button onAction="#handleActivites" styleClass="card-link" text="Accéder au module →" />
+        </VBox>
+
+        <VBox spacing="20" styleClass="module-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <HBox maxWidth="50" styleClass="icon-box, icon-yellow">
+                <Text fill="white" style="-fx-font-size: 24px;" text="⭐" />
+            </HBox>
+            <Text styleClass="card-title" text="Avis &amp; Recommandations" />
+            <Text styleClass="card-description" text="Consultez les avis clients et leurs recommandations" wrappingWidth="220" />
+            <Button onAction="#handleAvis" styleClass="card-link" text="Accéder au module →" />
+        </VBox>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
+    </GridPane>
+
+    <!-- STATISTICS SECTION -->
+    <VBox alignment="CENTER" spacing="40" style="-fx-padding: 80 0;">
+        <Text style="-fx-font-size: 32px; -fx-font-weight: 800; -fx-fill: #1e293b;" text="Statistiques du Système" />
+        <HBox alignment="CENTER" maxWidth="1100" spacing="60" styleClass="stat-card-container">
+            <VBox alignment="CENTER" spacing="8">
+                <Text style="-fx-fill: #0081ff;" styleClass="stat-value" text="5" />
+                <Text styleClass="stat-label" text="Modules" />
+            </VBox>
+            <Region prefWidth="40" />
+            <VBox alignment="CENTER" spacing="8">
+                <Text style="-fx-fill: #a855f7;" styleClass="stat-value" text="15+" />
+                <Text styleClass="stat-label" text="Fonctionnalités" />
+            </VBox>
+            <Region prefWidth="40" />
+            <VBox alignment="CENTER" spacing="8">
+                <Text style="-fx-fill: #0ea5e9;" styleClass="stat-value" text="100%" />
+                <Text styleClass="stat-label" text="Intégré" />
+            </VBox>
+            <Region prefWidth="40" />
+            <VBox alignment="CENTER" spacing="8">
+                <Text style="-fx-fill: #10b981;" styleClass="stat-value" text="24/7" />
+                <Text styleClass="stat-label" text="Disponible" />
+            </VBox>
+        </HBox>
+    </VBox>
+</VBox>

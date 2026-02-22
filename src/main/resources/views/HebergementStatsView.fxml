@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.HebergementStatsController" spacing="20" alignment="CENTER" prefWidth="600" prefHeight="500" styleClass="modal-pane">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Répartition des Hébergements par Ville" stylass="eClmodal-title" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <PieChart fx:id="pieChartCities" VBox.vgrow="ALWAYS" legendSide="RIGHT"/>
+
+</VBox>

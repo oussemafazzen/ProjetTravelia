@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="gui.MainController" fx:id="mainPane" styleClass="main-pane">
+    
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="top-header" prefHeight="60">
+            <padding><Insets left="20" right="20"/></padding>
+            <Button text="≡" onAction="#toggleSidebar" styleClass="hamburger-button"/>
+            <Label text="🌍 Travelia" styleClass="header-title"/>
+        </HBox>
+    </top>
+
+    <!-- Sidebar -->
+    <left>
+        <VBox fx:id="sideBar" styleClass="sidebar" spacing="5" prefWidth="250">
+            <padding><Insets top="20" right="15" bottom="20" left="15"/></padding>
+            
+            <Label text="🌍 Travelia" styleClass="logo"/>
+
+            
+            <Separator/>
+            
+            <Label text="MODULES" styleClass="section-title"/>
+            
+            <Button text="👥  Clients &amp; Préférences" onAction="#showClients" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="📋  Réservations &amp; Billets" onAction="#showReservations" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="🏨  Hébergement" onAction="#showHebergement" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="📅  Réservation Héberg." onAction="#showReservationHebergement" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="🎯  Activités Touristiques" onAction="#showActivites" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="⭐  Avis &amp; Recommandations" onAction="#showAvis" styleClass="nav-button" maxWidth="Infinity"/>
+            
+            <Region VBox.vgrow="ALWAYS"/>
+            
+            <Button fx:id="btnTheme" text="🌓 Thème: Sombre" onAction="#toggleTheme" styleClass="nav-button" maxWidth="Infinity"/>
+            <Separator/>
+            <Label text="Module 3 - Hébergement" styleClass="footer-text"/>
+        </VBox>
+    </left>
+    
+    <!-- Center content will be loaded dynamically -->
+    
+</BorderPane>

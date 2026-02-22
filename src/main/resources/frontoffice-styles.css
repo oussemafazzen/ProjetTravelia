@@ -1,0 +1,298 @@
+/* ===== DESIGN SYSTEM TOKENS ===== */
+:root {
+    -primary-color: #3498db;
+    -primary-color: #0081ff;
+    /* Updated primary color */
+    -secondary-color: #1e293b;
+    /* Updated secondary color */
+    -bg-light: #f8fafc;
+    /* Updated background light color */
+    -white: #ffffff;
+    -text-main: #1e293b;
+    /* Updated text main color */
+    -text-muted: #64748b;
+    /* Updated text muted color */
+    -card-shadow: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 20, 0, 0, 10);
+    /* Updated card shadow */
+    -gradient-hero: linear-gradient(to right, #0156ff, #00d1ff);
+    /* Updated hero gradient */
+    -module-blue: #0081ff;
+    -module-purple: #a855f7;
+    -module-orange: #ff5e00;
+    -module-red: #ff4d4d;
+    -module-green: #10b981;
+    -module-yellow: #ffb900;
+}
+
+/*
+   TRAVELIA DESIGN SYSTEM (Figma Match)
+   Main Colors:
+   - Primary: #0081ff
+   - Gradient: #0156ff -> #00d1ff
+*/
+
+.frontoffice-root {
+    -fx-background-color: #f8fafc;
+    -fx-font-family: 'Segoe UI', system-ui, -apple-system;
+}
+
+/* TOP NAVBAR */
+.top-navbar {
+    -fx-background-color: white;
+    -fx-padding: 10 40;
+    -fx-pref-height: 70;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+    -fx-border-color: #edf2f7;
+    -fx-border-width: 0 0 1 0;
+}
+
+.nav-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.nav-link:hover {
+    -fx-text-fill: #0081ff;
+    -fx-background-color: #f1f5f9;
+}
+
+.nav-link.active {
+    -fx-background-color: linear-gradient(to right, #0156ff, #00d1ff);
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+}
+
+/* HERO CONTAINER */
+.hero-container {
+    -fx-background-color: linear-gradient(to right, #0156ff, #00d1ff);
+    -fx-background-radius: 24;
+    -fx-padding: 60;
+    -fx-margin: 30 40;
+}
+
+.hero-title {
+    -fx-font-size: 48px;
+    -fx-font-weight: 900;
+    -fx-fill: white;
+}
+
+.hero-subtitle {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-fill: white;
+    -fx-opacity: 0.9;
+}
+
+.hero-description {
+    -fx-font-size: 16px;
+    -fx-fill: white;
+    -fx-opacity: 0.8;
+    -fx-line-spacing: 5;
+}
+
+.image-container {
+    -fx-background-radius: 15;
+    -fx-background-color: #eee;
+    /* Placeholder for image */
+    -fx-overflow: hidden;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 5);
+}
+
+.hero-button {
+    -fx-background-color: white;
+    -fx-text-fill: #0081ff;
+    -fx-font-weight: 700;
+    -fx-font-size: 16px;
+    -fx-padding: 12 30;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+}
+
+.hero-button:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+/* MODULE GRID */
+.module-grid {
+    -fx-padding: 20 40;
+}
+
+.module-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 20, 0, 0, 10);
+    -fx-border-color: #f1f5f9;
+    -fx-border-width: 1;
+}
+
+.module-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 30, 0, 0, 15);
+    -fx-translate-y: -5;
+}
+
+.icon-box {
+    -fx-padding: 12;
+    -fx-background-radius: 12;
+    -fx-min-width: 50;
+    -fx-min-height: 50;
+    -fx-alignment: center;
+}
+
+.icon-blue {
+    -fx-background-color: #0081ff;
+}
+
+.icon-purple {
+    -fx-background-color: #a855f7;
+}
+
+.icon-orange {
+    -fx-background-color: #ff5e00;
+}
+
+.icon-red {
+    -fx-background-color: #ff4d4d;
+}
+
+.icon-green {
+    -fx-background-color: #10b981;
+}
+
+.icon-yellow {
+    -fx-background-color: #ffb900;
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-fill: #1e293b;
+}
+
+.card-description {
+    -fx-font-size: 13px;
+    -fx-fill: #64748b;
+    -fx-line-spacing: 3;
+}
+
+.card-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #0081ff;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.card-link:hover {
+    -fx-underline: true;
+}
+
+/* STATISTICS */
+.stat-card-container {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 20, 0, 0, 4);
+    -fx-margin: 40;
+}
+
+.stat-value {
+    -fx-font-size: 36px;
+    -fx-font-weight: 800;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-fill: #64748b;
+}
+
+/* DATA CARD (Hébergement) */
+.data-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 15, 0, 0, 5);
+}
+
+.card-banner {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 20 0 0 20;
+    -fx-alignment: center;
+}
+
+.card-content {
+    -fx-padding: 25;
+}
+
+.data-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-fill: #1e293b;
+}
+
+.badge-blue {
+    -fx-background-color: #e0f2fe;
+    -fx-background-radius: 6;
+}
+
+.badge-text-blue {
+    -fx-fill: #0369a1;
+    -fx-font-weight: bold;
+}
+
+.card-btn {
+    -fx-padding: 10 20;
+    -fx-background-radius: 10;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+
+.btn-primary {
+    -fx-background-color: #0081ff;
+    -fx-text-fill: white;
+}
+
+.btn-secondary {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #1e293b;
+}
+
+.btn-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 10;
+    -fx-text-fill: #64748b;
+}
+
+.btn-new {
+    -fx-background-color: #ff4d4d;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-padding: 12 25;
+    -fx-background-radius: 12;
+}
+
+.footer {
+    -fx-background-color: #0f172a;
+    -fx-padding: 20;
+}
+
+.footer-text {
+    -fx-fill: #94a3b8;
+    -fx-font-size: 13px;
+}
+
+/* ===== SCROLLPANE STYLES ===== */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}

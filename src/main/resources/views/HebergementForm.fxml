@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.HebergementFormController" spacing="20" styleClass="modal-pane" prefWidth="500">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    
+    <Label fx:id="lblTitle" text="Ajouter un Hébergement" styleClass="modal-title"/>
+    
+    <GridPane vgap="15" hgap="15">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        
+        <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="tfNom" promptText="Nom de l'hébergement"/>
+            <Label fx:id="lblErrorNom" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Type" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <ComboBox fx:id="cbType" promptText="Choisir le type" maxWidth="Infinity"/>
+            <Label fx:id="lblErrorType" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Adresse" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <TextField fx:id="tfAdresse" promptText="Adresse complète"/>
+            <Label fx:id="lblErrorAdresse" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Ville" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <TextField fx:id="tfVille" promptText="Ville"/>
+            <Label fx:id="lblErrorVille" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Pays" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <TextField fx:id="tfPays" promptText="Pays"/>
+            <Label fx:id="lblErrorPays" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Capacité" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <TextField fx:id="tfCapacite" promptText="Nombre de places"/>
+            <Label fx:id="lblErrorCapacite" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Équipements" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="6" GridPane.columnIndex="1">
+            <TextField fx:id="tfEquipements" promptText="WiFi, Piscine, etc."/>
+            <Label fx:id="lblErrorEquipements" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Tarif/Nuit (€)" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="7" GridPane.columnIndex="1">
+            <TextField fx:id="tfTarif" promptText="Prix par nuit"/>
+            <Label fx:id="lblErrorTarif" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+    </GridPane>
+    
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel" styleClass="btn-secondary"/>
+        <Button text="Enregistrer" onAction="#handleSave" styleClass="btn-primary"/>
+    </HBox>
+    
+</VBox>

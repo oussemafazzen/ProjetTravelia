@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.HebergementCardController" alignment="TOP_LEFT" spacing="0" styleClass="data-card">
+    
+    <!-- Image Placeholder -->
+    <StackPane styleClass="card-banner" prefWidth="250" minHeight="200">
+        <Text fx:id="txtTypeIcon" text="🏨" style="-fx-font-size: 40px;"/>
+        <VBox StackPane.alignment="TOP_LEFT" fx:id="badgeContainer">
+            <StackPane styleClass="card-badge, badge-blue">
+                <padding><Insets top="4" right="10" bottom="4" left="10"/></padding>
+                <Text fx:id="txtType" text="Hôtel" fill="white" style="-fx-font-size: 10px; -fx-font-weight: bold;"/>
+            </StackPane>
+        </VBox>
+    </StackPane>
+
+    <!-- Content -->
+    <VBox styleClass="card-content" HBox.hgrow="ALWAYS" spacing="15">
+        <HBox alignment="TOP_LEFT" spacing="15">
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Text fx:id="txtNom" text="Hôtel Grand Palace" styleClass="data-title"/>
+                    <StackPane styleClass="badge-blue" prefHeight="25">
+                        <padding><Insets left="10" right="10"/></padding>
+                        <Text fx:id="txtType" text="hôtel" styleClass="badge-text-blue" style="-fx-font-size: 11px;"/>
+                    </StackPane>
+                </HBox>
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <Text text="📍" style="-fx-fill: #94a3b8;"/>
+                    <Text fx:id="txtLocation" text="123 Avenue des Champs, Paris, France" style="-fx-fill: #64748b; -fx-font-size: 14px;"/>
+                </HBox>
+            </VBox>
+            <VBox alignment="CENTER_RIGHT">
+                <Text fx:id="txtTarif" text="180€" style="-fx-font-size: 28px; -fx-font-weight: 900; -fx-fill: #ff5e00;"/>
+                <Text text="par nuit" style="-fx-fill: #94a3b8; -fx-font-size: 12px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Rating and Capacity -->
+        <HBox spacing="20">
+            <HBox spacing="5" alignment="CENTER_LEFT">
+                <Text text="⭐" style="-fx-fill: #ffb900;"/>
+                <Text text="4.5" style="-fx-font-weight: bold; -fx-fill: #1e293b;"/>
+                <Text text="/5" style="-fx-fill: #94a3b8;"/>
+            </HBox>
+            <HBox spacing="5" alignment="CENTER_LEFT">
+                <Text text="👤" style="-fx-fill: #64748b;"/>
+                <Text text="Capacité:" style="-fx-fill: #64748b;"/>
+                <Text text="150 personnes" style="-fx-font-weight: bold; -fx-fill: #1e293b;"/>
+            </HBox>
+        </HBox>
+
+        <!-- Equipements -->
+        <VBox spacing="10">
+            <Text text="Équipements" style="-fx-font-weight: bold; -fx-fill: #1e293b; -fx-font-size: 13px;"/>
+            <HBox fx:id="equipmentsBox" spacing="10">
+                <HBox spacing="5" alignment="CENTER" style="-fx-background-color: #f8fafc; -fx-padding: 5 10; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-width: 1;">
+                    <Text text="📶" style="-fx-font-size: 12px;"/>
+                    <Text text="WiFi" style="-fx-font-size: 11px; -fx-fill: #64748b;"/>
+                </HBox>
+                <HBox spacing="5" alignment="CENTER" style="-fx-background-color: #f8fafc; -fx-padding: 5 10; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-width: 1;">
+                    <Text text="🚗" style="-fx-font-size: 12px;"/>
+                    <Text text="Parking" style="-fx-font-size: 11px; -fx-fill: #64748b;"/>
+                </HBox>
+                <HBox spacing="5" alignment="CENTER" style="-fx-background-color: #f8fafc; -fx-padding: 5 10; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-width: 1;">
+                    <Text text="🍽" style="-fx-font-size: 12px;"/>
+                    <Text text="Restaurant" style="-fx-font-size: 11px; -fx-fill: #64748b;"/>
+                </HBox>
+                <HBox spacing="5" alignment="CENTER" style="-fx-background-color: #f8fafc; -fx-padding: 5 10; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-width: 1;">
+                    <Text text="💆" style="-fx-font-size: 12px;"/>
+                    <Text text="Spa" style="-fx-font-size: 11px; -fx-fill: #64748b;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Current Reservations Section -->
+        <VBox spacing="15">
+            <Text text="Réservations en cours (1)" style="-fx-font-weight: bold; -fx-fill: #1e293b; -fx-font-size: 13px;"/>
+            <VBox spacing="10" style="-fx-background-color: #fdfdfd; -fx-padding: 15; -fx-background-radius: 12; -fx-border-color: #f1f5f9; -fx-border-width: 1;">
+                <HBox alignment="CENTER_LEFT">
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Text text="Marie Dupont" style="-fx-font-weight: 700; -fx-fill: #1e293b;"/>
+                        <Text text="15/03/2026 → 22/03/2026" style="-fx-fill: #64748b; -fx-font-size: 12px;"/>
+                        <Text text="2 personne(s)" style="-fx-fill: #94a3b8; -fx-font-size: 11px;"/>
+                    </VBox>
+                    <StackPane style="-fx-background-color: #dcfce7; -fx-padding: 4 12; -fx-background-radius: 6;">
+                        <Text text="confirmée" style="-fx-fill: #15803d; -fx-font-weight: bold; -fx-font-size: 11px;"/>
+                    </StackPane>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <!-- Actions -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button text="Modifier" styleClass="card-btn, btn-outline" onAction="#handleEdit"/>
+            <Button text="Réserver" styleClass="card-btn, btn-outline" onAction="#handleReserve"/>
+            <Button text="Voir détails" styleClass="card-btn, btn-outline" onAction="#handleDetails"/>
+        </HBox>
+    </VBox>
+</HBox>

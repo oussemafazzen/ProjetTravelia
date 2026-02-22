@@ -1,0 +1,322 @@
+/* ============================================
+   TravelAgency Backoffice - Modern Dark Theme
+   ============================================ */
+
+/* === ROOT VARIABLES === */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* === MAIN LAYOUT === */
+.main-pane {
+    -fx-background-color: #1a1a2e;
+}
+
+.top-header {
+    -fx-background-color: #16213e;
+    -fx-border-color: #e94560 transparent transparent transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+.header-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.hamburger-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e94560;
+    -fx-font-size: 24px;
+    -fx-cursor: hand;
+    -fx-padding: 0 10;
+}
+
+.hamburger-button:hover {
+    -fx-background-color: rgba(233, 69, 96, 0.1);
+    -fx-background-radius: 5;
+}
+
+.modal-pane {
+    -fx-background-color: #1a1a2e;
+    -fx-border-color: #e94560;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.modal-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e94560;
+    -fx-padding: 0 0 10 0;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #16213e, #0f3460);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 2, 0);
+}
+
+.logo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e94560;
+}
+
+.logo-sub {
+    -fx-font-size: 12px;
+    -fx-text-fill: #a0a0a0;
+    -fx-padding: 0 0 15 0;
+}
+
+.section-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6c7293;
+    -fx-padding: 15 0 5 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 13px;
+    -fx-padding: 12 15;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-radius: 8;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(233, 69, 96, 0.2);
+    -fx-text-fill: #e94560;
+}
+
+.nav-button:pressed {
+    -fx-background-color: rgba(233, 69, 96, 0.4);
+}
+
+.footer-text {
+    -fx-font-size: 10px;
+    -fx-text-fill: #6c7293;
+}
+
+/* === CONTENT AREA === */
+.content-pane {
+    -fx-background-color: #1a1a2e;
+}
+
+.page-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* === FORM STYLING === */
+.form-container {
+    -fx-padding: 0;
+}
+
+.field-label {
+    -fx-text-fill: #a0a0a0;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.text-field,
+.text-area {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #6c7293;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+}
+
+.text-field:focused,
+.text-area:focused {
+    -fx-border-color: #e94560;
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.3), 8, 0, 0, 0);
+}
+
+.combo-box {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 8;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #16213e;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #0f3460;
+}
+
+.date-picker {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+}
+
+/* === BUTTONS === */
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #e94560, #c23a51);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.4), 8, 0, 0, 2);
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #ff5a7a, #e94560);
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.6), 12, 0, 0, 3);
+}
+
+.btn-warning {
+    -fx-background-color: linear-gradient(to right, #f39c12, #d68910);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-warning:hover {
+    -fx-background-color: linear-gradient(to right, #f5b041, #f39c12);
+}
+
+.btn-danger {
+    -fx-background-color: linear-gradient(to right, #c0392b, #a93226);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: linear-gradient(to right, #e74c3c, #c0392b);
+}
+
+.btn-secondary {
+    -fx-background-color: #3d3d5c;
+    -fx-text-fill: #e0e0e0;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #4d4d6d;
+}
+
+/* === TABLE STYLING === */
+.data-table {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #0f3460;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #e94560;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 10;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: #e0e0e0;
+    -fx-padding: 10;
+    -fx-border-color: transparent transparent #0f3460 transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: #16213e;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #1a1f3c;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(233, 69, 96, 0.3);
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(233, 69, 96, 0.15);
+}
+
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:horizontal {
+    -fx-background-color: #16213e;
+}
+
+.table-view .virtual-flow .scroll-bar .thumb {
+    -fx-background-color: #3d3d5c;
+    -fx-background-radius: 4;
+}
+
+.table-view .virtual-flow .scroll-bar .thumb:hover {
+    -fx-background-color: #4d4d6d;
+}
+
+/* === SEPARATOR === */
+.separator .line {
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* === SCROLLBAR === */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #3d3d5c;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}

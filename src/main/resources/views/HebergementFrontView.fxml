@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="30" style="-fx-padding: 40;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="gui.HebergementFrontController">
+    <VBox spacing="40" style="-fx-padding: 40;">
+        <!-- Header Section -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <HBox maxWidth="60" prefHeight="60" styleClass="icon-box, icon-orange">
+                <Text fill="white" style="-fx-font-size: 32px;" styleClass="icon-orange" text="🏠" />
+            </HBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Text style="-fx-font-size: 36px; -fx-font-weight: 900; -fx-fill: #1e293b;" text="Hébergement &amp; Logement" />
+                <Text style="-fx-font-size: 16px; -fx-fill: #64748b;" text="Gérez tous vos hébergements et réservations" />
+            </VBox>
+        </HBox>
+
+        <!-- Stats Section -->
+        <HBox spacing="30">
+            <VBox spacing="15" styleClass="stat-card-container" HBox.hgrow="ALWAYS">
+                <Text styleClass="stat-label" text="Total Hébergements" />
+                <Text fx:id="txtTotalHebergements" style="-fx-fill: #ff4d4d;" styleClass="stat-value" text="3" />
+            </VBox>
+            <VBox spacing="15" styleClass="stat-card-container" HBox.hgrow="ALWAYS">
+                <Text styleClass="stat-label" text="Capacité Totale" />
+                <HBox alignment="BASELINE_LEFT" spacing="5">
+                    <Text fx:id="txtTotalCapacite" style="-fx-fill: #ff4d4d;" styleClass="stat-value" text="186" />
+                    <Text style="-fx-font-size: 18px; -fx-fill: #ff4d4d; -fx-font-weight: bold;" text="pers." />
+                </HBox>
+            </VBox>
+            <VBox spacing="15" styleClass="stat-card-container" HBox.hgrow="ALWAYS">
+                <Text styleClass="stat-label" text="Tarif Moyen/Nuit" />
+                <Text fx:id="txtMoyenTarif" style="-fx-fill: #ffb900;" styleClass="stat-value" text="158 DT" />
+            </VBox>
+        </HBox>
+
+        <!-- Cards List Container -->
+        <VBox fx:id="cardsContainer" spacing="30" />
+    </VBox>
+</VBox>
