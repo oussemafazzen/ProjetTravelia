@@ -5,10 +5,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Hebergement;
@@ -23,28 +25,18 @@ import java.util.function.Function;
 
 public class HebergementController implements Initializable {
 
-    @FXML
-    private TableView<Hebergement> tableHebergement;
-    @FXML
-    private TableColumn<Hebergement, Integer> colId;
-    @FXML
-    private TableColumn<Hebergement, String> colNom;
-    @FXML
-    private TableColumn<Hebergement, String> colType;
-    @FXML
-    private TableColumn<Hebergement, String> colAdresse;
-    @FXML
-    private TableColumn<Hebergement, String> colVille;
-    @FXML
-    private TableColumn<Hebergement, String> colPays;
-    @FXML
-    private TableColumn<Hebergement, Integer> colCapacite;
-    @FXML
-    private TableColumn<Hebergement, String> colEquipements;
-    @FXML
-    private TableColumn<Hebergement, Double> colTarif;
-    @FXML
-    private TextField tfSearch;
+    @FXML private TableView<Hebergement> tableHebergement;
+    @FXML private TableColumn<Hebergement, Integer> colId;
+    @FXML private TableColumn<Hebergement, String>  colNom;
+    @FXML private TableColumn<Hebergement, String>  colType;
+    @FXML private TableColumn<Hebergement, String>  colAdresse;
+    @FXML private TableColumn<Hebergement, String>  colVille;
+    @FXML private TableColumn<Hebergement, String>  colPays;
+    @FXML private TableColumn<Hebergement, Integer> colCapacite;
+    @FXML private TableColumn<Hebergement, String>  colEquipements;
+    @FXML private TableColumn<Hebergement, Double>  colTarif;
+    @FXML private TextField tfSearch;
+    @FXML private Label lblTotal;
 
     private HebergementService hs = new HebergementService();
     private ObservableList<Hebergement> hebergementList;
@@ -61,33 +53,102 @@ public class HebergementController implements Initializable {
         colEquipements.setCellValueFactory(new PropertyValueFactory<>("equipements"));
         colTarif.setCellValueFactory(new PropertyValueFactory<>("tarifParNuit"));
 
+        // ── Custom Cell Factories ──────────────────────────────────────────
+
+        // Type badge (hotel → blue pill, auberge → green pill)
+        colType.setCellFactory(col -> new TableCell<Hebergement, String>() {
+            @Override
+            protected void updateItem(String type, boolean empty) {
+                super.updateItem(type, empty);
+                if (empty || type == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label badge = new Label();
+                    String lower = type.toLowerCase();
+                    if (lower.contains("hotel") || lower.contains("hôtel")) {
+                        badge.setText("🏨  " + type);
+                        badge.getStyleClass().add("badge-hotel");
+                    } else if (lower.contains("auberge")) {
+                        badge.setText("🏕️  " + type);
+                        badge.getStyleClass().add("badge-auberge");
+                    } else {
+                        badge.setText(type);
+                        badge.getStyleClass().add("badge-default");
+                    }
+                    HBox box = new HBox(badge);
+                    box.setAlignment(Pos.CENTER_LEFT);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
+        });
+
+        // Tarif price tag
+        colTarif.setCellFactory(col -> new TableCell<Hebergement, Double>() {
+            @Override
+            protected void updateItem(Double tarif, boolean empty) {
+                super.updateItem(tarif, empty);
+                if (empty || tarif == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label tag = new Label(String.format("💰 %.0f DT", tarif));
+                    tag.getStyleClass().add("price-tag");
+                    HBox box = new HBox(tag);
+                    box.setAlignment(Pos.CENTER_LEFT);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
+        });
+
         loadData();
     }
 
     public void loadData() {
         hebergementList = FXCollections.observableArrayList(hs.getAll());
-        
+
+        // Update stats label
+        if (lblTotal != null) {
+            lblTotal.setText(String.valueOf(hebergementList.size()));
+        }
+
         // Wrap the observable list in a FilteredList
         FilteredList<Hebergement> filteredData = new FilteredList<>(hebergementList, p -> true);
 
         // Add a listener to tfSearch to update the filter predicate
         tfSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(hebergement -> {
-                // If filter text is empty, display all accommodations
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // Compare name with filter text
+                if (newValue == null || newValue.isEmpty()) return true;
                 String lowerCaseFilter = newValue.toLowerCase();
-                if (hebergement.getNom().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches name
-                }
-                return false; // Does not match
+                
+                boolean matchesNom = hebergement.getNom() != null && hebergement.getNom().toLowerCase().contains(lowerCaseFilter);
+                boolean matchesPays = hebergement.getPays() != null && hebergement.getPays().toLowerCase().contains(lowerCaseFilter);
+                
+                return matchesNom || matchesPays;
             });
+            // Update count after filter
+            if (lblTotal != null) {
+                lblTotal.setText(String.valueOf(filteredData.size()));
+            }
         });
 
         tableHebergement.setItems(filteredData);
+    }
+
+    @FXML
+    private void handleSortByType() {
+        if (hebergementList != null) {
+            FXCollections.sort(hebergementList, (h1, h2) -> h1.getType().compareToIgnoreCase(h2.getType()));
+        }
+    }
+
+    @FXML
+    private void handleSortByVille() {
+        if (hebergementList != null) {
+            FXCollections.sort(hebergementList, (h1, h2) -> h1.getVille().compareToIgnoreCase(h2.getVille()));
+        }
     }
 
     @FXML
@@ -172,7 +233,6 @@ public class HebergementController implements Initializable {
             stage.setTitle("Statistiques par Ville");
 
             Scene scene = new Scene(root);
-            // Apply current theme from main window
             if (tableHebergement.getScene() != null && !tableHebergement.getScene().getStylesheets().isEmpty()) {
                 scene.getStylesheets().add(tableHebergement.getScene().getStylesheets().get(0));
             } else {
@@ -201,7 +261,6 @@ public class HebergementController implements Initializable {
             stage.setTitle(hebergement == null ? "Ajouter un Hébergement" : "Modifier l'Hébergement");
 
             Scene scene = new Scene(root);
-            // Apply current theme from main window
             if (tableHebergement.getScene() != null && !tableHebergement.getScene().getStylesheets().isEmpty()) {
                 scene.getStylesheets().add(tableHebergement.getScene().getStylesheets().get(0));
             } else {
