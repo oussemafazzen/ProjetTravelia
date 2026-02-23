@@ -1,0 +1,394 @@
+/* ================= ROOT ================= */
+.app-root {
+    -fx-background-color: #f3f6fb;
+    -fx-font-family: "Segoe UI", Arial;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    -fx-background-color: white;
+    -fx-background-radius: 28;
+    -fx-border-radius: 28;
+    -fx-border-color: #e6edf4;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0.2, 0, 6);
+}
+
+.logo-box { -fx-background-color: #e8f0ff; -fx-background-radius: 10; -fx-padding: 8; }
+.logo-icon { -fx-text-fill: #1e64ff; -fx-font-size: 15px; -fx-font-weight: bold; }
+.brand-title { -fx-font-size: 16px; -fx-font-weight: 800; -fx-text-fill: #0d1b2a; }
+.brand-subtitle { -fx-font-size: 11px; -fx-text-fill: #7a8ba3; }
+
+.nav-menu { -fx-alignment: CENTER; }
+
+.nav-menu .button,
+.nav-menu .nav-item {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-effect: null;
+
+    -fx-padding: 9 14 9 14;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6b7280;
+
+    -fx-cursor: hand;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.nav-menu .button > .background,
+.nav-menu .nav-item > .background {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 12;
+}
+
+.nav-menu .button:hover,
+.nav-item:hover {
+    -fx-background-color: #f3f6fb;
+    -fx-text-fill: #111827;
+}
+
+.nav-icon { -fx-text-fill: #6b7280; -fx-font-size: 14px; }
+.nav-menu .button:hover .nav-icon,
+.nav-item:hover .nav-icon { -fx-text-fill: #111827; }
+
+/* Active nav */
+.nav-item-active,
+.nav-menu .button.nav-item-active {
+    -fx-background-color: #0b84ff;
+    -fx-text-fill: white;
+}
+.nav-item-active .nav-icon,
+.nav-item-active .label,
+.nav-menu .button.nav-item-active .label,
+.nav-menu .button.nav-item-active .nav-icon {
+    -fx-text-fill: white;
+}
+
+/* ================= SCROLL / PAGE ================= */
+.page-scroll { -fx-background: transparent; -fx-background-color: transparent; }
+.page-scroll > .viewport { -fx-background-color: transparent; }
+.page { -fx-background-color: transparent; }
+
+/* ================= HERO (Accueil) ================= */
+.hero-card {
+    -fx-background-radius: 28;
+    -fx-background-color: linear-gradient(to right, #1e5bff, #12b0c8);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 25, 0.3, 0, 8);
+}
+
+.hero-title { -fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: 900; }
+.hero-subtitle { -fx-text-fill: rgba(255,255,255,0.92); -fx-font-size: 15px; -fx-font-weight: 700; }
+.hero-text { -fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 14px; }
+
+.hero-btn {
+    -fx-background-color: white;
+    -fx-text-fill: #1e5bff;
+    -fx-font-weight: 800;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 999;
+    -fx-cursor: hand;
+}
+.hero-btn:hover { -fx-background-color: #f1f4ff; }
+
+.hero-image-wrap { -fx-background-radius: 22; -fx-padding: 0; }
+.hero-image { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 25, 0.3, 0, 10); }
+
+/* ================= SECTION ================= */
+.section-title { -fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #0d1b2a; }
+.section-subtitle { -fx-font-size: 13px; -fx-text-fill: #6b7a90; }
+
+/* ================= MODULES (Accueil) ================= */
+.modules-header { -fx-padding: 6 0 6 0; }
+.modules-grid { -fx-padding: 6 0 18 0; }
+
+.module-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: #e6edf4;
+    -fx-border-width: 1;
+
+    -fx-padding: 22 22 18 22;
+    -fx-min-height: 220;
+    -fx-pref-height: 220;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.20, 0, 6);
+}
+.module-card:hover {
+    -fx-border-color: #cfe1ff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 22, 0.25, 0, 8);
+}
+.module-card-active {
+    -fx-border-color: #6aa8ff;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(11,132,255,0.18), 26, 0.25, 0, 10);
+}
+
+.module-icon {
+    -fx-min-width: 44; -fx-min-height: 44;
+    -fx-pref-width: 44; -fx-pref-height: 44;
+    -fx-background-radius: 12;
+    -fx-alignment: CENTER;
+}
+.module-icon-text { -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: 900; }
+
+.module-title { -fx-padding: 14 0 0 0; -fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #0d1b2a; }
+.module-desc { -fx-padding: 8 0 0 0; -fx-text-fill: #6b7a90; -fx-font-size: 13px; -fx-line-spacing: 2px; }
+
+.module-link {
+    -fx-background-color: transparent;
+    -fx-padding: 12 0 0 0;
+    -fx-text-fill: #2563eb;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.module-link:hover { -fx-underline: true; }
+
+.module-blue   { -fx-background-color: linear-gradient(to right, #1e5bff, #12b0c8); }
+.module-pink   { -fx-background-color: linear-gradient(to right, #9b3ef7, #ff3ca0); }
+.module-orange { -fx-background-color: linear-gradient(to right, #ff6a00, #ff3d3d); }
+.module-green  { -fx-background-color: linear-gradient(to right, #00c853, #00b0ff); }
+.module-yellow { -fx-background-color: linear-gradient(to right, #f59e0b, #fbbf24); }
+
+/* ===================================================== */
+/* =============== RESERVATIONS PAGE STYLES ============== */
+/* ===================================================== */
+
+.page-icon {
+    -fx-background-color: linear-gradient(to right, #9b3ef7, #ff3ca0);
+    -fx-background-radius: 14;
+    -fx-padding: 12;
+}
+.page-icon-text {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+}
+.page-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0d1b2a;
+}
+.page-subtitle {
+    -fx-text-fill: #6b7a90;
+    -fx-font-size: 13px;
+}
+
+.gradient-btn {
+    -fx-background-color: linear-gradient(to right, #9b3ef7, #ff3ca0);
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 999;
+    -fx-padding: 10 18 10 18;
+    -fx-cursor: hand;
+}
+.gradient-btn:hover { -fx-opacity: 0.92; }
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-min-width: 360;
+    -fx-pref-width: 360;
+    -fx-padding: 22 26 22 26;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 22, 0.22, 0, 8);
+}
+.stat-title {
+    -fx-text-fill: #6b7a90;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+.stat-number {
+    -fx-padding: 8 0 0 0;
+    -fx-font-size: 38px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #111827;
+}
+
+.stat-purple { -fx-text-fill: #7c3aed; }
+.stat-pink   { -fx-text-fill: #ec4899; }
+.stat-blue   { -fx-text-fill: #2563eb; }
+
+.big-card {
+    -fx-background-color: white;
+    -fx-background-radius: 22;
+    -fx-padding: 26;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 22, 0.22, 0, 8);
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0d1b2a;
+}
+
+.badge-success {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
+    -fx-font-weight: 800;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 999;
+}
+
+.muted {
+    -fx-text-fill: #6b7a90;
+    -fx-font-size: 13px;
+}
+.muted-small {
+    -fx-text-fill: #6b7a90;
+    -fx-font-size: 12px;
+}
+
+.client-box {
+    -fx-background-color: #f7f0ff;
+    -fx-background-radius: 16;
+    -fx-padding: 18;
+}
+.client-name {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #111827;
+}
+
+.section-mini {
+    -fx-font-weight: 900;
+    -fx-text-fill: #0d1b2a;
+}
+
+.ticket-row {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #eef2f7;
+    -fx-padding: 16;
+}
+
+.ticket-icon {
+    -fx-background-color: #f5edff;
+    -fx-background-radius: 16;
+    -fx-padding: 14;
+}
+.ticket-icon-text {
+    -fx-text-fill: #8b2cf5;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+}
+
+.ticket-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0d1b2a;
+}
+.ticket-price {
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #7c3aed;
+}
+/* ===== Reservation card extras (ajout) ===== */
+
+.meta-row { -fx-padding: 8 0 10 0; }
+.meta-item { -fx-alignment: CENTER_LEFT; }
+.meta-icon { -fx-text-fill: #6b7a90; -fx-font-size: 14px; }
+
+.status-badge {
+    -fx-background-radius: 999;
+    -fx-padding: 6 12 6 12;
+    -fx-font-weight: 800;
+    -fx-font-size: 12px;
+}
+.status-confirmed {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
+}
+.status-pending {
+    -fx-background-color: #fff7ed;
+    -fx-text-fill: #9a3412;
+}
+.status-cancelled {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #991b1b;
+}
+
+.soft-sep {
+    -fx-padding: 14 0 10 0;
+    -fx-opacity: 0.7;
+}
+
+.total-row { -fx-padding: 10 0 8 0; }
+.total-label {
+    -fx-font-weight: 900;
+    -fx-text-fill: #0d1b2a;
+    -fx-font-size: 14px;
+}
+.total-amount {
+    -fx-font-weight: 900;
+    -fx-font-size: 28px;
+    -fx-text-fill: #7c3aed; /* violet comme la 2ème image */
+}
+
+.actions-row { -fx-padding: 6 0 0 0; }
+
+.btn-outline {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 8 14 8 14;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+.btn-outline:hover {
+    -fx-background-color: #f8fafc;
+}
+
+.btn-danger {
+    -fx-background-color: white;
+    -fx-border-color: #fecaca;
+    -fx-border-width: 1;
+    -fx-text-fill: #dc2626;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 8 14 8 14;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+.btn-danger:hover {
+    -fx-background-color: #fff1f2;
+}
+
+.badge-waiting {
+    -fx-background-color: #fff7ed;
+    -fx-text-fill: #9a3412;
+    -fx-font-weight: 800;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 999;
+}
+
+.badge-danger {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #991b1b;
+    -fx-font-weight: 800;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 999;
+}
+
+.badge-neutral {
+    -fx-background-color: #eef2f7;
+    -fx-text-fill: #334155;
+    -fx-font-weight: 800;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 999;
+}

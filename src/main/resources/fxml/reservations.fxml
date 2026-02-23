@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controllers.ReservationsController"
+            styleClass="app-root">
+
+    <top>
+        <VBox>
+            <padding>
+                <Insets top="18" right="30" bottom="0" left="30"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" styleClass="navbar">
+                <padding>
+                    <Insets top="12" right="28" bottom="12" left="28"/>
+                </padding>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <StackPane styleClass="logo-box">
+                        <Label text="✈" styleClass="logo-icon"/>
+                    </StackPane>
+
+                    <VBox spacing="0">
+                        <Label text="Travelia" styleClass="brand-title"/>
+                        <Label text="by DevTravel" styleClass="brand-subtitle"/>
+                    </VBox>
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox spacing="16" alignment="CENTER" styleClass="nav-menu">
+
+                    <Button fx:id="btnHome" onAction="#goHome" styleClass="nav-item">
+                        <graphic><Label text="⌂" styleClass="nav-icon"/></graphic>
+                        <text>Accueil</text>
+                    </Button>
+
+                    <Button fx:id="btnClients" onAction="#goClients" styleClass="nav-item">
+                        <graphic><Label text="👤" styleClass="nav-icon"/></graphic>
+                        <text>Clients</text>
+                    </Button>
+
+                    <Button fx:id="btnReservations" onAction="#goReservations" styleClass="nav-item">
+                        <graphic><Label text="📅" styleClass="nav-icon"/></graphic>
+                        <text>Réservations</text>
+                    </Button>
+
+                    <Button fx:id="btnHebergement" onAction="#goHebergement" styleClass="nav-item">
+                        <graphic><Label text="⌂" styleClass="nav-icon"/></graphic>
+                        <text>Hébergement</text>
+                    </Button>
+
+                    <Button fx:id="btnActivites" onAction="#goActivites" styleClass="nav-item">
+                        <graphic><Label text="📍" styleClass="nav-icon"/></graphic>
+                        <text>Activités</text>
+                    </Button>
+
+                    <Button fx:id="btnAvis" onAction="#goAvis" styleClass="nav-item">
+                        <graphic><Label text="★" styleClass="nav-icon"/></graphic>
+                        <text>Avis</text>
+                    </Button>
+
+                </HBox>
+
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="page-scroll" pannable="true">
+            <content>
+                <VBox spacing="24" styleClass="page">
+                    <padding>
+                        <Insets top="28" right="60" bottom="40" left="60"/>
+                    </padding>
+
+                    <HBox alignment="CENTER_LEFT" spacing="14">
+                        <StackPane styleClass="page-icon">
+                            <Label text="📅" styleClass="page-icon-text"/>
+                        </StackPane>
+
+                        <VBox spacing="3">
+                            <Label text="Réservations &amp; Billets" styleClass="page-title"/>
+                            <Label text="Gérez toutes vos réservations de transport" styleClass="page-subtitle"/>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button text="+  Nouvelle Réservation" styleClass="gradient-btn"/>
+                    </HBox>
+
+                    <!-- ✅ STATS -->
+                    <HBox spacing="20">
+                        <VBox styleClass="stat-card">
+                            <Label text="Total Réservations" styleClass="stat-title"/>
+                            <Label fx:id="lblTotalReservations" text="0" styleClass="stat-number stat-purple"/>
+                        </VBox>
+
+                        <VBox styleClass="stat-card">
+                            <Label text="Total Billets" styleClass="stat-title"/>
+                            <Label fx:id="lblTotalBillets" text="0" styleClass="stat-number stat-pink"/>
+                        </VBox>
+
+                        <VBox styleClass="stat-card">
+                            <Label text="Montant Total" styleClass="stat-title"/>
+                            <Label fx:id="lblMontantTotal" text="0 DT" styleClass="stat-number stat-blue"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox fx:id="reservationsList" spacing="16"/>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
