@@ -5,10 +5,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.ReservationHebergement;
@@ -23,22 +25,18 @@ import java.util.ResourceBundle;
 
 public class ReservationHebergementController implements Initializable {
 
-    @FXML
-    private TableView<ReservationHebergement> tableReservation;
-    @FXML
-    private TableColumn<ReservationHebergement, Integer> colId;
-    @FXML
-    private TableColumn<ReservationHebergement, Date> colDateDebut;
-    @FXML
-    private TableColumn<ReservationHebergement, Date> colDateFin;
-    @FXML
-    private TableColumn<ReservationHebergement, Integer> colNbPersonnes;
-    @FXML
-    private TableColumn<ReservationHebergement, String> colStatut;
-    @FXML
-    private TableColumn<ReservationHebergement, Integer> colIdClient;
-    @FXML
-    private TableColumn<ReservationHebergement, String> colIdHebergement;
+    @FXML private TableView<ReservationHebergement> tableReservation;
+    @FXML private TableColumn<ReservationHebergement, Integer> colId;
+    @FXML private TableColumn<ReservationHebergement, Date>    colDateDebut;
+    @FXML private TableColumn<ReservationHebergement, Date>    colDateFin;
+    @FXML private TableColumn<ReservationHebergement, Integer> colNbPersonnes;
+    @FXML private TableColumn<ReservationHebergement, String>  colStatut;
+    @FXML private TableColumn<ReservationHebergement, Integer> colIdClient;
+    @FXML private TableColumn<ReservationHebergement, String>  colIdHebergement;
+
+    @FXML private Label lblTotal;
+    @FXML private Label lblConfirmed;
+    @FXML private Label lblPending;
 
     private ReservationHebergementService rhs = new ReservationHebergementService();
     private ObservableList<ReservationHebergement> reservationList;
@@ -58,12 +56,80 @@ public class ReservationHebergementController implements Initializable {
             return new javafx.beans.property.SimpleStringProperty("N/A");
         });
 
+        // ── Custom Cell Factories ──────────────────────────────────────────
+
+        // Status badge (confirmed=green, pending=yellow, cancelled=red)
+        colStatut.setCellFactory(col -> new TableCell<ReservationHebergement, String>() {
+            @Override
+            protected void updateItem(String statut, boolean empty) {
+                super.updateItem(statut, empty);
+                if (empty || statut == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label badge = new Label();
+                    String lower = statut.toLowerCase();
+                    if (lower.contains("confirm") || lower.equals("confirmed") || lower.equals("confirmée") || lower.equals("confirmé")) {
+                        badge.setText("✅  " + statut);
+                        badge.getStyleClass().add("badge-confirmed");
+                    } else if (lower.contains("attente") || lower.contains("pending") || lower.contains("en cours")) {
+                        badge.setText("⏳  " + statut);
+                        badge.getStyleClass().add("badge-pending");
+                    } else if (lower.contains("annul") || lower.contains("cancel")) {
+                        badge.setText("❌  " + statut);
+                        badge.getStyleClass().add("badge-cancelled");
+                    } else {
+                        badge.setText(statut);
+                        badge.getStyleClass().add("badge-default");
+                    }
+                    HBox box = new HBox(badge);
+                    box.setAlignment(Pos.CENTER_LEFT);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
+        });
+
+        // Person count tag
+        colNbPersonnes.setCellFactory(col -> new TableCell<ReservationHebergement, Integer>() {
+            @Override
+            protected void updateItem(Integer nb, boolean empty) {
+                super.updateItem(nb, empty);
+                if (empty || nb == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label tag = new Label("👥 " + nb);
+                    tag.getStyleClass().add("persons-tag");
+                    HBox box = new HBox(tag);
+                    box.setAlignment(Pos.CENTER_LEFT);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
+        });
+
         loadData();
     }
 
     public void loadData() {
         reservationList = FXCollections.observableArrayList(rhs.getAll());
         tableReservation.setItems(reservationList);
+
+        // Update stats labels
+        if (lblTotal != null) lblTotal.setText(String.valueOf(reservationList.size()));
+        if (lblConfirmed != null) {
+            long confirmed = reservationList.stream()
+                .filter(r -> r.getStatut() != null && (r.getStatut().toLowerCase().contains("confirm")))
+                .count();
+            lblConfirmed.setText(String.valueOf(confirmed));
+        }
+        if (lblPending != null) {
+            long pending = reservationList.stream()
+                .filter(r -> r.getStatut() != null && (r.getStatut().toLowerCase().contains("attente") || r.getStatut().toLowerCase().contains("pending") || r.getStatut().toLowerCase().contains("en cours")))
+                .count();
+            lblPending.setText(String.valueOf(pending));
+        }
     }
 
     @FXML
@@ -115,7 +181,6 @@ public class ReservationHebergementController implements Initializable {
             stage.setTitle("Statistiques Saisonnières");
 
             Scene scene = new Scene(root);
-            // Apply current theme from main window
             if (tableReservation.getScene() != null && !tableReservation.getScene().getStylesheets().isEmpty()) {
                 scene.getStylesheets().add(tableReservation.getScene().getStylesheets().get(0));
             } else {
@@ -176,7 +241,6 @@ public class ReservationHebergementController implements Initializable {
             stage.setTitle(reservation == null ? "Nouvelle Réservation" : "Modifier la Réservation");
 
             Scene scene = new Scene(root);
-            // Apply current theme from main window
             if (tableReservation.getScene() != null && !tableReservation.getScene().getStylesheets().isEmpty()) {
                 scene.getStylesheets().add(tableReservation.getScene().getStylesheets().get(0));
             } else {
