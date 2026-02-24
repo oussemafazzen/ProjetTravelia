@@ -25,34 +25,7 @@ import java.util.function.Function;
 
 public class HebergementController implements Initializable {
 
-<<<<<<< HEAD
-    @FXML
-    private TableView<Hebergement> tableHebergement;
-    @FXML
-    private TableColumn<Hebergement, Integer> colId;
-    @FXML
-    private TableColumn<Hebergement, String> colNom;
-    @FXML
-    private TableColumn<Hebergement, String> colType;
-    @FXML
-    private TableColumn<Hebergement, String> colAdresse;
-    @FXML
-    private TableColumn<Hebergement, String> colVille;
-    @FXML
-    private TableColumn<Hebergement, String> colPays;
-    @FXML
-    private TableColumn<Hebergement, Integer> colCapacite;
-    @FXML
-    private TableColumn<Hebergement, String> colEquipements;
-    @FXML
-    private TableColumn<Hebergement, Double> colTarif;
-    @FXML
-    private TextField tfSearch;
-    @FXML
-    private Label lblTotal;
-=======
     @FXML private TableView<Hebergement> tableHebergement;
-    @FXML private TableColumn<Hebergement, Integer> colId;
     @FXML private TableColumn<Hebergement, String>  colNom;
     @FXML private TableColumn<Hebergement, String>  colType;
     @FXML private TableColumn<Hebergement, String>  colAdresse;
@@ -61,16 +34,15 @@ public class HebergementController implements Initializable {
     @FXML private TableColumn<Hebergement, Integer> colCapacite;
     @FXML private TableColumn<Hebergement, String>  colEquipements;
     @FXML private TableColumn<Hebergement, Double>  colTarif;
+    @FXML private TableColumn<Hebergement, Void> colActions;
     @FXML private TextField tfSearch;
     @FXML private Label lblTotal;
->>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
 
     private HebergementService hs = new HebergementService();
     private ObservableList<Hebergement> hebergementList;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        colId.setCellValueFactory(new PropertyValueFactory<>("idHebergement"));
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
         colAdresse.setCellValueFactory(new PropertyValueFactory<>("adresse"));
@@ -80,11 +52,40 @@ public class HebergementController implements Initializable {
         colEquipements.setCellValueFactory(new PropertyValueFactory<>("equipements"));
         colTarif.setCellValueFactory(new PropertyValueFactory<>("tarifParNuit"));
 
-<<<<<<< HEAD
-        // ── Custom Cell Factories (The "Do it yourself" logic) ─────────────
-=======
         // ── Custom Cell Factories ──────────────────────────────────────────
->>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
+
+        // Actions column: Edit and Delete buttons
+        colActions.setCellFactory(column -> new TableCell<Hebergement, Void>() {
+            private final Button btnEdit = new Button("✏️");
+            private final Button btnDelete = new Button("🗑️");
+            private final HBox container = new HBox(10, btnEdit, btnDelete);
+
+            {
+                btnEdit.getStyleClass().addAll("btn-action", "btn-warning");
+                btnDelete.getStyleClass().addAll("btn-action", "btn-danger");
+                container.setAlignment(Pos.CENTER);
+                
+                btnEdit.setOnAction(event -> {
+                    Hebergement h = getTableView().getItems().get(getIndex());
+                    openModal(h);
+                });
+                
+                btnDelete.setOnAction(event -> {
+                    Hebergement h = getTableView().getItems().get(getIndex());
+                    handleDeleteSpecific(h);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(container);
+                }
+            }
+        });
 
         // Type badge (hotel → blue pill, auberge → green pill)
         colType.setCellFactory(col -> new TableCell<Hebergement, String>() {
@@ -107,13 +108,8 @@ public class HebergementController implements Initializable {
                         badge.setText(type);
                         badge.getStyleClass().add("badge-default");
                     }
-<<<<<<< HEAD
-                    javafx.scene.layout.HBox box = new javafx.scene.layout.HBox(badge);
-                    box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-=======
                     HBox box = new HBox(badge);
                     box.setAlignment(Pos.CENTER_LEFT);
->>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
                     setGraphic(box);
                     setText(null);
                 }
@@ -131,13 +127,8 @@ public class HebergementController implements Initializable {
                 } else {
                     Label tag = new Label(String.format("💰 %.0f DT", tarif));
                     tag.getStyleClass().add("price-tag");
-<<<<<<< HEAD
-                    javafx.scene.layout.HBox box = new javafx.scene.layout.HBox(tag);
-                    box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-=======
                     HBox box = new HBox(tag);
                     box.setAlignment(Pos.CENTER_LEFT);
->>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
                     setGraphic(box);
                     setText(null);
                 }
@@ -149,11 +140,7 @@ public class HebergementController implements Initializable {
 
     public void loadData() {
         hebergementList = FXCollections.observableArrayList(hs.getAll());
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
         // Update stats label
         if (lblTotal != null) {
             lblTotal.setText(String.valueOf(hebergementList.size()));
@@ -185,30 +172,22 @@ public class HebergementController implements Initializable {
     @FXML
     private void handleSortByType() {
         if (hebergementList != null) {
-<<<<<<< HEAD
             FXCollections.sort(hebergementList, (h1, h2) -> {
                 String t1 = h1.getType() != null ? h1.getType() : "";
                 String t2 = h2.getType() != null ? h2.getType() : "";
                 return t1.compareToIgnoreCase(t2);
             });
-=======
-            FXCollections.sort(hebergementList, (h1, h2) -> h1.getType().compareToIgnoreCase(h2.getType()));
->>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
         }
     }
 
     @FXML
     private void handleSortByVille() {
         if (hebergementList != null) {
-<<<<<<< HEAD
             FXCollections.sort(hebergementList, (h1, h2) -> {
                 String v1 = h1.getVille() != null ? h1.getVille() : "";
                 String v2 = h2.getVille() != null ? h2.getVille() : "";
                 return v1.compareToIgnoreCase(v2);
             });
-=======
-            FXCollections.sort(hebergementList, (h1, h2) -> h1.getVille().compareToIgnoreCase(h2.getVille()));
->>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
         }
     }
 
@@ -218,22 +197,7 @@ public class HebergementController implements Initializable {
     }
 
     @FXML
-    private void handleUpdate() {
-        Hebergement selected = tableHebergement.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            openModal(selected);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Aucune sélection");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez sélectionner un hébergement à modifier.");
-            alert.showAndWait();
-        }
-    }
-
-    @FXML
-    private void handleDelete() {
-        Hebergement selected = tableHebergement.getSelectionModel().getSelectedItem();
+    private void handleDeleteSpecific(Hebergement selected) {
         if (selected != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation de suppression");

@@ -19,13 +19,11 @@
             <TextField fx:id="tfSearch" promptText="Rechercher par nom ou pays..." prefWidth="250" styleClass="search-field"/>
         </HBox>
         <Region HBox.hgrow="ALWAYS"/>
-        <HBox spacing="8">
-            <Button text="📊 Stats"     onAction="#handleStats"     styleClass="btn-info"      style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 9 16; -fx-background-radius: 7; -fx-cursor: hand;"/>
-            <Button text="📄 PDF"       onAction="#handleExportPdf" styleClass="btn-secondary" style="-fx-padding: 9 16; -fx-background-radius: 7; -fx-cursor: hand;"/>
-            <Button text="➕ Ajouter"   onAction="#handleAdd"       styleClass="btn-primary"   style="-fx-padding: 9 16; -fx-background-radius: 7; -fx-cursor: hand;"/>
-            <Button text="✏️ Modifier"  onAction="#handleUpdate"    styleClass="btn-warning"   style="-fx-padding: 9 16; -fx-background-radius: 7; -fx-cursor: hand;"/>
-            <Button text="🗑️ Supprimer" onAction="#handleDelete"    styleClass="btn-danger"    style="-fx-padding: 9 16; -fx-background-radius: 7; -fx-cursor: hand;"/>
-            <Button text="🔄"           onAction="#handleRefresh"   styleClass="btn-secondary" style="-fx-padding: 9 12; -fx-background-radius: 7; -fx-cursor: hand;"/>
+        <HBox spacing="12">
+            <Button text="📊 Stats"     onAction="#handleStats"     styleClass="btn-info"      style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 9 18; -fx-background-radius: 9; -fx-cursor: hand;"/>
+            <Button text="📄 PDF"       onAction="#handleExportPdf" styleClass="btn-secondary" style="-fx-padding: 9 18; -fx-background-radius: 9; -fx-cursor: hand;"/>
+            <Button text="➕ Ajouter un Hébergement"   onAction="#handleAdd"       styleClass="btn-primary"   style="-fx-padding: 9 22; -fx-background-radius: 9; -fx-cursor: hand; -fx-font-weight: bold;"/>
+            <Button text="🔄"           onAction="#handleRefresh"   styleClass="btn-secondary" style="-fx-padding: 9 12; -fx-background-radius: 9; -fx-cursor: hand;"/>
         </HBox>
     </HBox>
 
@@ -53,7 +51,6 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
         </columnResizePolicy>
         <columns>
-            <TableColumn fx:id="colId"          text="  #"          prefWidth="50"/>
             <TableColumn fx:id="colNom"         text="  Nom"        prefWidth="160"/>
             <TableColumn fx:id="colType"        text="  Type"       prefWidth="110"/>
             <TableColumn fx:id="colAdresse"     text="  Adresse"    prefWidth="160"/>
@@ -62,6 +59,7 @@
             <TableColumn fx:id="colCapacite"    text="  Capacité"   prefWidth="80"/>
             <TableColumn fx:id="colEquipements" text="  Équipements" prefWidth="160"/>
             <TableColumn fx:id="colTarif"       text="  Tarif/Nuit" prefWidth="110"/>
+            <TableColumn fx:id="colActions"     text="  Actions"    prefWidth="120" sortable="false"/>
         </columns>
         <placeholder>
             <Label text="🏨  Aucun hébergement trouvé" style="-fx-font-size: 16px; -fx-text-fill: #6c7293; -fx-font-style: italic;"/>

@@ -85,10 +85,6 @@ public class HebergementCardController {
         return "🔹"; // Default
     }
 
-    @FXML
-    private void handleEdit() {
-        parentController.openForm(hebergement);
-    }
 
     @FXML
     private void handleReserve() {

@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 public class ReservationHebergementController implements Initializable {
 
     @FXML private TableView<ReservationHebergement> tableReservation;
-    @FXML private TableColumn<ReservationHebergement, Integer> colId;
+    @FXML private TableColumn<ReservationHebergement, Void> colActions;
     @FXML private TableColumn<ReservationHebergement, Date>    colDateDebut;
     @FXML private TableColumn<ReservationHebergement, Date>    colDateFin;
     @FXML private TableColumn<ReservationHebergement, Integer> colNbPersonnes;
@@ -43,7 +43,6 @@ public class ReservationHebergementController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        colId.setCellValueFactory(new PropertyValueFactory<>("idReservationHebergement"));
         colDateDebut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
         colDateFin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
         colNbPersonnes.setCellValueFactory(new PropertyValueFactory<>("nombrePersonnes"));
@@ -57,6 +56,39 @@ public class ReservationHebergementController implements Initializable {
         });
 
         // ── Custom Cell Factories ──────────────────────────────────────────
+
+        // Actions column: Edit and Delete buttons
+        colActions.setCellFactory(column -> new TableCell<ReservationHebergement, Void>() {
+            private final Button btnEdit = new Button("✏️");
+            private final Button btnDelete = new Button("🗑️");
+            private final HBox container = new HBox(10, btnEdit, btnDelete);
+
+            {
+                btnEdit.getStyleClass().addAll("btn-action", "btn-warning");
+                btnDelete.getStyleClass().addAll("btn-action", "btn-danger");
+                container.setAlignment(Pos.CENTER);
+                
+                btnEdit.setOnAction(event -> {
+                    ReservationHebergement r = getTableView().getItems().get(getIndex());
+                    openModal(r);
+                });
+                
+                btnDelete.setOnAction(event -> {
+                    ReservationHebergement r = getTableView().getItems().get(getIndex());
+                    handleDeleteSpecific(r);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(container);
+                }
+            }
+        });
 
         // Status badge (confirmed=green, pending=yellow, cancelled=red)
         colStatut.setCellFactory(col -> new TableCell<ReservationHebergement, String>() {
@@ -138,22 +170,7 @@ public class ReservationHebergementController implements Initializable {
     }
 
     @FXML
-    private void handleUpdate() {
-        ReservationHebergement selected = tableReservation.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            openModal(selected);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Aucune sélection");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez sélectionner une réservation à modifier.");
-            alert.showAndWait();
-        }
-    }
-
-    @FXML
-    private void handleDelete() {
-        ReservationHebergement selected = tableReservation.getSelectionModel().getSelectedItem();
+    private void handleDeleteSpecific(ReservationHebergement selected) {
         if (selected != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation de suppression");

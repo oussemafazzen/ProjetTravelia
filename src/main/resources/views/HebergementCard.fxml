@@ -59,7 +59,6 @@
 
         <!-- Actions -->
         <HBox spacing="15" alignment="CENTER_LEFT">
-            <Button text="Modifier" styleClass="card-btn, btn-outline" onAction="#handleEdit"/>
             <Button text="Réserver" styleClass="card-btn, btn-outline" onAction="#handleReserve"/>
             <Button text="Voir détails" styleClass="card-btn, btn-outline" onAction="#handleDetails"/>
         </HBox>

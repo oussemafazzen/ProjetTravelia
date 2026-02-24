@@ -21,6 +21,7 @@ public class HebergementFrontController {
     @FXML private Text txtTotalCapacite;
     @FXML private Text txtMoyenTarif;
     @FXML private VBox cardsContainer;
+    @FXML private javafx.scene.control.TextField tfSearchNom;
 
     private HebergementService hs = new HebergementService();
     private List<Hebergement> hebergementList;
@@ -28,27 +29,48 @@ public class HebergementFrontController {
     @FXML
     public void initialize() {
         loadData();
+        
+        // Real-time search listener
+        tfSearchNom.textProperty().addListener((obs, oldVal, newVal) -> {
+            filterAndDisplay(newVal);
+        });
     }
 
     public void loadData() {
         hebergementList = hs.getAll();
-        updateStats();
-        populateCards();
+        updateStats(hebergementList);
+        populateCards(hebergementList);
     }
 
-    private void updateStats() {
-        int total = hebergementList.size();
-        int capacite = hebergementList.stream().mapToInt(Hebergement::getCapacite).sum();
-        double avgTarif = hebergementList.stream().mapToDouble(Hebergement::getTarifParNuit).average().orElse(0.0);
+    private void filterAndDisplay(String query) {
+        if (query == null || query.isEmpty()) {
+            updateStats(hebergementList);
+            populateCards(hebergementList);
+            return;
+        }
+
+        String lowerQuery = query.toLowerCase();
+        List<Hebergement> filtered = hebergementList.stream()
+                .filter(h -> h.getNom() != null && h.getNom().toLowerCase().contains(lowerQuery))
+                .toList();
+
+        updateStats(filtered);
+        populateCards(filtered);
+    }
+
+    private void updateStats(List<Hebergement> list) {
+        int total = list.size();
+        int capacite = list.stream().mapToInt(Hebergement::getCapacite).sum();
+        double avgTarif = list.stream().mapToDouble(Hebergement::getTarifParNuit).average().orElse(0.0);
 
         txtTotalHebergements.setText(String.valueOf(total));
         txtTotalCapacite.setText(String.valueOf(capacite));
         txtMoyenTarif.setText(String.format("%.0f DT", avgTarif));
     }
 
-    private void populateCards() {
+    private void populateCards(List<Hebergement> list) {
         cardsContainer.getChildren().clear();
-        for (Hebergement h : hebergementList) {
+        for (Hebergement h : list) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/HebergementCard.fxml"));
                 Parent card = loader.load();
@@ -104,5 +126,42 @@ public class HebergementFrontController {
             System.err.println("Erreur chargement modal: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleOpenCountrySelector() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/CountrySelector.fxml"));
+            Parent root = loader.load();
+
+            CountrySelectorController controller = loader.getController();
+            controller.setParentController(this);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Choisir un Pays");
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/frontoffice-styles.css").toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erreur chargement sélecteur pays: " + e.getMessage());
+        }
+    }
+
+    public void onCountrySelected(String country) {
+        if (country == null) {
+            loadData(); // Reset
+            return;
+        }
+        
+        // Filter by country
+        List<Hebergement> filtered = hebergementList.stream()
+                .filter(h -> country.equalsIgnoreCase(h.getPays()))
+                .toList();
+        
+        updateStats(filtered);
+        populateCards(filtered);
     }
 }
