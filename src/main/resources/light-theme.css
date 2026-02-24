@@ -186,12 +186,17 @@
     -fx-padding: 0 8 0 0;
 }
 
+<<<<<<< HEAD
 /* Data Table Container - 3D ELEVATION */
+=======
+/* Data Table Container */
+>>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
 .data-table {
     -fx-background-color: #ffffff;
     -fx-border-color: #dee2e6;
     -fx-border-radius: 12;
     -fx-background-radius: 12;
+<<<<<<< HEAD
     /* Soft 3D shadow for light theme */
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.12), 30, 0, 0, 15);
     -fx-padding: 1;
@@ -204,6 +209,15 @@
     /* subtle top light reflection */
     -fx-border-color: rgba(255, 255, 255, 0.8) transparent #dee2e6 transparent;
     -fx-border-width: 1 0 1 0;
+=======
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12, 0, 0, 4);
+}
+
+/* Column Headers */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #f1f3f5, #e9ecef);
+    -fx-background-radius: 12 12 0 0;
+>>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
 }
 
 .table-view .column-header {
@@ -256,9 +270,13 @@
 }
 
 .table-row-cell:hover {
+<<<<<<< HEAD
     -fx-background-color: #f1f3f5;
     /* 3D Inner depth on hover */
     -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.05), 8, 0, 0, 0);
+=======
+    -fx-background-color: rgba(233, 69, 96, 0.06);
+>>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
     -fx-cursor: hand;
 }
 
@@ -280,23 +298,39 @@
 /* === BADGE STYLES (light) === */
 
 .badge-hotel {
+<<<<<<< HEAD
     -fx-background-color: linear-gradient(to right, #FF8833, #E67E22);
+=======
+    -fx-background-color: linear-gradient(to right, #1a6fa8, #1565c0);
+>>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
     -fx-text-fill: #ffffff;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-padding: 4 12;
     -fx-background-radius: 20;
+<<<<<<< HEAD
     -fx-effect: dropshadow(gaussian, rgba(255, 136, 51, 0.3), 5, 0, 0, 2);
 }
 
 .badge-auberge {
     -fx-background-color: linear-gradient(to right, #5D9CEC, #4A90E2);
+=======
+    -fx-effect: dropshadow(gaussian, rgba(21, 101, 192, 0.3), 5, 0, 0, 2);
+}
+
+.badge-auberge {
+    -fx-background-color: linear-gradient(to right, #2e7d32, #1b5e20);
+>>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
     -fx-text-fill: #ffffff;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-padding: 4 12;
     -fx-background-radius: 20;
+<<<<<<< HEAD
     -fx-effect: dropshadow(gaussian, rgba(93, 156, 236, 0.3), 5, 0, 0, 2);
+=======
+    -fx-effect: dropshadow(gaussian, rgba(27, 94, 32, 0.3), 5, 0, 0, 2);
+>>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
 }
 
 .badge-default {
@@ -454,6 +488,7 @@
     -fx-background-color: rgba(233, 69, 96, 0.05);
     -fx-text-fill: #e94560;
     -fx-border-color: #e94560;
+<<<<<<< HEAD
 }
 
 /* === CHART SYNC === */
@@ -521,4 +556,6 @@
 
 .default-color3.chart-legend-item-symbol {
     -fx-background-color: #5D9CEC;
+=======
+>>>>>>> 1eb3045ff5a423da6e22dc4ea84ae9b1bb5e5322
 }
