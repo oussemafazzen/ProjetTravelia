@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ReservationHebergementController implements Initializable {
@@ -145,22 +146,28 @@ public class ReservationHebergementController implements Initializable {
     }
 
     public void loadData() {
-        reservationList = FXCollections.observableArrayList(rhs.getAll());
-        tableReservation.setItems(reservationList);
+        try {
+            reservationList = FXCollections.observableArrayList(rhs.recupToutesReservations());
+            tableReservation.setItems(reservationList);
 
-        // Update stats labels
-        if (lblTotal != null) lblTotal.setText(String.valueOf(reservationList.size()));
-        if (lblConfirmed != null) {
-            long confirmed = reservationList.stream()
-                .filter(r -> r.getStatut() != null && (r.getStatut().toLowerCase().contains("confirm")))
-                .count();
-            lblConfirmed.setText(String.valueOf(confirmed));
-        }
-        if (lblPending != null) {
-            long pending = reservationList.stream()
-                .filter(r -> r.getStatut() != null && (r.getStatut().toLowerCase().contains("attente") || r.getStatut().toLowerCase().contains("pending") || r.getStatut().toLowerCase().contains("en cours")))
-                .count();
-            lblPending.setText(String.valueOf(pending));
+            // Update stats labels
+            if (lblTotal != null) lblTotal.setText(String.valueOf(reservationList.size()));
+            if (lblConfirmed != null) {
+                long confirmed = reservationList.stream()
+                    .filter(r -> r.getStatut() != null && (r.getStatut().toLowerCase().contains("confirm")))
+                    .count();
+                lblConfirmed.setText(String.valueOf(confirmed));
+            }
+            if (lblPending != null) {
+                long pending = reservationList.stream()
+                    .filter(r -> r.getStatut() != null && (r.getStatut().toLowerCase().contains("attente") || r.getStatut().toLowerCase().contains("pending") || r.getStatut().toLowerCase().contains("en cours")))
+                    .count();
+                lblPending.setText(String.valueOf(pending));
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur chargement réservations: " + e.getMessage());
+            reservationList = FXCollections.observableArrayList();
+            tableReservation.setItems(reservationList);
         }
     }
 
@@ -178,8 +185,15 @@ public class ReservationHebergementController implements Initializable {
             alert.setContentText("Êtes-vous sûr de vouloir supprimer cette réservation ?");
 
             if (alert.showAndWait().get() == ButtonType.OK) {
-                rhs.delete(selected);
-                loadData();
+                try {
+                    rhs.supprimerReservation(selected);
+                    loadData();
+                } catch (SQLException e) {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Erreur de suppression");
+                    errorAlert.setContentText("Impossible de supprimer la réservation: " + e.getMessage());
+                    errorAlert.show();
+                }
             }
         }
     }

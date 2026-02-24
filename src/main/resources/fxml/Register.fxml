@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterController">
+   <children>
+      <VBox alignment="CENTER" fillWidth="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" prefWidth="500.0" spacing="20.0" styleClass="card">
+               <children>
+                  <Label styleClass="title-label" text="Inscription" />
+                  <TextField fx:id="nomF" promptText="Nom" styleClass="text-field" />
+                  <TextField fx:id="prenomF" promptText="Prénom" styleClass="text-field" />
+                  <TextField fx:id="emailF" promptText="Email" styleClass="text-field" />
+                  <PasswordField fx:id="passwordF" promptText="Mot de passe" styleClass="password-field" />
+                  <HBox maxWidth="Infinity" spacing="10.0">
+                     <children>
+                        <ComboBox fx:id="countryCodeCombo" prefWidth="100.0" promptText="+216" />
+                        <TextField fx:id="telephoneF" HBox.hgrow="ALWAYS" promptText="Téléphone" styleClass="text-field" />
+                     </children>
+                  </HBox>
+                  <ComboBox fx:id="nationaliteCombo" maxWidth="Infinity" promptText="Sélectionnez votre nationalité" />
+                  <DatePicker fx:id="dateNaissanceF" maxWidth="Infinity" promptText="Date de Naissance" styleClass="date-picker" />
+                  <Button fx:id="btnRegister" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleRegister" styleClass="button" text="S'inscrire" />
+                  <Label fx:id="lblMessage" styleClass="error-label" textFill="#e40e0e" />
+                  <Button mnemonicParsing="false" onAction="#goToHome" styleClass="secondary-button" text="Retour" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

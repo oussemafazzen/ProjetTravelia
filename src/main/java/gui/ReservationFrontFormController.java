@@ -15,6 +15,7 @@ import models.Hebergement;
 import models.ReservationHebergement;
 import services.ReservationHebergementService;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class ReservationFrontFormController {
@@ -59,7 +60,16 @@ public class ReservationFrontFormController {
         res.setStatut("En attente");
         res.setIdClient(1); // Default client ID for testing
         
-        reservationService.add(res);
+        try {
+            reservationService.ajouterReservation(res);
+        } catch (java.sql.SQLException e) {
+            Alert alertError = new Alert(Alert.AlertType.ERROR);
+            alertError.setTitle("Erreur");
+            alertError.setHeaderText("Erreur lors de la réservation");
+            alertError.setContentText("Une erreur est survenue : " + e.getMessage());
+            alertError.showAndWait();
+            return;
+        }
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Succès");

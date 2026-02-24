@@ -13,6 +13,7 @@ import models.Hebergement;
 import services.HebergementService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class HebergementFrontController {
@@ -37,9 +38,13 @@ public class HebergementFrontController {
     }
 
     public void loadData() {
-        hebergementList = hs.getAll();
-        updateStats(hebergementList);
-        populateCards(hebergementList);
+        try {
+            hebergementList = hs.recupTousHebergements();
+            updateStats(hebergementList);
+            populateCards(hebergementList);
+        } catch (SQLException e) {
+            System.err.println("Erreur chargement données: " + e.getMessage());
+        }
     }
 
     private void filterAndDisplay(String query) {

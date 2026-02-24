@@ -30,9 +30,9 @@ public class HebergementServiceTest {
                 "WiFi, Piscine, Restaurant",
                 150.0
         );
-        service.add(h);
+        service.ajouterHebergement(h);
         
-        List<Hebergement> hebergements = service.getAll();
+        List<Hebergement> hebergements = service.recupTousHebergements();
         assertFalse(hebergements.isEmpty());
         assertTrue(
                 hebergements.stream().anyMatch(heb -> heb.getNom().equals("Hotel Test"))
@@ -61,9 +61,9 @@ public class HebergementServiceTest {
         h.setEquipements("WiFi, Parking");
         h.setTarifParNuit(120.0);
         
-        service.update(h);
+        service.modifierHebergement(h);
         
-        List<Hebergement> hebergements = service.getAll();
+        List<Hebergement> hebergements = service.recupTousHebergements();
         boolean trouve = hebergements.stream()
                 .anyMatch(heb -> heb.getNom().equals("Hotel Modifie"));
         assertTrue(trouve);
@@ -72,7 +72,7 @@ public class HebergementServiceTest {
     @Test
     @Order(3)
     void testGetById() {
-        Hebergement h = service.getById(idHebergementTest);
+        Hebergement h = service.recupParIdHebergement(idHebergementTest);
         assertNotNull(h);
         assertEquals("Hotel Modifie", h.getNom());
         assertEquals("auberge", h.getType());
@@ -83,10 +83,8 @@ public class HebergementServiceTest {
     void testSupprimerHebergement() {
         Hebergement h = new Hebergement();
         h.setIdHebergement(idHebergementTest);
-        
-        service.delete(h);
-        
-        List<Hebergement> hebergements = service.getAll();
+        service.supprimerHebergement(h);
+        List<Hebergement> hebergements = service.recupTousHebergements();
         boolean existe = hebergements.stream()
                 .anyMatch(heb -> heb.getIdHebergement() == idHebergementTest);
         assertFalse(existe);

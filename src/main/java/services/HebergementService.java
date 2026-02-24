@@ -1,6 +1,6 @@
 package services;
 
-import interfaces.IService;
+import interfaces.IHebergementService;
 import models.Hebergement;
 import utils.MyDataBase;
 
@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HebergementService implements IService<Hebergement> {
+public class HebergementService implements IHebergementService {
 
     private Connection cnx;
 
@@ -22,7 +22,7 @@ public class HebergementService implements IService<Hebergement> {
     }
 
     @Override
-    public void add(Hebergement hebergement) {
+    public void ajouterHebergement(Hebergement hebergement) throws SQLException {
         String req = "INSERT INTO `hebergement`(`nom`, `type`, `adresse`, `ville`, `pays`, `capacite`, `equipements`, `tarif_par_nuit`) VALUES (?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement pstm = this.cnx.prepareStatement(req);
@@ -43,7 +43,7 @@ public class HebergementService implements IService<Hebergement> {
     }
 
     @Override
-    public List<Hebergement> getAll() {
+    public List<Hebergement> recupTousHebergements() throws SQLException {
         List<Hebergement> hebergements = new ArrayList<>();
         String req = "SELECT * FROM `hebergement`";
         try {
@@ -74,7 +74,7 @@ public class HebergementService implements IService<Hebergement> {
     }
 
     @Override
-    public void update(Hebergement hebergement) {
+    public void modifierHebergement(Hebergement hebergement) throws SQLException {
         String req = "UPDATE `hebergement` SET `nom`=?, `type`=?, `adresse`=?, `ville`=?, `pays`=?, `capacite`=?, `equipements`=?, `tarif_par_nuit`=? WHERE `id_hebergement`=?";
         try {
             PreparedStatement pstm = this.cnx.prepareStatement(req);
@@ -96,20 +96,24 @@ public class HebergementService implements IService<Hebergement> {
     }
 
     @Override
-    public void delete(Hebergement hebergement) {
-        String req = "DELETE FROM `hebergement` WHERE `id_hebergement`=?";
-        try {
-            PreparedStatement pstm = this.cnx.prepareStatement(req);
-            pstm.setInt(1, hebergement.getIdHebergement());
-
-            pstm.executeUpdate();
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+    public void supprimerHebergement(Hebergement hebergement) throws SQLException {
+        if (hebergement != null) {
+            supprimerHebergementParId(hebergement.getIdHebergement());
         }
     }
 
-    public Hebergement getById(int id) {
+
+
+    @Override
+    public void supprimerHebergementParId(int id) throws SQLException {
+        String req = "DELETE FROM `hebergement` WHERE `id_hebergement`=?";
+        PreparedStatement pstm = this.cnx.prepareStatement(req);
+        pstm.setInt(1, id);
+        pstm.executeUpdate();
+    }
+
+    @Override
+    public Hebergement recupParIdHebergement(int id) throws SQLException {
         String req = "SELECT * FROM `hebergement` WHERE `id_hebergement` = ?";
         try {
             PreparedStatement pstm = this.cnx.prepareStatement(req);

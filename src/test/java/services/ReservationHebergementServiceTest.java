@@ -32,10 +32,10 @@ public class ReservationHebergementServiceTest {
                 "WiFi, Spa",
                 200.0
         );
-        hebergementService.add(h);
+        hebergementService.ajouterHebergement(h);
         
         // Récupérer l'ID de l'hébergement créé
-        List<Hebergement> hebergements = hebergementService.getAll();
+        List<Hebergement> hebergements = hebergementService.recupTousHebergements();
         idHebergementTest = hebergements.stream()
                 .filter(heb -> heb.getNom().equals("Hotel Pour Reservation"))
                 .findFirst()
@@ -47,7 +47,7 @@ public class ReservationHebergementServiceTest {
     @Test
     @Order(1)
     void testAjouterReservation() {
-        Hebergement h = hebergementService.getById(idHebergementTest);
+        Hebergement h = hebergementService.recupParIdHebergement(idHebergementTest);
         assertNotNull(h, "L'hébergement doit exister");
         
         ReservationHebergement r = new ReservationHebergement(
@@ -58,9 +58,9 @@ public class ReservationHebergementServiceTest {
                 1,
                 h
         );
-        service.add(r);
+        service.ajouterReservation(r);
         
-        List<ReservationHebergement> reservations = service.getAll();
+        List<ReservationHebergement> reservations = service.recupToutesReservations();
         assertFalse(reservations.isEmpty());
         assertTrue(
                 reservations.stream().anyMatch(res -> 
@@ -81,7 +81,7 @@ public class ReservationHebergementServiceTest {
     @Test
     @Order(2)
     void testModifierReservation() {
-        Hebergement h = hebergementService.getById(idHebergementTest);
+        Hebergement h = hebergementService.recupParIdHebergement(idHebergementTest);
         
         ReservationHebergement r = new ReservationHebergement();
         r.setIdReservationHebergement(idReservationTest);
@@ -92,9 +92,9 @@ public class ReservationHebergementServiceTest {
         r.setIdClient(2);
         r.setHebergement(h);
         
-        service.update(r);
+        service.modifierReservation(r);
         
-        List<ReservationHebergement> reservations = service.getAll();
+        List<ReservationHebergement> reservations = service.recupToutesReservations();
         boolean trouve = reservations.stream()
                 .anyMatch(res -> res.getStatut().equals("modifiée") && res.getNombrePersonnes() == 4);
         assertTrue(trouve);
@@ -105,10 +105,8 @@ public class ReservationHebergementServiceTest {
     void testSupprimerReservation() {
         ReservationHebergement r = new ReservationHebergement();
         r.setIdReservationHebergement(idReservationTest);
-        
-        service.delete(r);
-        
-        List<ReservationHebergement> reservations = service.getAll();
+        service.supprimerReservation(r);
+        List<ReservationHebergement> reservations = service.recupToutesReservations();
         boolean existe = reservations.stream()
                 .anyMatch(res -> res.getIdReservationHebergement() == idReservationTest);
         assertFalse(existe);
@@ -120,7 +118,7 @@ public class ReservationHebergementServiceTest {
         if (idHebergementTest > 0) {
             Hebergement h = new Hebergement();
             h.setIdHebergement(idHebergementTest);
-            hebergementService.delete(h);
+            hebergementService.supprimerHebergement(h);
             System.out.println("Hébergement de test supprimé");
         }
     }

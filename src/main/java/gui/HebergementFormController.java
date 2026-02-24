@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.Hebergement;
 import services.HebergementService;
+import java.sql.SQLException;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -108,10 +109,19 @@ public class HebergementFormController implements Initializable {
         hebergement.setEquipements(tfEquipements.getText());
         hebergement.setTarifParNuit(Double.parseDouble(tfTarif.getText()));
 
-        if (isUpdate) {
-            hs.update(hebergement);
-        } else {
-            hs.add(hebergement);
+        try {
+            if (isUpdate) {
+                hs.modifierHebergement(hebergement);
+            } else {
+                hs.ajouterHebergement(hebergement);
+            }
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de sauvegarde");
+            alert.setHeaderText(null);
+            alert.setContentText("Une erreur est survenue lors de la sauvegarde : " + e.getMessage());
+            alert.showAndWait();
+            return; // Don't close or refresh if it failed
         }
 
         // Refresh parent data if possible

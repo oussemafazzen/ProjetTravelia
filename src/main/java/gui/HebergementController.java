@@ -22,6 +22,7 @@ import javafx.collections.transformation.FilteredList;
 import java.util.ResourceBundle;
 import utils.PdfExporter;
 import java.util.function.Function;
+import java.sql.SQLException;
 
 public class HebergementController implements Initializable {
 
@@ -139,11 +140,16 @@ public class HebergementController implements Initializable {
     }
 
     public void loadData() {
-        hebergementList = FXCollections.observableArrayList(hs.getAll());
+        try {
+            hebergementList = FXCollections.observableArrayList(hs.recupTousHebergements());
 
-        // Update stats label
-        if (lblTotal != null) {
-            lblTotal.setText(String.valueOf(hebergementList.size()));
+            // Update stats label
+            if (lblTotal != null) {
+                lblTotal.setText(String.valueOf(hebergementList.size()));
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur chargement données hébergement: " + e.getMessage());
+            hebergementList = FXCollections.observableArrayList();
         }
 
         // Wrap the observable list in a FilteredList
@@ -205,8 +211,15 @@ public class HebergementController implements Initializable {
             alert.setContentText("Êtes-vous sûr de vouloir supprimer cet hébergement ?");
 
             if (alert.showAndWait().get() == ButtonType.OK) {
-                hs.delete(selected);
-                loadData();
+                try {
+                    hs.supprimerHebergement(selected);
+                    loadData();
+                } catch (SQLException e) {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Erreur de suppression");
+                    errorAlert.setContentText("Impossible de supprimer l'hébergement: " + e.getMessage());
+                    errorAlert.show();
+                }
             }
         }
     }

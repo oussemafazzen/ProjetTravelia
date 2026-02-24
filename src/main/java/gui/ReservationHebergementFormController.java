@@ -12,6 +12,7 @@ import services.ReservationHebergementService;
 
 import java.net.URL;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ReservationHebergementFormController implements Initializable {
@@ -53,7 +54,11 @@ public class ReservationHebergementFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cbStatut.setItems(FXCollections.observableArrayList("en_attente", "confirmee", "annulee"));
-        cbHebergement.setItems(FXCollections.observableArrayList(hs.getAll()));
+        try {
+            cbHebergement.setItems(FXCollections.observableArrayList(hs.recupTousHebergements()));
+        } catch (SQLException e) {
+            System.err.println("Erreur chargement hébergements: " + e.getMessage());
+        }
         
         // Add input validation filters
         addIntegerOnlyFilter(tfNbPersonnes);
@@ -99,10 +104,18 @@ public class ReservationHebergementFormController implements Initializable {
         reservation.setIdClient(Integer.parseInt(tfIdClient.getText()));
         reservation.setHebergement(cbHebergement.getValue());
 
-        if (isUpdate) {
-            rhs.update(reservation);
-        } else {
-            rhs.add(reservation);
+        try {
+            if (isUpdate) {
+                rhs.modifierReservation(reservation);
+            } else {
+                rhs.ajouterReservation(reservation);
+            }
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de sauvegarde");
+            alert.setContentText("Une erreur est survenue lors de la sauvegarde : " + e.getMessage());
+            alert.showAndWait();
+            return;
         }
 
         parentController.loadData();
