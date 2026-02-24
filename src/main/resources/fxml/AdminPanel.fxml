@@ -18,23 +18,27 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.DatePicker?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminPanelController">
+<AnchorPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" stylesheets="@../css/admin-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminPanelController">
    <children>
-      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane styleClass="main-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
             <VBox prefHeight="600.0" prefWidth="250.0" spacing="10.0" styleClass="sidebar" BorderPane.alignment="CENTER">
                <children>
-                  <Label alignment="CENTER" maxWidth="Infinity" prefHeight="80.0" text="Travelia Admin" textFill="WHITE">
+                  <Label alignment="CENTER" maxWidth="Infinity" prefHeight="80.0" styleClass="logo" text="Travelia Admin">
                      <font>
                         <Font name="Segoe UI Bold" size="24.0" />
                      </font>
                   </Label>
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showUserManagement" styleClass="sidebar-button" text="Gestion Utilisateurs" />
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showAdminManagement" styleClass="sidebar-button" text="Gestion Administrateurs" />
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showStatistics" styleClass="sidebar-button" text="Statistiques" />
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showSecurityLog" styleClass="sidebar-button" text="Journal de Sécurité" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showUserManagement" styleClass="nav-button" text="Gestion Utilisateurs" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showAdminManagement" styleClass="nav-button" text="Gestion Administrateurs" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showReservations" styleClass="nav-button" text="Gestion Réservation &amp; billets" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showAccommodations" styleClass="nav-button" text="Gestion Hébergements &amp; Logements" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showActivities" styleClass="nav-button" text="Gestion d'Activités Touristiques" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showReviews" styleClass="nav-button" text="Gestion Avis &amp; Recommendations" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showStatistics" styleClass="nav-button" text="Statistiques" />
                   <Region VBox.vgrow="ALWAYS" />
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogout" styleClass="sidebar-button" text="Déconnexion" />
+                  <Button fx:id="btnThemeToggle" maxWidth="Infinity" mnemonicParsing="false" onAction="#toggleTheme" styleClass="nav-button" text="☀️ Mode Clair" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogout" styleClass="nav-button" text="Déconnexion" />
                </children>
                <padding>
                   <Insets bottom="20.0" top="20.0" />
@@ -42,38 +46,41 @@
             </VBox>
          </left>
          <center>
-            <StackPane fx:id="mainStackPane">
+            <ScrollPane fx:id="mainScrollPane" fitToWidth="true" style="-fx-background-color: transparent;">
+               <content>
+                  <StackPane fx:id="mainStackPane">
                <children>
                   <!-- User Management View -->
-                  <VBox fx:id="userManagementView" spacing="20.0" styleClass="root">
+                  <VBox fx:id="userManagementView" spacing="20.0" styleClass="content-pane">
+                     <padding><Insets bottom="30.0" left="30.0" right="30.0" top="30.0" /></padding>
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
-                              <Label styleClass="title-label" text="Gestion des Clients" />
+                              <Label styleClass="page-title" text="Gestion des Clients" />
                               <Region HBox.hgrow="ALWAYS" />
-                              <TextField fx:id="txtSearch" prefWidth="300.0" promptText="Rechercher par nom ou email..." />
-                              <Button mnemonicParsing="false" onAction="#handleSearch" styleClass="button" text="Rechercher" />
+                              <TextField fx:id="txtSearch" prefWidth="300.0" promptText="Rechercher par nom ou email..." styleClass="text-field" />
+                              <Button mnemonicParsing="false" onAction="#handleSearch" styleClass="btn-primary" text="Rechercher" />
                            </children>
                         </HBox>
                         
                         <!-- Key Stats Summary in User Management -->
-                        <HBox spacing="15.0">
+                        <HBox spacing="15.0" styleClass="table-stats-bar">
                            <children>
-                              <VBox prefWidth="200.0" styleClass="stat-card, stat-card-blue">
+                              <VBox prefWidth="200.0" styleClass="stat-card">
                                  <children>
-                                    <Label styleClass="stat-title" text="Total Utilisateurs" />
+                                    <Label styleClass="stat-label" text="Total Utilisateurs" />
                                     <Label fx:id="lblTotalUsers" styleClass="stat-value" text="0" />
                                  </children>
                               </VBox>
-                              <VBox prefWidth="200.0" styleClass="stat-card, stat-card-red">
+                              <VBox prefWidth="200.0" styleClass="stat-card">
                                  <children>
-                                    <Label styleClass="stat-title" text="Utilisateurs Bloqués" />
+                                    <Label styleClass="stat-label" text="Utilisateurs Bloqués" />
                                     <Label fx:id="lblBlockedUsers" styleClass="stat-value" text="0" />
                                  </children>
                               </VBox>
-                              <VBox prefWidth="250.0" styleClass="stat-card, stat-card-green">
+                              <VBox prefWidth="250.0" styleClass="stat-card">
                                  <children>
-                                    <Label styleClass="stat-title" text="Revenu Total Simulé" />
+                                    <Label styleClass="stat-label" text="Revenu Total Simulé" />
                                     <Label fx:id="lblTotalRevenue" styleClass="stat-value" text="0 €" />
                                  </children>
                               </VBox>
@@ -82,15 +89,14 @@
 
                         <HBox spacing="10.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#handleSortByPoints" styleClass="button-secondary" text="Trier par Points (VIP)" />
-                              <Button mnemonicParsing="false" onAction="#refreshTable" styleClass="button-secondary" text="Actualiser" />
+                              <Button mnemonicParsing="false" onAction="#handleSortByPoints" styleClass="btn-sort" text="Trier par Points (VIP)" />
+                              <Button mnemonicParsing="false" onAction="#refreshTable" styleClass="btn-secondary" text="Actualiser" />
                            </children>
                         </HBox>
-                        <TableView fx:id="tableClients" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tableClients" styleClass="data-table" VBox.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn fx:id="colId" prefWidth="40.0" text="ID" />
-                            <TableColumn fx:id="colNom" prefWidth="90.0" text="Nom" />
-                            <TableColumn fx:id="colPrenom" prefWidth="90.0" text="Prénom" />
+                            <TableColumn fx:id="colNom" prefWidth="110.0" text="Nom" />
+                            <TableColumn fx:id="colPrenom" prefWidth="110.0" text="Prénom" />
                             <TableColumn fx:id="colEmail" prefWidth="130.0" text="Email" />
                             <TableColumn fx:id="colPhone" prefWidth="100.0" text="Téléphone" />
                             <TableColumn fx:id="colNationality" prefWidth="100.0" text="Nationalité" />
@@ -105,10 +111,10 @@
                   </VBox>
 
                   <!-- Admin Management View -->
-                  <VBox fx:id="adminManagementView" spacing="20.0" styleClass="root" visible="false">
+                  <VBox fx:id="adminManagementView" spacing="20.0" styleClass="content-pane" visible="false">
                      <children>
-                        <Label styleClass="title-label" text="Profils Administrateurs" />
-                        <TableView fx:id="tableAdmins" VBox.vgrow="ALWAYS">
+                        <Label styleClass="page-title" text="Profils Administrateurs" />
+                        <TableView fx:id="tableAdmins" styleClass="data-table" VBox.vgrow="ALWAYS">
                           <columns>
                             <TableColumn fx:id="colAdminNom" prefWidth="120.0" text="Nom" />
                             <TableColumn fx:id="colAdminPrenom" prefWidth="120.0" text="Prénom" />
@@ -125,9 +131,9 @@
                   </VBox>
 
                   <!-- Statistics View -->
-                  <VBox fx:id="statisticsView" spacing="20.0" styleClass="root" visible="false">
+                  <VBox fx:id="statisticsView" spacing="20.0" styleClass="content-pane" visible="false">
                      <children>
-                        <Label styleClass="title-label" text="Analyses et Statistiques" />
+                        <Label styleClass="page-title" text="Analyses et Statistiques" />
                         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
                            <content>
                               <HBox spacing="20.0">
@@ -154,26 +160,43 @@
                      </padding>
                   </VBox>
 
-                  <!-- Security Log View -->
-                  <VBox fx:id="securityLogView" spacing="20.0" styleClass="root" visible="false">
+
+                  <!-- Placeholder: Reservations View -->
+                  <VBox fx:id="reservationsView" alignment="CENTER" spacing="20.0" styleClass="content-pane" visible="false">
                      <children>
-                        <Label styleClass="title-label" text="Journal de Sécurité" />
-                        <Label text="Utilisateurs avec tentatives de connexion échouées :" />
-                        <TableView fx:id="tableSecurity" VBox.vgrow="ALWAYS">
-                           <columns>
-                              <TableColumn fx:id="colSecEmail" prefWidth="250.0" text="Email" />
-                              <TableColumn fx:id="colSecAttempts" prefWidth="150.0" text="Tentatives échouées" />
-                              <TableColumn fx:id="colSecStatut" prefWidth="150.0" text="Statut Actuel" />
-                              <TableColumn fx:id="colSecActions" prefWidth="150.0" text="Action" />
-                           </columns>
-                        </TableView>
+                        <Label styleClass="page-title" text="Gestion Réservation Billets" />
+                        <Label styleClass="field-label" text="Cette section est en construction..." />
                      </children>
-                     <padding>
-                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-                     </padding>
                   </VBox>
+
+                  <!-- Placeholder: Accommodations View -->
+                  <VBox fx:id="accommodationsView" alignment="CENTER" spacing="20.0" styleClass="content-pane" visible="false">
+                     <children>
+                        <Label styleClass="page-title" text="Gestion Hébergement" />
+                        <Label styleClass="field-label" text="Cette section est en construction..." />
+                     </children>
+                  </VBox>
+
+                  <!-- Placeholder: Activities View -->
+                  <VBox fx:id="activitiesView" alignment="CENTER" spacing="20.0" styleClass="content-pane" visible="false">
+                     <children>
+                        <Label styleClass="page-title" text="Gestion d'Activité" />
+                        <Label styleClass="field-label" text="Cette section est en construction..." />
+                     </children>
+                  </VBox>
+
+                  <!-- Placeholder: Reviews View -->
+                  <VBox fx:id="reviewsView" alignment="CENTER" spacing="20.0" styleClass="content-pane" visible="false">
+                     <children>
+                        <Label styleClass="page-title" text="Gestion Avis" />
+                        <Label styleClass="field-label" text="Cette section est en construction..." />
+                     </children>
+                  </VBox>
+
                </children>
             </StackPane>
+         </content>
+    </ScrollPane>
          </center>
       </BorderPane>
    </children>

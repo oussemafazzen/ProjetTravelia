@@ -225,3 +225,130 @@
     -fx-font-weight: bold;
     -fx-text-fill: #3498db;
 }
+
+/* Figma Redesign - Hero Banner */
+.hero-card {
+    -fx-background-color: #0d8cfd;
+    /* Solid blue to match Figma */
+    -fx-background-radius: 20px;
+    -fx-padding: 50 40;
+    -fx-effect: dropshadow(three-pass-box, rgba(13, 140, 253, 0.3), 15, 0, 0, 5);
+}
+
+.hero-title {
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.hero-subtitle {
+    -fx-font-size: 20px;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+}
+
+.hero-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-line-spacing: 5px;
+}
+
+/* Commencer Button inside Hero */
+.btn-commencer {
+    -fx-background-color: white;
+    -fx-text-fill: #0d8cfd;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-padding: 12 30;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+.btn-commencer:hover {
+    -fx-background-color: #f1f2f6;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* Overriding nav-button to match the figma screenshot */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 8px;
+}
+
+.nav-button:hover {
+    -fx-text-fill: #0d8cfd;
+    -fx-background-color: rgba(13, 140, 253, 0.05);
+}
+
+.nav-button-active {
+    -fx-text-fill: white;
+    -fx-background-color: #00bfff;
+    /* Cyan/blue from figma */
+    -fx-border-color: #00bfff;
+    -fx-border-width: 0;
+    -fx-background-radius: 8px;
+}
+
+.nav-button-active:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #00a4db;
+}
+
+/* Refined Clean White Cards for retained modules */
+.white-stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 25;
+    -fx-border-color: #eaebed;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: none;
+}
+
+.white-stat-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #95a5a6;
+    -fx-font-weight: normal;
+}
+
+.white-stat-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #b10dc9;
+    /* Purple pop for numbers */
+}
+
+/* Secondary values in cards */
+.white-stat-accent {
+    -fx-text-fill: #0d8cfd;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* Dashboard Bottom Square Cards */
+.module-card-btn {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 5);
+    -fx-cursor: hand;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+}
+
+.module-card-btn:hover {
+    -fx-background-color: #f8fafc;
+    -fx-effect: dropshadow(gaussian, rgba(13, 140, 253, 0.2), 15, 0, 0, 5);
+    -fx-border-color: #0d8cfd;
+    -fx-translate-y: -2px;
+}

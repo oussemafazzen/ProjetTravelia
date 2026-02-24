@@ -3,12 +3,14 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -19,281 +21,311 @@
 
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardController">
    <children>
-      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane style="-fx-background-color: #f4f7fa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
+            <!-- Navigation Bar matching Figma -->
             <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="navbar" BorderPane.alignment="CENTER">
                <children>
-                  <Label styleClass="logo-text" text="Travelia" />
-                  <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
+                  <VBox alignment="CENTER_LEFT" spacing="2.0">
+                      <ImageView fitHeight="40.0" preserveRatio="true">
+                         <image>
+                             <Image url="@../images/logo.png" />
+                         </image>
+                      </ImageView>
+                  </VBox>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <HBox alignment="CENTER" spacing="15.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#showDashboard" styleClass="nav-button, nav-button-active" text="Accueil" />
-                        <Button mnemonicParsing="false" onAction="#showTickets" styleClass="nav-button" text="Billets" />
-                        <Button mnemonicParsing="false" onAction="#showAccommodations" styleClass="nav-button" text="Logements" />
-                        <Button mnemonicParsing="false" onAction="#showActivities" styleClass="nav-button" text="Activités" />
-                        <Button mnemonicParsing="false" onAction="#showReviews" styleClass="nav-button" text="Avis" />
-                        <Button mnemonicParsing="false" onAction="#showHistory" styleClass="nav-button" text="Voyages" />
+                        <Button fx:id="btnNavAccueil" mnemonicParsing="false" onAction="#showDashboard" styleClass="nav-button, nav-button-active" text="🏠 Accueil" />
+                        <Button fx:id="btnNavClients" mnemonicParsing="false" onAction="#showProfile" styleClass="nav-button" text="👥 Profil" />
+                        <Button fx:id="btnNavReservations" mnemonicParsing="false" onAction="#showTickets" styleClass="nav-button" text="📅 Réservations" />
+                        <Button fx:id="btnNavHebergement" mnemonicParsing="false" onAction="#showAccommodations" styleClass="nav-button" text="🏨 Hébergement" />
+                        <Button fx:id="btnNavActivites" mnemonicParsing="false" onAction="#showActivities" styleClass="nav-button" text="📍 Activités" />
+                        <Button fx:id="btnNavAvis" mnemonicParsing="false" onAction="#showReviews" styleClass="nav-button" text="⭐ Avis" />
                      </children>
                   </HBox>
+                  <Region HBox.hgrow="ALWAYS" />
                   <HBox alignment="CENTER_RIGHT" spacing="15.0">
                      <children>
                         <Label fx:id="lblNavUserName" styleClass="profile-nav-text" text="Chargement..." />
-                        <Button mnemonicParsing="false" onAction="#showProfile" styleClass="secondary-button" text="Mon Profil" />
-                        <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="secondary-button" text="Déconnexion" />
+                        <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="btn-outline-danger" text="Déconnexion" />
                      </children>
                   </HBox>
                </children>
             </HBox>
          </top>
+         
          <center>
-            <StackPane fx:id="mainStackPane">
-               <children>
-                  <!-- Dashboard View -->
-                  <VBox fx:id="dashboardView" alignment="CENTER" spacing="30.0" styleClass="root">
+            <ScrollPane fx:id="mainScrollPane" fitToWidth="true" style="-fx-background-color: transparent;">
+               <content>
+                  <StackPane fx:id="mainStackPane">
                      <children>
-                        <VBox alignment="CENTER" spacing="5.0">
+                        <!-- Dashboard View (Accueil) -->
+                        <VBox fx:id="dashboardView" alignment="TOP_CENTER" spacing="40.0" style="-fx-background-color: #f4f7fa;">
                            <children>
-                              <Label fx:id="lblTitleMain" styleClass="title-label" text="Tableau de Bord" />
-                              <Label fx:id="lblNomPrenom" styleClass="subtitle-label" text="Bienvenue dans votre espace personnel" />
-                           </children>
-                        </VBox>
-                        <HBox alignment="CENTER" spacing="20.0">
+                        
+                        <!-- Hero Banner -->
+                        <HBox alignment="CENTER" maxWidth="1200.0">
                            <children>
-                              <VBox prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: linear-gradient(to right, #2ecc71, #27ae60);" styleClass="stat-card">
+                              <HBox fx:id="heroContainer" alignment="CENTER_LEFT" spacing="40.0" styleClass="hero-card" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label styleClass="stat-title" text="Points de Fidélité" />
-                                    <Label fx:id="lblPoints" styleClass="stat-value" text="0" />
-                                    <Region prefHeight="10.0" />
-                                    <VBox spacing="5.0">
+                                    <VBox alignment="CENTER_LEFT" spacing="20.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <HBox>
-                                             <children>
-                                                <Label style="-fx-font-size: 11px;" text="Progression Niveau" textFill="WHITE" />
-                                                <Region HBox.hgrow="ALWAYS" />
-                                                <Label fx:id="lblProgressPercent" style="-fx-font-size: 11px;" text="0%" textFill="WHITE" />
-                                             </children>
-                                          </HBox>
-                                          <ProgressBar fx:id="progressFidelite" maxWidth="Infinity" prefHeight="10.0" progress="0.0" />
+                                          <Label styleClass="hero-title" text="Bienvenue sur Travelia" />
+                                          <Label styleClass="hero-subtitle" text="Votre plateforme complète de gestion de voyages &amp; loisirs" />
+                                          <Region prefHeight="10" />
+                                          <Label styleClass="hero-text" text="Gérez facilement vos clients, réservations, hébergements, activités et&#10;avis en un seul endroit." />
+                                          <Region prefHeight="20" />
+                                          <Button mnemonicParsing="false" onAction="#showTickets" styleClass="btn-commencer" text="Commencer →" />
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Hero Image -->
+                                    <VBox alignment="CENTER" minHeight="300" minWidth="450" style="-fx-background-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 5);">
+                                        <ImageView fitHeight="300" fitWidth="450" preserveRatio="false" style="-fx-background-radius: 15px;">
+                                            <image>
+                                                <Image url="@../images/travel_hero.jpg" />
+                                            </image>
+                                        </ImageView>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+
+                        <!-- Restored Modules Section -->
+                        <VBox alignment="CENTER" maxWidth="1200.0" spacing="20.0">
+                            <!-- Retained Modules Title -->
+                            <!-- We replace the old Informations Title with nothing, because Weather is standalone -->
+                            <HBox alignment="CENTER" spacing="20.0">
+                                <!-- Fidelité & Weather Row -->
+                                <children>
+                                    <!-- Points de Fidelité (Redesigned) -->
+
+
+                                    <!-- Météo (Redesigned) -->
+                                    <VBox prefHeight="140.0" prefWidth="350.0" styleClass="white-stat-card" spacing="10">
+                                        <children>
+                                            <Label styleClass="white-stat-title" text="Météo Locale" />
+                                            <HBox alignment="BOTTOM_LEFT" spacing="10">
+                                                <Label fx:id="lblWeather" styleClass="white-stat-value" style="-fx-text-fill: #f39c12;" text="--°C" />
+                                            </HBox>
+                                            <Label fx:id="lblCity" text="Tunis" textFill="#7f8c8d">
+                                                <font>
+                                                    <Font size="14.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </VBox>
+                                    
+                                    <!-- Simuler Achat Dev Tool inside White Card -->
+
+                                </children>
+                            </HBox>
+                            
+                            <!-- Bottom Modules Quick Access -->
+                            <VBox alignment="CENTER" maxWidth="1200.0" spacing="20.0">
+                               <HBox alignment="CENTER_LEFT">
+                                  <Label text="Nos Modules" textFill="#2c3e50">
+                                     <font><Font name="System Bold" size="20.0" /></font>
+                                  </Label>
+                               </HBox>
+                               
+                               <HBox alignment="CENTER" spacing="20.0">
+                                  <Button mnemonicParsing="false" onAction="#showTickets" prefHeight="120.0" prefWidth="250.0" styleClass="module-card-btn" text="📅&#10;Réservations" textAlignment="CENTER" />
+                                  <Button mnemonicParsing="false" onAction="#showAccommodations" prefHeight="120.0" prefWidth="250.0" styleClass="module-card-btn" text="🏨&#10;Hébergement" textAlignment="CENTER" />
+                                  <Button mnemonicParsing="false" onAction="#showActivities" prefHeight="120.0" prefWidth="250.0" styleClass="module-card-btn" text="📍&#10;Activités" textAlignment="CENTER" />
+                                  <Button mnemonicParsing="false" onAction="#showReviews" prefHeight="120.0" prefWidth="250.0" styleClass="module-card-btn" text="⭐&#10;Avis" textAlignment="CENTER" />
+                               </HBox>
+                            </VBox>
+
+                        </VBox>
+
+                     </children>
+                     <padding>
+                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                     </padding>
+                  </VBox>
+
+                  <!-- Profile/Clients View -->
+                  <VBox fx:id="profileView" alignment="TOP_CENTER" spacing="30.0" style="-fx-background-color: #f4f7fa;" visible="false">
+                     <children>
+                        <Label styleClass="title-label" text="Mon Profil" />
+                        
+                        <!-- Moved Points and Simuler Achat logic here -->
+                        <HBox alignment="CENTER" spacing="20.0" maxWidth="800.0">
+                           <!-- Points de Fidelité -->
+                           <VBox prefHeight="140.0" prefWidth="350.0" styleClass="white-stat-card" spacing="10">
+                               <children>
+                                   <Label styleClass="white-stat-title" text="Points de Fidélité" />
+                                   <HBox alignment="BOTTOM_LEFT" spacing="10">
+                                       <Label fx:id="lblPoints" styleClass="white-stat-value" text="0" />
+                                       <Label fx:id="lblNiveau" text="Standard" textFill="#7f8c8d">
+                                           <font><Font size="16.0"/></font>
+                                       </Label>
+                                   </HBox>
+                                   <VBox spacing="5.0">
+                                       <children>
+                                           <HBox>
+                                               <children>
+                                                   <Label style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" text="Progression Niveau" />
+                                                   <Region HBox.hgrow="ALWAYS" />
+                                                   <Label fx:id="lblProgressPercent" style="-fx-font-size: 11px; -fx-text-fill: #0d8cfd; -fx-font-weight: bold;" text="0%" />
+                                               </children>
+                                           </HBox>
+                                           <ProgressBar fx:id="progressFidelite" maxWidth="Infinity" prefHeight="8.0" progress="0.0" style="-fx-accent: #0d8cfd;" />
+                                       </children>
+                                   </VBox>
+                               </children>
+                           </VBox>
+
+                           <!-- Simuler Achat Dev Tool -->
+                           <VBox alignment="CENTER" prefHeight="140.0" prefWidth="250.0" styleClass="white-stat-card" spacing="10">
+                               <children>
+                                  <Button mnemonicParsing="false" onAction="#simulerAchat" styleClass="button" text="+ Simuler Achat" />
+                                  <Label fx:id="lblMessage" style="-fx-font-size: 11px;" textFill="#2980b9" />
+                               </children>
+                           </VBox>
+                        </HBox>
+
+                        <!-- Existing form -->
+                        <VBox alignment="CENTER" maxWidth="800.0" spacing="15.0" styleClass="white-stat-card">
+                           <children>
+                              <Label text="Détails du profil" textFill="#2c3e50">
+                                 <font><Font name="System Bold" size="18.0" /></font>
+                              </Label>
+                              <HBox alignment="CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Nom" />
+                                          <TextField fx:id="txtNom" styleClass="text-field" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Prénom" />
+                                          <TextField fx:id="txtPrenom" styleClass="text-field" />
                                        </children>
                                     </VBox>
                                  </children>
-                                 <padding>
-                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                 </padding>
-                              </VBox>
-                              <VBox prefHeight="150.0" prefWidth="250.0" style="-fx-background-color: linear-gradient(to right, #e67e22, #d35400);" styleClass="stat-card">
+                              </HBox>
+                              <VBox spacing="5.0">
                                  <children>
-                                    <Label styleClass="stat-title" text="Niveau Actuel" />
-                                    <Label fx:id="lblNiveau" styleClass="stat-value" text="Standard" />
+                                    <Label text="Email (Identifiant)" />
+                                    <TextField fx:id="txtEmail" styleClass="text-field" disable="true" />
                                  </children>
-                                 <padding>
-                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                 </padding>
                               </VBox>
-                              <VBox prefHeight="150.0" prefWidth="250.0" style="-fx-background-color: linear-gradient(to right, #3498db, #2980b9);" styleClass="stat-card">
+                              <VBox spacing="5.0">
                                  <children>
-                                    <Label styleClass="stat-title" text="Météo Locale" />
-                                    <Label fx:id="lblWeather" styleClass="stat-value" text="Chargement..." style="-fx-font-size: 18px;" />
-                                    <Label fx:id="lblCity" text="Tunis" textFill="WHITE" style="-fx-font-size: 14px;" />
+                                    <Label text="Téléphone" />
+                                    <TextField fx:id="txtTelephone" styleClass="text-field" />
                                  </children>
-                                 <padding>
-                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                 </padding>
                               </VBox>
-                           </children>
-                        </HBox>
-                        <VBox spacing="15.0" styleClass="card">
-                           <children>
-                              <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Actions Rapides" />
-                              <HBox alignment="CENTER_LEFT" spacing="15.0">
+                              <VBox spacing="5.0">
                                  <children>
-                                     <Button mnemonicParsing="false" onAction="#simulerAchat" styleClass="button" text="Simuler Achat (100 DT)" />
-                                    <Label fx:id="lblMessage" textFill="#2980b9" />
+                                    <Label text="Nationalité" />
+                                    <TextField fx:id="txtNationalite" styleClass="text-field" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="5.0">
+                                 <children>
+                                    <Label text="Date de Naissance" />
+                                    <DatePicker fx:id="dpDateNaissance" maxWidth="Infinity" styleClass="date-picker" />
+                                 </children>
+                              </VBox>
+                              <Separator />
+                              <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                                 <children>
+                                    <Label fx:id="lblProfileMessage" textFill="#2ecc71" />
+                                    <Button mnemonicParsing="false" onAction="#handleUpdateProfile" styleClass="button" text="Enregistrer" />
                                  </children>
                               </HBox>
                            </children>
                         </VBox>
-                        <HBox alignment="CENTER" spacing="20.0">
-                           <children>
-                              <VBox alignment="CENTER" maxWidth="500.0" spacing="15.0" styleClass="card" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Convertisseur de Devises" />
-                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                       <children>
-                                          <TextField fx:id="txtAmount" prefWidth="80.0" promptText="Montant" text="100" />
-                                          <ComboBox fx:id="comboFrom" prefWidth="100.0" />
-                                          <Label text="➡️" />
-                                          <ComboBox fx:id="comboTo" prefWidth="100.0" />
-                                          <Button mnemonicParsing="false" onAction="#handleConvert" styleClass="button" text="Convertir" />
-                                          <Label fx:id="lblConvertResult" style="-fx-font-weight: bold;" text="" textFill="#2ecc71" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
                      </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
+                     <padding><Insets bottom="40.0" left="40.0" right="40.0" top="40.0" /></padding>
                   </VBox>
 
-                  <!-- Profile View -->
-                  <VBox fx:id="profileView" alignment="CENTER" spacing="20.0" styleClass="root" visible="false">
-                     <children>
-                        <Label styleClass="title-label" text="Mon Profil" />
-                        <ScrollPane fitToWidth="true" maxWidth="800.0" style="-fx-background-color: transparent;">
-                           <content>
-                              <VBox alignment="CENTER" maxWidth="600.0" spacing="15.0" styleClass="card">
-                                 <children>
-                                    <HBox alignment="CENTER" spacing="20.0">
-                                       <children>
-                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                             <children>
-                                                <Label text="Nom" />
-                                                <TextField fx:id="txtNom" />
-                                             </children>
-                                          </VBox>
-                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                             <children>
-                                                <Label text="Prénom" />
-                                                <TextField fx:id="txtPrenom" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                    <VBox spacing="5.0">
-                                       <children>
-                                          <Label text="Email (Identifiant)" />
-                                          <TextField fx:id="txtEmail" />
-                                       </children>
-                                    </VBox>
-                                    <VBox spacing="5.0">
-                                       <children>
-                                          <Label text="Téléphone" />
-                                          <TextField fx:id="txtTelephone" />
-                                       </children>
-                                    </VBox>
-                                    <VBox spacing="5.0">
-                                       <children>
-                                          <Label text="Nationalité" />
-                                          <TextField fx:id="txtNationalite" />
-                                       </children>
-                                    </VBox>
-                                    <VBox spacing="5.0">
-                                       <children>
-                                          <Label text="Date de Naissance" />
-                                          <DatePicker fx:id="dpDateNaissance" maxWidth="Infinity" />
-                                       </children>
-                                    </VBox>
-                                    <Separator />
-                                    <HBox alignment="CENTER_RIGHT" spacing="15.0">
-                                       <children>
-                                          <Label fx:id="lblProfileMessage" textFill="#2ecc71" />
-                                          <Button mnemonicParsing="false" onAction="#handleUpdateProfile" styleClass="button" text="Mettre à jour mon profil" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </content>
-                        </ScrollPane>
-                     </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
-                  </VBox>
+                  <!-- Reserved for History (Voyages) invisible placeholder -->
+                  <VBox fx:id="historyView" visible="false" />
 
-                  <!-- History View -->
-                  <VBox fx:id="historyView" alignment="CENTER" spacing="20.0" styleClass="root" visible="false">
+                  <!-- Tickets / Réservations View -->
+                  <VBox fx:id="ticketsView" alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: #f4f7fa;" visible="false">
                      <children>
-                        <Label styleClass="title-label" text="Historique des Voyages" />
-                        <VBox fx:id="vboxHistory" alignment="CENTER" maxWidth="800.0" spacing="10.0" styleClass="card">
+                        <Label styleClass="title-label" text="Réservations &amp; Billets" />
+                        <VBox alignment="CENTER" maxWidth="900.0" spacing="10.0" styleClass="white-stat-card">
                            <children>
-                              <Label style="-fx-font-style: italic;" text="Aucune activité récente trouvée." />
+                              <Label text="Liste des réservations de transport à venir..." textFill="#95a5a6" />
                            </children>
                         </VBox>
                      </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
-                  </VBox>
-
-                  <!-- Tickets View -->
-                  <VBox fx:id="ticketsView" alignment="CENTER" spacing="20.0" styleClass="root" visible="false">
-                     <children>
-                        <Label styleClass="title-label" text="Réservations de Billets" />
-                        <HBox alignment="CENTER" spacing="15.0">
-                           <children>
-                              <VBox prefWidth="250.0" styleClass="stat-card, stat-card-blue">
-                                 <children>
-                                    <Label styleClass="stat-title" text="Billets Actifs" />
-                                    <Label styleClass="stat-value" text="0" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <VBox alignment="CENTER" maxWidth="700.0" spacing="10.0" styleClass="card">
-                           <children>
-                              <Label text="Réservez vos prochains billets de transport (avion, train, bus)." />
-                              <Button mnemonicParsing="false" styleClass="button" text="Nouvelle Réservation" />
-                           </children>
-                        </VBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
+                     <padding><Insets bottom="40.0" left="40.0" right="40.0" top="40.0" /></padding>
                   </VBox>
 
                   <!-- Accommodations View -->
-                  <VBox fx:id="accommodationsView" alignment="CENTER" spacing="20.0" styleClass="root" visible="false">
+                  <VBox fx:id="accommodationsView" alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: #f4f7fa;" visible="false">
                      <children>
-                        <Label styleClass="title-label" text="Hébergements &amp; Logements" />
-                        <VBox alignment="CENTER" maxWidth="700.0" spacing="10.0" styleClass="card">
+                        <Label styleClass="title-label" text="Hébergement &amp; Logement" />
+                        <VBox alignment="CENTER" maxWidth="900.0" spacing="10.0" styleClass="white-stat-card">
                            <children>
-                              <Label text="Trouvez l'hôtel ou le logement idéal pour votre séjour." />
-                              <Button mnemonicParsing="false" styleClass="button" text="Explorer les Offres" />
+                              <Label text="Gestion des hôtels et offres de séjours..." textFill="#95a5a6" />
                            </children>
                         </VBox>
                      </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
+                     <padding><Insets bottom="40.0" left="40.0" right="40.0" top="40.0" /></padding>
                   </VBox>
 
                   <!-- Activities View -->
-                  <VBox fx:id="activitiesView" alignment="CENTER" spacing="20.0" styleClass="root" visible="false">
+                  <VBox fx:id="activitiesView" alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: #f4f7fa;" visible="false">
                      <children>
                         <Label styleClass="title-label" text="Activités Touristiques" />
-                        <VBox alignment="CENTER" maxWidth="700.0" spacing="10.0" styleClass="card">
+                        <VBox alignment="CENTER" maxWidth="900.0" spacing="10.0" styleClass="white-stat-card">
                            <children>
-                              <Label text="Découvrez des expériences inoubliables partout dans le monde." />
-                              <Button mnemonicParsing="false" styleClass="button" text="Voir les Activités" />
+                              <Label text="Liste des activités et excursions proposées..." textFill="#95a5a6" />
                            </children>
                         </VBox>
                      </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
+                     <padding><Insets bottom="40.0" left="40.0" right="40.0" top="40.0" /></padding>
                   </VBox>
 
                   <!-- Reviews View -->
-                  <VBox fx:id="reviewsView" alignment="CENTER" spacing="20.0" styleClass="root" visible="false">
+                  <VBox fx:id="reviewsView" alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: #f4f7fa;" visible="false">
                      <children>
                         <Label styleClass="title-label" text="Avis &amp; Recommandations" />
-                        <VBox alignment="CENTER" maxWidth="700.0" spacing="10.0" styleClass="card">
+                        <VBox alignment="CENTER" maxWidth="900.0" spacing="10.0" styleClass="white-stat-card">
                            <children>
-                              <Label text="Partagez vos expériences et lisez les avis de la communauté." />
-                              <Button mnemonicParsing="false" styleClass="button" text="Laisser un Avis" />
+                              <Label text="Derniers avis postés par les clients..." textFill="#95a5a6" />
                            </children>
                         </VBox>
                      </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
+                     <padding><Insets bottom="40.0" left="40.0" right="40.0" top="40.0" /></padding>
                   </VBox>
-               </children>
-            </StackPane>
+
+                     </children>
+                  </StackPane>
+               </content>
+            </ScrollPane>
          </center>
       </BorderPane>
+      
+      <!-- Currency Converter Floating Block (Dynamically Assigned) -->
+      <fx:define>
+         <VBox fx:id="currencyConverterContainer" alignment="CENTER" maxWidth="900.0" spacing="15.0" styleClass="white-stat-card">
+             <children>
+                 <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Convertisseur de Devises" />
+                     <Region HBox.hgrow="ALWAYS" />
+                     <TextField fx:id="txtAmount" prefWidth="120.0" promptText="Montant" text="100" styleClass="text-field" />
+                     <ComboBox fx:id="comboFrom" prefWidth="100.0" styleClass="text-field" />
+                     <Label text="➡️" style="-fx-font-size: 18px;"/>
+                     <ComboBox fx:id="comboTo" prefWidth="100.0" styleClass="text-field" />
+                     <Button mnemonicParsing="false" onAction="#handleConvert" styleClass="btn-outline-primary" text="Convertir" />
+                     <Label fx:id="lblConvertResult" styleClass="white-stat-accent" text="" />
+                 </HBox>
+             </children>
+         </VBox>
+      </fx:define>
+
    </children>
 </AnchorPane>

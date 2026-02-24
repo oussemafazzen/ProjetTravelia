@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -37,7 +38,6 @@ import java.util.stream.Collectors;
 public class AdminPanelController {
 
     @FXML private TableView<Client> tableClients;
-    @FXML private TableColumn<Client, Integer> colId;
     @FXML private TableColumn<Client, String> colNom;
     @FXML private TableColumn<Client, String> colPrenom;
     @FXML private TableColumn<Client, String> colEmail;
@@ -63,20 +63,20 @@ public class AdminPanelController {
     @FXML private Label lblBlockedUsers;
     @FXML private Label lblTotalRevenue;
 
-    @FXML private TableView<Client> tableSecurity;
-    @FXML private TableColumn<Client, String> colSecEmail;
-    @FXML private TableColumn<Client, Integer> colSecAttempts;
-    @FXML private TableColumn<Client, Object> colSecStatut;
-    @FXML private TableColumn<Client, Void> colSecActions;
-
     @FXML private TextField txtSearch;
     @FXML private PieChart loyaltyPieChart;
     @FXML private PieChart nationalityPieChart;
     @FXML private StackPane mainStackPane;
     @FXML private VBox userManagementView;
     @FXML private VBox statisticsView;
-    @FXML private VBox securityLogView;
+    @FXML private VBox reservationsView;
+    @FXML private VBox accommodationsView;
+    @FXML private VBox activitiesView;
+    @FXML private VBox reviewsView;
+    @FXML private Button btnThemeToggle;
+    @FXML private AnchorPane rootPane;
 
+    private boolean isLightMode = false;
 
     private ClientService clientService = new ClientService();
     private ObservableList<Client> clientList = FXCollections.observableArrayList();
@@ -86,7 +86,6 @@ public class AdminPanelController {
         setupTable();
         setupAdminTable();
         refreshTable();
-        setupSecurityTable();
         
         // Real-time search listener
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -95,7 +94,6 @@ public class AdminPanelController {
     }
 
     private void setupTable() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -118,13 +116,6 @@ public class AdminPanelController {
         colAdminBirthDate.setCellValueFactory(new PropertyValueFactory<>("date_naissance"));
     }
 
-    private void setupSecurityTable() {
-        colSecEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colSecAttempts.setCellValueFactory(new PropertyValueFactory<>("failed_attempts"));
-        colSecStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
-        addSecurityButtons();
-    }
-
     private void addButtonToTable() {
         Callback<TableColumn<Client, Void>, TableCell<Client, Void>> cellFactory = new Callback<>() {
             @Override
@@ -138,6 +129,7 @@ public class AdminPanelController {
                         btnEdit.getStyleClass().add("btn-outline-primary");
                         btnDelete.getStyleClass().add("btn-outline-danger");
                         btnBlock.getStyleClass().add("btn-warning");
+                        btnBlock.setStyle("-fx-padding: 3 8; -fx-font-size: 11px;");
 
                         btnEdit.setOnAction((ActionEvent event) -> {
                             Client client = getTableView().getItems().get(getIndex());
@@ -193,44 +185,6 @@ public class AdminPanelController {
             }
         };
         colActions.setCellFactory(cellFactory);
-    }
-
-    private void addSecurityButtons() {
-        Callback<TableColumn<Client, Void>, TableCell<Client, Void>> cellFactory = new Callback<>() {
-            @Override
-            public TableCell<Client, Void> call(final TableColumn<Client, Void> param) {
-                return new TableCell<>() {
-                    private final Button btnReset = new Button("Réinit.");
-
-                    {
-                        btnReset.setOnAction((ActionEvent event) -> {
-                            Client client = getTableView().getItems().get(getIndex());
-                            try {
-                                client.setFailed_attempts(0);
-                                client.setStatut(Statut.ACTIF);
-                                clientService.update(client);
-                                refreshSecurityTable();
-                                refreshTable(); // Sync main table too
-                            } catch (SQLException e) {
-                                showError("Erreur de réinitialisation", e.getMessage());
-                            }
-                        });
-                        btnReset.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 10px;");
-                    }
-
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(btnReset);
-                        }
-                    }
-                };
-            }
-        };
-        colSecActions.setCellFactory(cellFactory);
     }
 
     @FXML
@@ -310,23 +264,43 @@ public class AdminPanelController {
         loadStatistics();
     }
 
+
+
     @FXML
-    void showSecurityLog() {
-        switchView(securityLogView);
-        refreshSecurityTable();
+    void showReservations() {
+        switchView(reservationsView);
     }
 
+    @FXML
+    void showAccommodations() {
+        switchView(accommodationsView);
+    }
 
-    private void refreshSecurityTable() {
-        try {
-            List<Client> riskyUsers = clientService.getAll().stream()
-                    .filter(u -> u.getFailed_attempts() > 0)
-                    .collect(Collectors.toList());
-            tableSecurity.setItems(FXCollections.observableArrayList(riskyUsers));
-        } catch (SQLException e) {
-            showError("Erreur de journal de sécurité", e.getMessage());
+    @FXML
+    void showActivities() {
+        switchView(activitiesView);
+    }
+
+    @FXML
+    void showReviews() {
+        switchView(reviewsView);
+    }
+
+    @FXML
+    void toggleTheme() {
+        isLightMode = !isLightMode;
+        if (rootPane != null) {
+            rootPane.getStylesheets().clear();
+            if (isLightMode) {
+                rootPane.getStylesheets().add(getClass().getResource("/css/light-theme.css").toExternalForm());
+                btnThemeToggle.setText("🌙 Mode Sombre");
+            } else {
+                rootPane.getStylesheets().add(getClass().getResource("/css/admin-theme.css").toExternalForm());
+                btnThemeToggle.setText("☀️ Mode Clair");
+            }
         }
     }
+
 
     private void updateQuickStats() {
         try {
@@ -396,8 +370,12 @@ public class AdminPanelController {
     private void switchView(VBox view) {
         userManagementView.setVisible(false);
         statisticsView.setVisible(false);
-        securityLogView.setVisible(false);
         adminManagementView.setVisible(false);
+        reservationsView.setVisible(false);
+        accommodationsView.setVisible(false);
+        activitiesView.setVisible(false);
+        reviewsView.setVisible(false);
+        
         view.setVisible(true);
     }
 

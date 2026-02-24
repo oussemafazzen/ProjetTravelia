@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
 import models.Client;
 import org.json.JSONObject;
 import services.ClientService;
@@ -27,12 +28,6 @@ public class DashboardController {
 
     @FXML
     private Label lblNiveau;
-
-    @FXML
-    private Label lblNomPrenom;
-
-    @FXML
-    private Label lblTitleMain;
 
     @FXML
     private Label lblNavUserName;
@@ -77,6 +72,24 @@ public class DashboardController {
     private VBox reviewsView;
 
     @FXML
+    private Button btnNavAccueil;
+
+    @FXML
+    private Button btnNavClients;
+
+    @FXML
+    private Button btnNavReservations;
+
+    @FXML
+    private Button btnNavHebergement;
+
+    @FXML
+    private Button btnNavActivites;
+
+    @FXML
+    private Button btnNavAvis;
+
+    @FXML
     private TextField txtNom;
 
     @FXML
@@ -97,8 +110,7 @@ public class DashboardController {
     @FXML
     private Label lblProfileMessage;
 
-    @FXML
-    private VBox vboxHistory;
+    // vboxHistory removed to prevent NPE since it's removed from layout
 
     @FXML
     private ComboBox<String> comboFrom;
@@ -111,6 +123,9 @@ public class DashboardController {
 
     @FXML
     private Label lblConvertResult;
+    
+    @FXML
+    private VBox currencyConverterContainer;
 
     private Client currentClient;
     private ClientService clientService = new ClientService();
@@ -119,6 +134,7 @@ public class DashboardController {
         this.currentClient = client;
         initCurrencies();
         refreshView();
+        switchView(dashboardView, btnNavAccueil);
     }
 
     private void initCurrencies() {
@@ -135,7 +151,7 @@ public class DashboardController {
             utils.SessionManager.cleanSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
             Parent root = loader.load();
-            lblNomPrenom.getScene().setRoot(root);
+            lblNavUserName.getScene().setRoot(root);
         } catch (IOException e) {
             System.err.println("Erreur de déconnexion: " + e.getMessage());
             e.printStackTrace();
@@ -144,12 +160,12 @@ public class DashboardController {
 
     @FXML
     void showDashboard(ActionEvent event) {
-        switchView(dashboardView);
+        switchView(dashboardView, btnNavAccueil);
     }
 
     @FXML
     void showProfile(ActionEvent event) {
-        switchView(profileView);
+        switchView(profileView, btnNavClients);
         if (currentClient != null) {
             txtNom.setText(currentClient.getNom());
             txtPrenom.setText(currentClient.getPrenom());
@@ -165,38 +181,71 @@ public class DashboardController {
 
     @FXML
     void showHistory(ActionEvent event) {
-        switchView(historyView);
+        // Obsolete view in new Figma layout, keeping method signature
+        switchView(historyView, null);
     }
 
     @FXML
     void showTickets(ActionEvent event) {
-        switchView(ticketsView);
+        switchView(ticketsView, btnNavReservations);
     }
 
     @FXML
     void showAccommodations(ActionEvent event) {
-        switchView(accommodationsView);
+        switchView(accommodationsView, btnNavHebergement);
     }
 
     @FXML
     void showActivities(ActionEvent event) {
-        switchView(activitiesView);
+        switchView(activitiesView, btnNavActivites);
     }
 
     @FXML
     void showReviews(ActionEvent event) {
-        switchView(reviewsView);
+        switchView(reviewsView, btnNavAvis);
     }
 
-    private void switchView(VBox view) {
-        dashboardView.setVisible(false);
-        profileView.setVisible(false);
-        historyView.setVisible(false);
-        ticketsView.setVisible(false);
-        accommodationsView.setVisible(false);
-        activitiesView.setVisible(false);
-        reviewsView.setVisible(false);
+    private void switchView(VBox view, Button activeButton) {
+        dashboardView.setVisible(false); dashboardView.setManaged(false);
+        profileView.setVisible(false); profileView.setManaged(false);
+        historyView.setVisible(false); historyView.setManaged(false);
+        ticketsView.setVisible(false); ticketsView.setManaged(false);
+        accommodationsView.setVisible(false); accommodationsView.setManaged(false);
+        activitiesView.setVisible(false); activitiesView.setManaged(false);
+        reviewsView.setVisible(false); reviewsView.setManaged(false);
+        
         view.setVisible(true);
+        view.setManaged(true);
+
+        // Dynamically move Currency Converter to Tickets or Accommodations views
+        if (currencyConverterContainer != null) {
+            ticketsView.getChildren().remove(currencyConverterContainer);
+            accommodationsView.getChildren().remove(currencyConverterContainer);
+            if (view == ticketsView) {
+                if (!ticketsView.getChildren().contains(currencyConverterContainer)) {
+                    ticketsView.getChildren().add(currencyConverterContainer);
+                }
+            } else if (view == accommodationsView) {
+                if (!accommodationsView.getChildren().contains(currencyConverterContainer)) {
+                    accommodationsView.getChildren().add(currencyConverterContainer);
+                }
+            }
+        }
+
+        // Reset all buttons style
+        if (btnNavAccueil != null) {
+            btnNavAccueil.getStyleClass().remove("nav-button-active");
+            btnNavClients.getStyleClass().remove("nav-button-active");
+            btnNavReservations.getStyleClass().remove("nav-button-active");
+            btnNavHebergement.getStyleClass().remove("nav-button-active");
+            btnNavActivites.getStyleClass().remove("nav-button-active");
+            btnNavAvis.getStyleClass().remove("nav-button-active");
+            
+            // Set active class
+            if (activeButton != null) {
+                activeButton.getStyleClass().add("nav-button-active");
+            }
+        }
     }
 
     @FXML
@@ -237,9 +286,7 @@ public class DashboardController {
             String prenom = capitalize(currentClient.getPrenom());
             String fullName = prenom + " " + nom;
             
-            lblTitleMain.setText(fullName);
             lblNavUserName.setText(fullName);
-            lblNomPrenom.setText("Bienvenue dans votre espace personnel");
             lblPoints.setText(String.valueOf(currentClient.getPoints_fidelite()));
             lblNiveau.setText(currentClient.getNiveau_fidelite().toString());
             
@@ -296,11 +343,6 @@ public class DashboardController {
                 refreshView();
                 lblMessage.setStyle("-fx-text-fill: green;");
                 lblMessage.setText("Achat simulé ! +100 points.");
-                
-                // Add to simulated history list
-                Label historyItem = new Label("Achat simulé: +100 points - " + new Date());
-                historyItem.setStyle("-fx-padding: 5; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;");
-                vboxHistory.getChildren().add(0, historyItem);
             } catch (SQLException e) {
                 lblMessage.setStyle("-fx-text-fill: red;");
                 lblMessage.setText("Erreur: " + e.getMessage());
