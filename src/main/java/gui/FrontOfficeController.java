@@ -13,6 +13,7 @@ import java.util.List;
 public class FrontOfficeController {
 
     @FXML private VBox contentArea;
+    @FXML private VBox dashboardVBox;
 
     @FXML private Button homeBtn;
     @FXML private Button clientsBtn;
@@ -23,9 +24,9 @@ public class FrontOfficeController {
 
     @FXML
     private void initialize() {
-        // Load initial dashboard only if we are the main shell
+        // Dashboard is already in FXML, just set internal state
         if (homeBtn != null) {
-            handleHome();
+            setActiveButton(homeBtn);
         }
     }
 
@@ -35,10 +36,6 @@ public class FrontOfficeController {
             
             // For child views that need access to this controller's methods,
             // set the controller before loading to avoid reinitialization issues
-            if (fxmlPath.contains("DashboardView")) {
-                // Create a new controller instance for the child view
-                loader.setControllerFactory(param -> this);
-            }
             
             Parent view = loader.load();
             contentArea.getChildren().setAll(view);
@@ -56,7 +53,9 @@ public class FrontOfficeController {
     @FXML
     private void handleHome() {
         setActiveButton(homeBtn);
-        loadView("/views/DashboardView.fxml");
+        if (dashboardVBox != null) {
+            contentArea.getChildren().setAll(dashboardVBox);
+        }
     }
 
     @FXML

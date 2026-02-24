@@ -289,19 +289,24 @@
     -fx-padding: 0 8 0 0;
 }
 
-/* Data Table Container */
+/* Data Table Container - 3D ELEVATION */
 .data-table {
     -fx-background-color: #16213e;
-    -fx-border-color: rgba(233, 69, 96, 0.2);
+    -fx-border-color: rgba(233, 69, 96, 0.4);
     -fx-border-radius: 12;
     -fx-background-radius: 12;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0, 0, 4);
+    /* Deeper 3D shadow to lift the table */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 25, 0, 0, 12);
+    -fx-padding: 1;
 }
 
-/* Column Headers */
+/* Column Headers - Glossy 3D Surface */
 .table-view .column-header-background {
-    -fx-background-color: linear-gradient(to bottom, #0f3460, #0d2d55);
+    -fx-background-color: linear-gradient(to bottom, #1a1a2e, #0f3460);
     -fx-background-radius: 12 12 0 0;
+    /* Bevel effect on top edge */
+    -fx-border-color: rgba(255, 255, 255, 0.08) transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
 }
 
 .table-view .column-header {
@@ -355,7 +360,9 @@
 }
 
 .table-row-cell:hover {
-    -fx-background-color: rgba(233, 69, 96, 0.1);
+    -fx-background-color: #1a1f3c;
+    /* 3D Inner detail on hover */
+    -fx-effect: innershadow(three-pass-box, rgba(233, 69, 96, 0.15), 10, 0, 0, 0);
     -fx-cursor: hand;
 }
 
@@ -378,23 +385,23 @@
 
 /* Type Badges */
 .badge-hotel {
-    -fx-background-color: linear-gradient(to right, #1a6fa8, #1565c0);
+    -fx-background-color: linear-gradient(to right, #FF8833, #E67E22);
     -fx-text-fill: #ffffff;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-padding: 4 12;
     -fx-background-radius: 20;
-    -fx-effect: dropshadow(gaussian, rgba(21, 101, 192, 0.5), 6, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(255, 136, 51, 0.5), 6, 0, 0, 2);
 }
 
 .badge-auberge {
-    -fx-background-color: linear-gradient(to right, #1b7a4a, #1b5e20);
+    -fx-background-color: linear-gradient(to right, #5D9CEC, #4A90E2);
     -fx-text-fill: #ffffff;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-padding: 4 12;
     -fx-background-radius: 20;
-    -fx-effect: dropshadow(gaussian, rgba(27, 94, 32, 0.5), 6, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(93, 156, 236, 0.5), 6, 0, 0, 2);
 }
 
 .badge-default {
@@ -489,4 +496,71 @@
 .scroll-bar .decrement-arrow {
     -fx-shape: "";
     -fx-padding: 0;
+}
+
+/* === CHART SYNC === */
+.default-color0.chart-bar {
+    -fx-bar-fill: #FF8833;
+    -fx-background-radius: 4 4 0 0;
+}
+
+.default-color0.chart-legend-item-symbol {
+    -fx-background-color: #FF8833;
+    -fx-background-radius: 4;
+}
+
+.default-color1.chart-bar {
+    -fx-bar-fill: #5D9CEC;
+    -fx-background-radius: 4 4 0 0;
+}
+
+.default-color1.chart-legend-item-symbol {
+    -fx-background-color: #5D9CEC;
+    -fx-background-radius: 4;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+.chart-legend-item {
+    -fx-text-fill: #ffffff;
+}
+
+/* === PIE CHART SEASON SYNC === */
+/* Printemps - Mint */
+.default-color0.chart-pie {
+    -fx-pie-color: #48C9B0;
+}
+
+.default-color0.chart-legend-item-symbol {
+    -fx-background-color: #48C9B0;
+}
+
+/* Été - Yellow */
+.default-color1.chart-pie {
+    -fx-pie-color: #FFCE54;
+}
+
+.default-color1.chart-legend-item-symbol {
+    -fx-background-color: #FFCE54;
+}
+
+/* Automne - Orange */
+.default-color2.chart-pie {
+    -fx-pie-color: #E67E22;
+}
+
+.default-color2.chart-legend-item-symbol {
+    -fx-background-color: #E67E22;
+}
+
+/* Hiver - Blue */
+.default-color3.chart-pie {
+    -fx-pie-color: #5D9CEC;
+}
+
+.default-color3.chart-legend-item-symbol {
+    -fx-background-color: #5D9CEC;
 }

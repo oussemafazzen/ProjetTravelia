@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.ReservationFrontFormController" 
+      spacing="0" styleClass="reservation-modal" prefWidth="600" fx:id="mainContainer">
+    
+    <stylesheets>
+        <URL value="@/frontoffice-styles.css" />
+    </stylesheets>
+    
+    <!-- Header with Premium Gradient -->
+    <VBox styleClass="modal-header-box" spacing="10">
+        <HBox alignment="CENTER_LEFT" spacing="25">
+            <StackPane styleClass="icon-container">
+                <Text text="📅" style="-fx-font-size: 30px; -fx-fill: white;"/>
+            </StackPane>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Réserver votre séjour" styleClass="modal-header-title"/>
+                <Text fx:id="txtHebergementNom" styleClass="modal-header-subtitle" text="Hébergement sélectionné"/>
+            </VBox>
+        </HBox>
+    </VBox>
+    
+    <!-- Form Content -->
+    <VBox spacing="35" styleClass="reservation-form-container">
+        <GridPane vgap="30" hgap="25">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="160" minWidth="160"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            
+            <!-- Date Debut (labeled as Depart per user request) -->
+            <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER_LEFT">
+                <Label text="Date de départ" styleClass="field-label"/>
+                <Text text="Check-in" style="-fx-fill: #94a3b8; -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <DatePicker fx:id="dpDateDebut" maxWidth="Infinity" promptText="Choisir une date" styleClass="reservation-input"/>
+                <Label fx:id="lblErrorDateDebut" style="-fx-text-fill: #ef4444; -fx-font-size: 12px; -fx-font-weight: bold;" managed="false" visible="false"/>
+            </VBox>
+            
+            <!-- Date Fin (labeled as Arrivée per user request) -->
+            <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER_LEFT">
+                <Label text="Date d'arrivée" styleClass="field-label"/>
+                <Text text="Check-out" style="-fx-fill: #94a3b8; -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <DatePicker fx:id="dpDateFin" maxWidth="Infinity" promptText="Choisir une date" styleClass="reservation-input"/>
+                <Label fx:id="lblErrorDateFin" style="-fx-text-fill: #ef4444; -fx-font-size: 12px; -fx-font-weight: bold;" managed="false" visible="false"/>
+            </VBox>
+            
+            <!-- Nb Personnes -->
+            <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="0" alignment="CENTER_LEFT">
+                <Label text="Voyageurs" styleClass="field-label"/>
+                <Text text="Nombre d'adultes" style="-fx-fill: #94a3b8; -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox spacing="8" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                <TextField fx:id="tfNbPersonnes" promptText="Combien serez-vous ?" styleClass="reservation-input"/>
+                <Label fx:id="lblErrorNbPersonnes" style="-fx-text-fill: #ef4444; -fx-font-size: 12px; -fx-font-weight: bold;" managed="false" visible="false"/>
+            </VBox>
+        </GridPane>
+        
+        <Separator opacity="0.3"/>
+        
+        <!-- Actions -->
+        <HBox spacing="25" alignment="CENTER_RIGHT">
+            <Button text="Annuler" onAction="#handleCancel" styleClass="reservation-btn-cancel" prefWidth="160" prefHeight="55"/>
+            <Button text="Confirmer" onAction="#handleSave" styleClass="reservation-btn-save" prefWidth="240" prefHeight="55"/>
+        </HBox>
+    </VBox>
+</VBox>

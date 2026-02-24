@@ -3,9 +3,16 @@ package gui;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.PieChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import models.Hebergement;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
+import javafx.util.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,47 +20,75 @@ import java.util.Map;
 public class HebergementStatsController {
 
     @FXML
-    private PieChart pieChartCities;
+    private BarChart<String, Number> barChartStats;
+    @FXML
+    private CategoryAxis xAxis;
+    @FXML
+    private NumberAxis yAxis;
 
     public void setData(List<Hebergement> hebergements) {
         if (hebergements == null || hebergements.isEmpty()) {
             return;
         }
 
-        Map<String, Integer> cityCounts = new HashMap<>();
+        // Map: Country -> (Type -> Count)
+        Map<String, Map<String, Integer>> dataMap = new HashMap<>();
 
         for (Hebergement h : hebergements) {
-            String city = h.getVille() != null ? h.getVille() : "Inconnu";
-            cityCounts.put(city, cityCounts.getOrDefault(city, 0) + 1);
+            String country = h.getPays() != null ? h.getPays() : "Inconnu";
+            String rawType = h.getType() != null ? h.getType().toLowerCase() : "autre";
+            String type = (rawType.contains("hotel") || rawType.contains("hôtel")) ? "Hôtels" : "Auberges";
+
+            dataMap.putIfAbsent(country, new HashMap<>());
+            Map<String, Integer> typeCounts = dataMap.get(country);
+            typeCounts.put(type, typeCounts.getOrDefault(type, 0) + 1);
         }
 
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        for (Map.Entry<String, Integer> entry : cityCounts.entrySet()) {
-            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        XYChart.Series<String, Number> hotelSeries = new XYChart.Series<>();
+        hotelSeries.setName("Hôtels");
+        
+        XYChart.Series<String, Number> aubergeSeries = new XYChart.Series<>();
+        aubergeSeries.setName("Auberges");
+
+        for (String country : dataMap.keySet()) {
+            Map<String, Integer> counts = dataMap.get(country);
+            hotelSeries.getData().add(new XYChart.Data<>(country, counts.getOrDefault("Hôtels", 0)));
+            aubergeSeries.getData().add(new XYChart.Data<>(country, counts.getOrDefault("Auberges", 0)));
         }
 
-        pieChartCities.setData(pieChartData);
+        // Setup Entry Animation State
+        barChartStats.setOpacity(0);
+        barChartStats.setScaleX(0.9);
+        barChartStats.setScaleY(0.9);
+        barChartStats.getData().clear();
 
-        // Simple dynamic coloring as in the first version
-        applyCustomColors();
-    }
+        Platform.runLater(() -> {
+            barChartStats.getData().addAll(hotelSeries, aubergeSeries);
 
-    private void applyCustomColors() {
-        String[] colors = {
-            "#FF5733", "#33FF5 green", "#3357FF", "#FF33FB", "#F3FF33", 
-            "#33FFF3", "#8D33FF", "#FF8D33", "#33FF8D", "#FF338D",
-            "#5D6D7E", "#2ECC71", "#3498DB", "#9B59B6", "#F1C40F",
-            "#E67E22", "#E74C3C", "#1ABC9C", "#27AE60", "#2980B9",
-            "#8E44AD", "#F39C12", "#D35400", "#C0392B"
-        };
+            // Force Integer Graduation (1, 2, 3...)
+            int maxVal = 0;
+            for (XYChart.Data<String, Number> data : hotelSeries.getData()) maxVal = Math.max(maxVal, data.getYValue().intValue());
+            for (XYChart.Data<String, Number> data : aubergeSeries.getData()) maxVal = Math.max(maxVal, data.getYValue().intValue());
 
-        int colorIndex = 0;
-        for (PieChart.Data data : pieChartCities.getData()) {
-            String color = colors[colorIndex % colors.length];
-            if (data.getNode() != null) {
-                data.getNode().setStyle("-fx-pie-color: " + color + ";");
-            }
-            colorIndex++;
-        }
+            yAxis.setAutoRanging(false);
+            yAxis.setLowerBound(0);
+            yAxis.setUpperBound(Math.max(5, maxVal + 1));
+            yAxis.setTickUnit(1);
+            yAxis.setMinorTickVisible(false);
+
+            // Entry Animations
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(800), barChartStats);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+
+            ScaleTransition scaleUp = new ScaleTransition(Duration.millis(600), barChartStats);
+            scaleUp.setFromX(0.9);
+            scaleUp.setFromY(0.9);
+            scaleUp.setToX(1);
+            scaleUp.setToY(1);
+
+            fadeIn.play();
+            scaleUp.play();
+        });
     }
 }

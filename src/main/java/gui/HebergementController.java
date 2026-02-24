@@ -45,6 +45,8 @@ public class HebergementController implements Initializable {
     private TableColumn<Hebergement, Double> colTarif;
     @FXML
     private TextField tfSearch;
+    @FXML
+    private Label lblTotal;
 
     private HebergementService hs = new HebergementService();
     private ObservableList<Hebergement> hebergementList;
@@ -61,33 +63,110 @@ public class HebergementController implements Initializable {
         colEquipements.setCellValueFactory(new PropertyValueFactory<>("equipements"));
         colTarif.setCellValueFactory(new PropertyValueFactory<>("tarifParNuit"));
 
+        // ── Custom Cell Factories (The "Do it yourself" logic) ─────────────
+
+        // Type badge (hotel → blue pill, auberge → green pill)
+        colType.setCellFactory(col -> new TableCell<Hebergement, String>() {
+            @Override
+            protected void updateItem(String type, boolean empty) {
+                super.updateItem(type, empty);
+                if (empty || type == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label badge = new Label();
+                    String lower = type.toLowerCase();
+                    if (lower.contains("hotel") || lower.contains("hôtel")) {
+                        badge.setText("🏨  " + type);
+                        badge.getStyleClass().add("badge-hotel");
+                    } else if (lower.contains("auberge")) {
+                        badge.setText("🏕️  " + type);
+                        badge.getStyleClass().add("badge-auberge");
+                    } else {
+                        badge.setText(type);
+                        badge.getStyleClass().add("badge-default");
+                    }
+                    javafx.scene.layout.HBox box = new javafx.scene.layout.HBox(badge);
+                    box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
+        });
+
+        // Tarif price tag
+        colTarif.setCellFactory(col -> new TableCell<Hebergement, Double>() {
+            @Override
+            protected void updateItem(Double tarif, boolean empty) {
+                super.updateItem(tarif, empty);
+                if (empty || tarif == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label tag = new Label(String.format("💰 %.0f DT", tarif));
+                    tag.getStyleClass().add("price-tag");
+                    javafx.scene.layout.HBox box = new javafx.scene.layout.HBox(tag);
+                    box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
+        });
+
         loadData();
     }
 
     public void loadData() {
         hebergementList = FXCollections.observableArrayList(hs.getAll());
         
+        // Update stats label
+        if (lblTotal != null) {
+            lblTotal.setText(String.valueOf(hebergementList.size()));
+        }
+
         // Wrap the observable list in a FilteredList
         FilteredList<Hebergement> filteredData = new FilteredList<>(hebergementList, p -> true);
 
         // Add a listener to tfSearch to update the filter predicate
         tfSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(hebergement -> {
-                // If filter text is empty, display all accommodations
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // Compare name with filter text
+                if (newValue == null || newValue.isEmpty()) return true;
                 String lowerCaseFilter = newValue.toLowerCase();
-                if (hebergement.getNom().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches name
-                }
-                return false; // Does not match
+                
+                boolean matchesNom = hebergement.getNom() != null && hebergement.getNom().toLowerCase().contains(lowerCaseFilter);
+                boolean matchesPays = hebergement.getPays() != null && hebergement.getPays().toLowerCase().contains(lowerCaseFilter);
+                
+                return matchesNom || matchesPays;
             });
+            // Update count after filter
+            if (lblTotal != null) {
+                lblTotal.setText(String.valueOf(filteredData.size()));
+            }
         });
 
         tableHebergement.setItems(filteredData);
+    }
+
+    @FXML
+    private void handleSortByType() {
+        if (hebergementList != null) {
+            FXCollections.sort(hebergementList, (h1, h2) -> {
+                String t1 = h1.getType() != null ? h1.getType() : "";
+                String t2 = h2.getType() != null ? h2.getType() : "";
+                return t1.compareToIgnoreCase(t2);
+            });
+        }
+    }
+
+    @FXML
+    private void handleSortByVille() {
+        if (hebergementList != null) {
+            FXCollections.sort(hebergementList, (h1, h2) -> {
+                String v1 = h1.getVille() != null ? h1.getVille() : "";
+                String v2 = h2.getVille() != null ? h2.getVille() : "";
+                return v1.compareToIgnoreCase(v2);
+            });
+        }
     }
 
     @FXML
@@ -165,7 +244,7 @@ public class HebergementController implements Initializable {
             Parent root = loader.load();
 
             HebergementStatsController controller = loader.getController();
-            controller.setData(hebergementList);
+            controller.setData(tableHebergement.getItems());
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);

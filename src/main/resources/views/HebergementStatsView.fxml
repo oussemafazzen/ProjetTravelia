@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.StackedBarChart?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
@@ -10,8 +13,15 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Répartition des Hébergements par Ville" stylass="eClmodal-title" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label text="Répartition des Hébergements par Pays" styleClass="modal-title" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
-    <PieChart fx:id="pieChartCities" VBox.vgrow="ALWAYS" legendSide="RIGHT"/>
+    <BarChart fx:id="barChartStats" VBox.vgrow="ALWAYS" animated="true" legendVisible="true">
+        <xAxis>
+            <CategoryAxis fx:id="xAxis" label="Pays" />
+        </xAxis>
+        <yAxis>
+            <NumberAxis fx:id="yAxis" label="Nombre d'Hébergements" tickUnit="1" minorTickVisible="false" forceZeroInRange="true" autoRanging="true" />
+        </yAxis>
+    </BarChart>
 
 </VBox>
