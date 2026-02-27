@@ -17,7 +17,9 @@ import models.Client;
 import org.json.JSONObject;
 import services.ClientService;
 
+import javafx.scene.control.Alert;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -138,6 +140,7 @@ public class DashboardController {
     }
 
     private void initCurrencies() {
+        if (comboFrom == null || comboTo == null) return; // Currency converter not in FXML
         javafx.collections.ObservableList<String> codes = javafx.collections.FXCollections.observableArrayList("EUR", "USD", "GBP", "TND", "CAD", "JPY");
         comboFrom.setItems(codes);
         comboTo.setItems(codes);
@@ -149,7 +152,7 @@ public class DashboardController {
     void handleLogout(ActionEvent event) {
         try {
             utils.SessionManager.cleanSession();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
             Parent root = loader.load();
             lblNavUserName.getScene().setRoot(root);
         } catch (IOException e) {
@@ -192,12 +195,68 @@ public class DashboardController {
 
     @FXML
     void showAccommodations(ActionEvent event) {
+        System.out.println("Navigation: showAccommodations called");
+        try {
+            if (accommodationsView == null) {
+                System.err.println("Erreur: accommodationsView non injecté (null)");
+                return;
+            }
+            
+            // If it's the first time, load the real front-office view
+            // We check if it has the placeholder label or if it's "mostly" empty
+            boolean isPlaceholder = false;
+            if (accommodationsView.getChildren().isEmpty()) {
+                isPlaceholder = true;
+            } else if (accommodationsView.getChildren().get(0) instanceof Label) {
+                Label first = (Label) accommodationsView.getChildren().get(0);
+                if (first.getText().equals("Hébergement & Logement") || first.getText().contains("offre")) {
+                    isPlaceholder = true;
+                }
+            }
+
+            if (isPlaceholder) {
+                System.out.println("Chargement de HebergementFrontView.fxml...");
+                accommodationsView.getChildren().clear(); 
+                
+                URL fxmlUrl = getClass().getResource("/views/HebergementFrontView.fxml");
+                if (fxmlUrl == null) throw new IOException("FXML /views/HebergementFrontView.fxml introuvable");
+                
+                FXMLLoader loader = new FXMLLoader(fxmlUrl);
+                Parent view = loader.load();
+                accommodationsView.getChildren().add(view);
+                System.out.println("HebergementFrontView chargé.");
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur chargement Hébergement: " + e.getMessage());
+            e.printStackTrace();
+            showErrorAlert("Module Hébergement", e.getMessage());
+        }
         switchView(accommodationsView, btnNavHebergement);
     }
 
     @FXML
     void showActivities(ActionEvent event) {
+        System.out.println("Navigation: showActivities called");
+        try {
+             if (activitiesView != null && (activitiesView.getChildren().isEmpty() || activitiesView.getChildren().get(0) instanceof Label)) {
+                // If it's just the placeholder VBox from FXML, we can load a PlaceholderView or real content
+                // For now, let's just make sure the container is visible and has something
+                if (activitiesView.getChildren().size() <= 1) { // Title label + maybe placeholder VBox
+                     // Keep existing FXML content or load something else
+                }
+             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         switchView(activitiesView, btnNavActivites);
+    }
+
+    private void showErrorAlert(String module, String error) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur de Navigation");
+        alert.setHeaderText("Impossible de charger le module " + module);
+        alert.setContentText("Détail: " + error);
+        alert.show();
     }
 
     @FXML
@@ -205,46 +264,55 @@ public class DashboardController {
         switchView(reviewsView, btnNavAvis);
     }
 
+    // Rename cards handlers to avoid ambiguity with ActionEvent methods (solves "random behavior" on run)
+    @FXML void onModuleCardClickProfile(javafx.scene.input.MouseEvent event) { showProfile((ActionEvent) null); }
+    @FXML void onModuleCardClickTickets(javafx.scene.input.MouseEvent event) { showTickets((ActionEvent) null); }
+    @FXML void onModuleCardClickAccommodations(javafx.scene.input.MouseEvent event) { showAccommodations((ActionEvent) null); }
+    @FXML void onModuleCardClickActivities(javafx.scene.input.MouseEvent event) { showActivities((ActionEvent) null); }
+    @FXML void onModuleCardClickReviews(javafx.scene.input.MouseEvent event) { showReviews((ActionEvent) null); }
+
     private void switchView(VBox view, Button activeButton) {
-        dashboardView.setVisible(false); dashboardView.setManaged(false);
-        profileView.setVisible(false); profileView.setManaged(false);
-        historyView.setVisible(false); historyView.setManaged(false);
-        ticketsView.setVisible(false); ticketsView.setManaged(false);
-        accommodationsView.setVisible(false); accommodationsView.setManaged(false);
-        activitiesView.setVisible(false); activitiesView.setManaged(false);
-        reviewsView.setVisible(false); reviewsView.setManaged(false);
+        if (view == null) return;
+        
+        System.out.println("SWITCH: Activating view " + view.getId());
+        
+        // Use a safe list to hide all view containers
+        VBox[] allViews = {dashboardView, profileView, historyView, ticketsView, accommodationsView, activitiesView, reviewsView};
+        for (VBox v : allViews) {
+            if (v != null) {
+                v.setVisible(false);
+                v.setManaged(false);
+            }
+        }
         
         view.setVisible(true);
         view.setManaged(true);
+        view.toFront(); // Ensure it's on top of the StackPane
 
-        // Dynamically move Currency Converter to Tickets or Accommodations views
+        // Move Currency Converter
         if (currencyConverterContainer != null) {
-            ticketsView.getChildren().remove(currencyConverterContainer);
-            accommodationsView.getChildren().remove(currencyConverterContainer);
+            if (ticketsView != null) ticketsView.getChildren().remove(currencyConverterContainer);
+            if (accommodationsView != null) accommodationsView.getChildren().remove(currencyConverterContainer);
+            
             if (view == ticketsView) {
-                if (!ticketsView.getChildren().contains(currencyConverterContainer)) {
-                    ticketsView.getChildren().add(currencyConverterContainer);
-                }
+                ticketsView.getChildren().add(currencyConverterContainer);
             } else if (view == accommodationsView) {
-                if (!accommodationsView.getChildren().contains(currencyConverterContainer)) {
-                    accommodationsView.getChildren().add(currencyConverterContainer);
-                }
+                accommodationsView.getChildren().add(currencyConverterContainer);
             }
         }
 
         // Reset all buttons style
-        if (btnNavAccueil != null) {
-            btnNavAccueil.getStyleClass().remove("nav-button-active");
-            btnNavClients.getStyleClass().remove("nav-button-active");
-            btnNavReservations.getStyleClass().remove("nav-button-active");
-            btnNavHebergement.getStyleClass().remove("nav-button-active");
-            btnNavActivites.getStyleClass().remove("nav-button-active");
-            btnNavAvis.getStyleClass().remove("nav-button-active");
-            
-            // Set active class
-            if (activeButton != null) {
-                activeButton.getStyleClass().add("nav-button-active");
+        Button[] allNavBtns = {btnNavAccueil, btnNavClients, btnNavReservations, btnNavHebergement, btnNavActivites, btnNavAvis};
+        for (Button btn : allNavBtns) {
+            if (btn != null) {
+                btn.getStyleClass().remove("nav-button-active");
+                btn.setStyle("-fx-background-color: white; -fx-text-fill: #334155;");
             }
+        }
+        
+        if (activeButton != null) {
+            activeButton.getStyleClass().add("nav-button-active");
+            activeButton.setStyle("-fx-background-color: linear-gradient(to right, #0156ff, #00d1ff); -fx-text-fill: white;");
         }
     }
 

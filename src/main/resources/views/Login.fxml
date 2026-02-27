@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/client-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+   <children>
+      <VBox alignment="CENTER" fillWidth="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" prefWidth="400.0" spacing="20.0" styleClass="card">
+               <children>
+                  <Label styleClass="title-label" text="Connexion" />
+                  <TextField fx:id="emailF" promptText="Email" styleClass="text-field" />
+                  <PasswordField fx:id="passwordF" promptText="Mot de passe" styleClass="password-field" />
+                  <Button fx:id="btnLogin" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" styleClass="button" text="Se connecter" />
+                  <Label fx:id="lblMessage" styleClass="error-label" textFill="#e40e0e" />
+                  <Hyperlink fx:id="hlForgotPassword" onAction="#handleForgotPassword" text="Mot de passe oublié ?" />
+                  <Button mnemonicParsing="false" onAction="#goToHome" styleClass="secondary-button" text="Retour à l'accueil" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

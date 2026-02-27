@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.HebergementController" spacing="16" styleClass="content-pane">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.HebergementController" spacing="16" styleClass="content-pane">
     <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
 
     <!-- Top bar: Title + Search + Actions -->

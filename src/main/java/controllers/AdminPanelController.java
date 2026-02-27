@@ -157,7 +157,7 @@ public class AdminPanelController {
                         btnDelete.setOnAction((ActionEvent event) -> {
                             Client client = getTableView().getItems().get(getIndex());
                             try {
-                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConfirmDeleteDialog.fxml"));
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/ConfirmDeleteDialog.fxml"));
                                 Parent root = loader.load();
                                 ConfirmDeleteController controller = loader.getController();
                                 controller.setMessage("Supprimer le client " + client.getNom() + " " + client.getPrenom() + " ?");
@@ -386,7 +386,7 @@ public class AdminPanelController {
 
     private void handleEditClient(Client client) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditClientDialog.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/EditClientDialog.fxml"));
             Parent root = loader.load();
             
             EditClientController controller = loader.getController();
@@ -424,7 +424,7 @@ public class AdminPanelController {
     void handleLogout(ActionEvent event) {
         try {
             utils.SessionManager.cleanSession();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
             Parent root = loader.load();
             mainStackPane.getScene().setRoot(root);
         } catch (IOException e) {

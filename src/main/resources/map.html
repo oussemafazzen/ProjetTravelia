@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Carte des Hébergements</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script>
+        // Disable 3D CSS transforms to fix JavaFX WebView tile scrambling issue
+        window.L_DISABLE_3D = true;
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Fix for JavaFX WebView distorting Leaflet tiles */
+        .leaflet-container img {
+            max-width: none !important;
+            max-height: none !important;
+            width: auto !important;
+            height: auto !important;
+        }
+
+        .custom-popup .leaflet-popup-content-wrapper {
+            background: #ffffff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+            padding: 5px;
+        }
+
+        .custom-popup .leaflet-popup-tip {
+            background: #ffffff;
+        }
+
+        .price-badge {
+            background-color: #2563eb;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .marker-icon {
+            background-color: white;
+            border: 2px solid #2563eb;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #2563eb;
+            line-height: 24px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+            padding: 0 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .marker-icon:hover {
+            background-color: #f1f5f9;
+            transform: scale(1.05);
+            transition: all 0.2s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        // Initialize map centered roughly on North Africa / Europe
+        // Fix for JavaFX fractional zoom bug: forces integer zoom levels, disables animations
+        var map = L.map('map', {
+            zoomSnap: 1,
+            zoomDelta: 1,
+            wheelPxPerZoomLevel: 120,
+            zoomAnimation: false,
+            fadeAnimation: false,
+            markerZoomAnimation: false
+        }).setView([36.8065, 10.1815], 5);
+
+        // Ultimate fix for JavaFX WebView resize: watch the map container continuously
+        new ResizeObserver(function () {
+            map.invalidateSize();
+        }).observe(document.getElementById('map'));
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        var group = L.featureGroup().addTo(map);
+
+        // This function will be called from JavaFX WebView Engine
+        function loadMarkers(jsonData) {
+            // Fix Leaflet gray rendering in JavaFX WebView when hidden/resized initially
+            setTimeout(() => { map.invalidateSize(); }, 200);
+
+            var hebergements = JSON.parse(jsonData);
+
+            group.clearLayers();
+
+            let markersAdded = 0;
+
+            hebergements.forEach(function (h) {
+                var query = h.adresse + ", " + h.ville + ", " + h.pays;
+
+                // Geocode using Nominatim API (OpenStreetMap)
+                fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            var lat = data[0].lat;
+                            var lon = data[0].lon;
+                            addMarker(lat, lon, h);
+                            markersAdded++;
+                        } else {
+                            // Fallback: search by city & country if address is not found
+                            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(h.ville + ", " + h.pays))
+                                .then(response => response.json())
+                                .then(data2 => {
+                                    if (data2 && data2.length > 0) {
+                                        // Add small random offset to prevent exact overlap for same city
+                                        var lat = parseFloat(data2[0].lat) + (Math.random() - 0.5) * 0.01;
+                                        var lon = parseFloat(data2[0].lon) + (Math.random() - 0.5) * 0.01;
+                                        addMarker(lat, lon, h);
+                                        markersAdded++;
+                                    }
+                                });
+                        }
+                    })
+                    .catch(err => console.error("Geocoding error:", err))
+                    .finally(() => {
+                        // Try to fit bounds after all markers process, simple timeout approximation
+                        setTimeout(() => {
+                            if (markersAdded > 0) {
+                                map.fitBounds(group.getBounds(), { padding: [50, 50], maxZoom: 12 });
+                            }
+                        }, 1500); // adjust based on expected load times
+                    });
+            });
+        }
+
+        function addMarker(lat, lon, h) {
+            var iconHtml = "";
+            if (h.type && h.type.toLowerCase().includes('hotel')) {
+                iconHtml = "🏨 ";
+            } else {
+                iconHtml = "🏘️ ";
+            }
+
+            var priceIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div class='marker-icon'>" + iconHtml + h.tarifParNuit + " DT</div>",
+                iconSize: [85, 28],
+                iconAnchor: [42, 28] // Center bottom
+            });
+
+            var marker = L.marker([lat, lon], { icon: priceIcon }).addTo(group);
+
+            var popupContent = `
+            <div style="text-align:center; min-width: 150px;">
+                <h3 style="margin:5px 0; font-size:16px; color:#1e293b;">${h.nom}</h3>
+                <p style="margin:2px 0; font-size:12px; color:#64748b;">${h.adresse}, ${h.ville}</p>
+                <div class="price-badge">${h.tarifParNuit} DT / nuit</div>
+            </div>
+        `;
+
+            marker.bindPopup(popupContent, { className: 'custom-popup' });
+        }
+    </script>
+</body>
+
+</html>

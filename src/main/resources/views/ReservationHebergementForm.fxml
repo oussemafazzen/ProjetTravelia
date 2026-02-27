@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.ReservationHebergementFormController" spacing="20" styleClass="modal-pane" prefWidth="500">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.ReservationHebergementFormController" spacing="20" styleClass="modal-pane" prefWidth="500">
     <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
     
     <Label fx:id="lblTitle" text="Nouvelle Réservation" styleClass="modal-title"/>

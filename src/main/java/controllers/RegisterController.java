@@ -184,7 +184,7 @@ public class RegisterController {
     @FXML
     void goToHome(ActionEvent event) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/Home.fxml"));
             javafx.scene.Parent root = loader.load();
             dateNaissanceF.getScene().setRoot(root);
         } catch (java.io.IOException e) {

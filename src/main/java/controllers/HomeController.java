@@ -18,12 +18,12 @@ public class HomeController {
 
     @FXML
     void goToLogin(ActionEvent event) {
-        navigateTo("/fxml/Login.fxml");
+        navigateTo("/views/Login.fxml");
     }
 
     @FXML
     void goToRegister(ActionEvent event) {
-        navigateTo("/fxml/Register.fxml");
+        navigateTo("/views/Register.fxml");
     }
 
     private void navigateTo(String fxmlPath) {

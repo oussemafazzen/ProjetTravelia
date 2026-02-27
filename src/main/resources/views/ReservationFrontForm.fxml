@@ -6,11 +6,11 @@
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.ReservationFrontFormController" 
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.ReservationFrontFormController" 
       spacing="0" styleClass="reservation-modal" prefWidth="600" fx:id="mainContainer">
     
     <stylesheets>
-        <URL value="@/frontoffice-styles.css" />
+        <URL value="@/css/frontoffice-styles.css" />
     </stylesheets>
     
     <!-- Header with Premium Gradient -->
@@ -70,7 +70,7 @@
         <!-- Actions -->
         <HBox spacing="25" alignment="CENTER_RIGHT">
             <Button text="Annuler" onAction="#handleCancel" styleClass="reservation-btn-cancel" prefWidth="160" prefHeight="55"/>
-            <Button text="Confirmer" onAction="#handleSave" styleClass="reservation-btn-save" prefWidth="240" prefHeight="55"/>
+            <Button text="Réserver" onAction="#handleSave" styleClass="reservation-btn-save" prefWidth="240" prefHeight="55"/>
         </HBox>
     </VBox>
 </VBox>

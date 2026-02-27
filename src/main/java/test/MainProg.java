@@ -1,6 +1,6 @@
 package test;
 
-import gui.MainApp;
+import controllers.MainApp;
 
 public class MainProg {
     public static void main(String[] args) {

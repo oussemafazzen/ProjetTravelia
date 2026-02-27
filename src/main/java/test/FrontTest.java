@@ -11,7 +11,7 @@ public class FrontTest extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/FrontOfficeView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/views/FrontOfficeView.fxml"));
         primaryStage.setTitle("Travella - Front Office Test");
         
         Scene scene = new Scene(root, 1200, 800);

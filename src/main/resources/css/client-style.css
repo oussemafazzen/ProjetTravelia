@@ -1,0 +1,495 @@
+﻿/* ============================================
+   Travelia - Modern Client Front Office Theme
+   Matches Figma Design
+   ============================================ */
+
+/* === GLOBAL === */
+.root {
+    -fx-font-family: 'Segoe UI', 'Inter', sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f8f9fc;
+}
+
+/* === HEADINGS === */
+.title-label {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.subtitle-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #64748b;
+}
+
+/* ============================================
+   NAVIGATION BAR - Figma Style
+   ============================================ */
+.navbar {
+    -fx-background-color: white;
+    -fx-padding: 12 30;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 12, 0, 0, 3);
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748b;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+    -fx-background-radius: 25;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.nav-button:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #0156ff;
+}
+
+.nav-button-active {
+    -fx-background-color: #0156ff;
+    -fx-text-fill: white;
+    -fx-background-radius: 25;
+    -fx-border-color: transparent;
+}
+
+.nav-button-active:hover {
+    -fx-background-color: #0145cc;
+    -fx-text-fill: white;
+}
+
+.profile-nav-text {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+    -fx-font-size: 13px;
+}
+
+.logo-text {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0156ff;
+}
+
+/* ============================================
+   HERO BANNER - Gradient Blue Card
+   ============================================ */
+.hero-card {
+    -fx-background-color: linear-gradient(to right, #0156ff, #00d1ff);
+    -fx-background-radius: 20;
+    -fx-padding: 40 50;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.35), 20, 0, 0, 8);
+}
+
+.hero-title {
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 3, 0, 0, 1);
+}
+
+.hero-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-wrap-text: true;
+}
+
+.hero-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-wrap-text: true;
+}
+
+.btn-commencer {
+    -fx-background-color: white;
+    -fx-text-fill: #0156ff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 28;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 8, 0, 0, 3);
+}
+
+.btn-commencer:hover {
+    -fx-background-color: #f0f9ff;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* ============================================
+   MODULE CARDS - Figma Card Style
+   ============================================ */
+.module-card-btn {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 24;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 4);
+    -fx-min-height: 200;
+}
+
+.module-card-btn:hover {
+    -fx-border-color: #0156ff;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.15), 15, 0, 0, 6);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* ============================================
+   WHITE STAT CARDS
+   ============================================ */
+.white-stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 24;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 4);
+}
+
+.white-stat-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #64748b;
+    -fx-text-transform: uppercase;
+}
+
+.white-stat-value {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.white-stat-accent {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0156ff;
+}
+
+/* ============================================
+   BUTTONS - Modern Pill Style
+   ============================================ */
+.button {
+    -fx-background-color: linear-gradient(to right, #0156ff, #0145cc);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 25;
+    -fx-padding: 12 30;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.35), 10, 0, 0, 4);
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to right, #0145cc, #013baa);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.btn-outline-primary {
+    -fx-background-color: transparent;
+    -fx-border-color: #0156ff;
+    -fx-text-fill: #0156ff;
+    -fx-font-weight: bold;
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+    -fx-border-width: 2;
+}
+
+.btn-outline-primary:hover {
+    -fx-background-color: #0156ff;
+    -fx-text-fill: white;
+}
+
+.btn-outline-danger {
+    -fx-background-color: transparent;
+    -fx-border-color: #ef4444;
+    -fx-text-fill: #ef4444;
+    -fx-font-weight: bold;
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+    -fx-border-width: 2;
+    -fx-font-size: 12px;
+}
+
+.btn-outline-danger:hover {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+}
+
+.btn-warning {
+    -fx-background-color: linear-gradient(to right, #f59e0b, #d97706);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.btn-warning:hover {
+    -fx-background-color: linear-gradient(to right, #fbbf24, #f59e0b);
+}
+
+.secondary-button,
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: #0156ff;
+    -fx-border-width: 2;
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+    -fx-text-fill: #0156ff;
+    -fx-font-weight: bold;
+    -fx-padding: 12 30;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+
+.secondary-button:hover,
+.button-secondary:hover {
+    -fx-background-color: rgba(59, 130, 246, 0.08);
+    -fx-text-fill: #0145cc;
+    -fx-border-color: #0145cc;
+}
+
+/* ============================================
+   FORM CONTROLS - Clean & Modern
+   ============================================ */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 20, 0, 0, 8);
+    -fx-padding: 40;
+}
+
+.text-field,
+.password-field {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 12;
+    -fx-border-color: transparent;
+    -fx-padding: 12 16;
+    -fx-font-size: 14px;
+    -fx-text-fill: #1e293b;
+    -fx-prompt-text-fill: #94a3b8;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #0156ff;
+    -fx-border-radius: 12;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.15), 8, 0, 0, 0);
+}
+
+.date-picker {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 12;
+    -fx-border-color: transparent;
+    -fx-padding: 4 8;
+}
+
+.date-picker:focused {
+    -fx-background-color: white;
+    -fx-border-color: #0156ff;
+    -fx-border-radius: 12;
+    -fx-border-width: 2;
+}
+
+.error-label {
+    -fx-text-fill: #ef4444;
+    -fx-font-size: 12px;
+}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+.progress-bar {
+    -fx-accent: #0156ff;
+    -fx-control-inner-background: #e2e8f0;
+    -fx-background-radius: 10;
+}
+
+.progress-bar>.bar {
+    -fx-background-color: linear-gradient(to right, #0156ff, #00d1ff);
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+}
+
+.progress-bar>.track {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+}
+
+/* ============================================
+   SCROLLBAR - Minimal
+   ============================================ */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 6;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* ============================================
+   SCROLL PANE
+   ============================================ */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane>.viewport {
+    -fx-background-color: transparent;
+}
+
+/* ============================================
+   SEPARATOR
+   ============================================ */
+.separator .line {
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ============================================
+   COMBOBOX
+   ============================================ */
+.combo-box {
+    -fx-background-color: #f1f5f9;
+    -fx-border-color: transparent;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #1e293b;
+    -fx-padding: 8;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #1e293b;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+/* ============================================
+   HYPERLINK
+   ============================================ */
+.hyperlink {
+    -fx-text-fill: #3b82f6;
+    -fx-font-size: 13px;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #2563eb;
+}
+
+/* ============================================
+   STAT CARDS (from original friend code)
+   ============================================ */
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 4);
+}
+
+.stat-card-blue {
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 16;
+}
+
+.stat-card-red {
+    -fx-border-color: #ef4444;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 16;
+}
+
+.stat-card-green {
+    -fx-border-color: #22c55e;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 16;
+}
+
+.stat-card-orange {
+    -fx-border-color: #f59e0b;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 16;
+}
+
+.stat-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.stat-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: bold;
+}
+
+/* ============================================
+   SIDEBAR (friend's original)
+   ============================================ */
+.sidebar {
+    -fx-background-color: #1e293b;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e8f0;
+    -fx-alignment: BASELINE_LEFT;
+    -fx-padding: 15 20;
+    -fx-font-size: 14px;
+    -fx-background-radius: 0;
+    -fx-effect: none;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #334155;
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
+}

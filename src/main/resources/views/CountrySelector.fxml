@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.StackPane?>
 
-<VBox prefHeight="600.0" prefWidth="800.0" spacing="0" styleClass="reservation-modal" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.CountrySelectorController">
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="0" styleClass="reservation-modal" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CountrySelectorController">
     <!-- Header Section -->
     <VBox styleClass="modal-header-box">
         <HBox alignment="CENTER_LEFT" spacing="20">

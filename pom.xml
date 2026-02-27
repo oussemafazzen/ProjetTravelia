@@ -39,6 +39,11 @@
             <artifactId>javafx-graphics</artifactId>
             <version>21.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>21.0.1</version>
+        </dependency>
 
         <!-- BCrypt for password hashing -->
         <dependency>
@@ -109,6 +114,7 @@
                     <include>**/*.png</include>
                     <include>**/*.jpg</include>
                     <include>**/*.properties</include>
+                    <include>**/*.html</include>
                 </includes>
             </resource>
         </resources>
@@ -127,7 +133,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>gui.MainApp</mainClass>
+                    <mainClass>controllers.MainController</mainClass>
                 </configuration>
             </plugin>
             <plugin>

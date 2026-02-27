@@ -43,7 +43,7 @@ public class ForgotPasswordController {
                 
                 // Redirecting to ResetPassword immediately
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ResetPassword.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/ResetPassword.fxml"));
                     Parent root = loader.load();
                     ResetPasswordController controller = loader.getController();
                     controller.setData(email, resetCode);
@@ -68,7 +68,7 @@ public class ForgotPasswordController {
     @FXML
     void goToLogin(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
             btnSend.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();

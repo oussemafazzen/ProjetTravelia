@@ -63,9 +63,9 @@ public class LoginController {
                 models.enums.Role role = user.getRole();
                 
                 if (role == models.enums.Role.ADMINISTRATEUR) {
-                    fxmlPath = "/fxml/AdminPanel.fxml";
+                    fxmlPath = "/views/AdminPanel.fxml";
                 } else if (role == models.enums.Role.USER || role == models.enums.Role.CLIENT) {
-                    fxmlPath = "/fxml/Dashboard.fxml";
+                    fxmlPath = "/views/Dashboard.fxml";
                 } else {
                     lblMessage.setStyle("-fx-text-fill: red;");
                     lblMessage.setText("Rôle inconnu: " + role);
@@ -84,7 +84,7 @@ public class LoginController {
                     javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(location);
                     root = loader.load();
                     
-                    if (fxmlPath.equals("/fxml/Dashboard.fxml") && user instanceof models.Client) {
+                    if (fxmlPath.equals("/views/Dashboard.fxml") && user instanceof models.Client) {
                         controllers.DashboardController dc = loader.getController();
                         if (dc != null) {
                             dc.initData((models.Client) user);
@@ -147,7 +147,7 @@ public class LoginController {
     @FXML
     void handleForgotPassword(ActionEvent event) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/ForgotPassword.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/ForgotPassword.fxml"));
             javafx.scene.Parent root = loader.load();
             btnLogin.getScene().setRoot(root);
         } catch (IOException e) {
@@ -158,7 +158,7 @@ public class LoginController {
     @FXML
     void goToHome(ActionEvent event) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/Home.fxml"));
             javafx.scene.Parent root = loader.load();
             btnLogin.getScene().setRoot(root);
         } catch (java.io.IOException e) {

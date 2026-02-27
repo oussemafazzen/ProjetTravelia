@@ -72,7 +72,7 @@ public class ResetPasswordController {
     @FXML
     void goToLogin(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
             btnReset.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();

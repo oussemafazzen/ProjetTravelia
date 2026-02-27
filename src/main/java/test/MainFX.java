@@ -15,11 +15,11 @@ public class MainFX extends Application {
         System.out.println("Application Start Method Called");
         try {
             // Utilisation robuste de getClass().getResource
-            java.net.URL fxmlLocation = getClass().getResource("/fxml/Home.fxml");
+            java.net.URL fxmlLocation = getClass().getResource("/views/Home.fxml");
             
             if (fxmlLocation == null) {
                 System.err.println("ERREUR: Impossible de trouver le fichier FXML !");
-                System.err.println("Vérifiez que le fichier est bien dans src/main/resources/fxml/Home.fxml");
+                System.err.println("Vérifiez que le fichier est bien dans src/main/resources/views/Home.fxml");
                 return;
             }
             
@@ -35,16 +35,16 @@ public class MainFX extends Application {
                 if (user != null) {
                     String destinationFxml = "";
                     if (user.getRole() == models.enums.Role.ADMINISTRATEUR) {
-                        destinationFxml = "/fxml/AdminPanel.fxml";
+                        destinationFxml = "/views/AdminPanel.fxml";
                     } else {
-                        destinationFxml = "/fxml/Dashboard.fxml";
+                        destinationFxml = "/views/Dashboard.fxml";
                     }
                     
                     System.out.println("Auto-login vers : " + destinationFxml);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource(destinationFxml));
                     Parent root = loader.load();
                     
-                    if (destinationFxml.equals("/fxml/Dashboard.fxml") && user instanceof models.Client) {
+                    if (destinationFxml.equals("/views/Dashboard.fxml") && user instanceof models.Client) {
                         controllers.DashboardController dc = loader.getController();
                         dc.initData((models.Client) user);
                     }

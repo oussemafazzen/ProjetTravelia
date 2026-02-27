@@ -4,12 +4,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
 
-<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.HebergementCardController" alignment="TOP_LEFT" spacing="0" styleClass="data-card">
+<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.HebergementCardController" alignment="TOP_LEFT" spacing="0" styleClass="data-card">
     
-    <!-- Image Placeholder -->
-    <StackPane styleClass="card-banner" prefWidth="250" minHeight="200">
-        <Text fx:id="txtTypeIcon" text="🏨" style="-fx-font-size: 40px;"/>
+    <!-- Accommodation Image -->
+    <StackPane styleClass="card-banner" prefWidth="250" minHeight="200" style="-fx-background-color: #f1f5f9;">
+        <ImageView fx:id="imgAccommodation" fitWidth="250" fitHeight="200" preserveRatio="false" style="-fx-background-radius: 20 0 0 20;"/>
         <VBox StackPane.alignment="TOP_LEFT" fx:id="badgeContainer">
             <StackPane styleClass="card-badge, badge-blue">
                 <padding><Insets top="4" right="10" bottom="4" left="10"/></padding>
@@ -26,7 +27,7 @@
                     <Text fx:id="txtNom" text="Hôtel Grand Palace" styleClass="data-title"/>
                     <StackPane styleClass="badge-blue" prefHeight="25">
                         <padding><Insets left="10" right="10"/></padding>
-                        <Text fx:id="txtType" text="hôtel" styleClass="badge-text-blue" style="-fx-font-size: 11px;"/>
+                        <Text fx:id="txtTypeBadge" text="hôtel" styleClass="badge-text-blue" style="-fx-font-size: 11px;"/>
                     </StackPane>
                 </HBox>
                 <HBox spacing="5" alignment="CENTER_LEFT">

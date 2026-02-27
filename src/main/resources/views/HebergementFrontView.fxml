@@ -6,23 +6,24 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox spacing="30" style="-fx-padding: 40;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.HebergementFrontController">
+<VBox spacing="30" style="-fx-padding: 40;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HebergementFrontController">
     <VBox spacing="40" style="-fx-padding: 40;">
         <!-- Header Section -->
         <HBox alignment="CENTER_LEFT" spacing="20">
-            <HBox maxWidth="60" prefHeight="60" styleClass="icon-box, icon-orange">
-                <Text fill="white" style="-fx-font-size: 32px;" styleClass="icon-orange" text="🏠" />
+            <HBox alignment="CENTER" maxHeight="60" maxWidth="60" minHeight="60" minWidth="60" prefHeight="60" prefWidth="60" style="-fx-background-color: linear-gradient(to bottom right, #ff5e00, #ff922b); -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(255, 94, 0, 0.3), 15, 0, 0, 5);" styleClass="icon-box">
+                <Text fill="WHITE" style="-fx-font-size: 32px;" text="🏠" />
             </HBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <VBox minWidth="220.0" spacing="5" HBox.hgrow="ALWAYS">
                 <Text style="-fx-font-size: 36px; -fx-font-weight: 900; -fx-fill: #1e293b;" text="Hébergement &amp; Logement" />
-                <Text style="-fx-font-size: 16px; -fx-fill: #64748b;" text="Trouvez votre prochain séjour par pays" />
+                <Text style="-fx-font-size: 16px; -fx-fill: #64748b;" text="Gérez tous vos hébergements et réservations" />
             </VBox>
         </HBox>
 
         <!-- Search Bar -->
         <HBox alignment="CENTER_LEFT" spacing="15" styleClass="front-search-container">
-            <Button onAction="#handleOpenCountrySelector" style="-fx-font-size: 20px; -fx-padding: 0 5 0 0;" styleClass="card-link" text="🌍" />
-            <TextField fx:id="tfSearchNom" prefHeight="27.0" prefWidth="220.0" promptText="Rechercher par nom (ex: Hotel Royal...)" styleClass="front-search-input" HBox.hgrow="ALWAYS" />
+            <Button onAction="#handleOpenMap" style="-fx-font-size: 22px; -fx-background-color: linear-gradient(to bottom right, #3b82f6, #06b6d4); -fx-text-fill: white; -fx-background-radius: 12; -fx-min-width: 50; -fx-min-height: 50; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.2), 10, 0, 0, 3);" text="🗺️" />
+            <Button onAction="#handleOpenCountrySelector" style="-fx-font-size: 22px; -fx-background-color: linear-gradient(to bottom right, #f59e0b, #ef4444); -fx-text-fill: white; -fx-background-radius: 12; -fx-min-width: 50; -fx-min-height: 50; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.2), 10, 0, 0, 3);" text="🌍" />
+            <TextField fx:id="tfSearchNom" prefHeight="50.0" prefWidth="361.0" promptText="Rechercher par nom (ex: Hotel Royal...)" style="-fx-background-radius: 12; -fx-padding: 0 20;" styleClass="front-search-input" HBox.hgrow="ALWAYS" />
         </HBox>
 
         <!-- Stats Section -->
