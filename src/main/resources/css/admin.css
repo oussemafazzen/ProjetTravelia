@@ -1,0 +1,146 @@
+/* ================= ROOT ================= */
+
+.admin-root {
+    -fx-background-color: #0b1020;
+    -fx-font-family: "Segoe UI", Arial;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+    -fx-pref-width: 280;
+    -fx-background-color: linear-gradient(to bottom, #081126, #0b1430);
+    -fx-border-color: rgba(255,255,255,0.05);
+    -fx-border-width: 0 1 0 0;
+}
+
+.sidebar-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.sidebar Button {
+    -fx-background-color: #111a35;
+    -fx-text-fill: #dbeafe;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+}
+
+.sidebar Button:hover {
+    -fx-background-color: #1d2a55;
+}
+
+/* ================= MAIN AREA ================= */
+
+.main-content {
+    -fx-background-color: #0f172a;
+}
+
+/* ================= CARDS ================= */
+
+.stat-card {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 14;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0.3, 0, 4);
+}
+
+.stat-title {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 13px;
+}
+
+.stat-value {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+/* ================= TABLE ================= */
+
+.table-view {
+    -fx-background-color: #1e293b;
+    -fx-control-inner-background: #1e293b;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 8;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #111827;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: #111827;
+}
+
+.table-view .label {
+    -fx-text-fill: #e5e7eb;
+}
+
+.table-row-cell {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #e5e7eb;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #172033;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #2563eb;
+}
+
+/* ================= BUTTONS ================= */
+
+.button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.button:pressed {
+    -fx-background-color: #1e40af;
+}
+
+/* ================= BADGES ================= */
+
+.badge-success {
+    -fx-background-color: #14532d;
+    -fx-text-fill: #22c55e;
+    -fx-padding: 4 10;
+    -fx-background-radius: 20;
+}
+
+.badge-warning {
+    -fx-background-color: #3f2f00;
+    -fx-text-fill: #facc15;
+    -fx-padding: 4 10;
+    -fx-background-radius: 20;
+}
+
+.badge-danger {
+    -fx-background-color: #450a0a;
+    -fx-text-fill: #ef4444;
+    -fx-padding: 4 10;
+    -fx-background-radius: 20;
+}
+
+/* ================= INPUT ================= */
+
+.text-field {
+    -fx-background-color: #111827;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #1e293b;
+    -fx-border-radius: 8;
+}
+
+.text-field:focused {
+    -fx-border-color: #2563eb;
+}
