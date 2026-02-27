@@ -1,7 +1,7 @@
-package org.example.services;
+package services;
 
-import org.example.models.Billet;
-import org.example.utils.MyDataBase;
+import models.Billet;
+import utils.MyDataBase;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -16,9 +16,6 @@ public class ServiceBillet {
         this.cnx = MyDataBase.getInstance().getCnx();
     }
 
-    // =========================
-    // ADD
-    // =========================
     public void add(Billet b) {
         String sql = """
             INSERT INTO billet(numero_billet, type_transport, date_depart, date_arrivee, prix, statut, id_reservation)
@@ -36,7 +33,6 @@ public class ServiceBillet {
 
             ps.executeUpdate();
 
-            // set id generated (optionnel)
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) b.setIdBillet(keys.getInt(1));
             }
@@ -46,9 +42,6 @@ public class ServiceBillet {
         }
     }
 
-    // =========================
-    // GET ALL
-    // =========================
     public List<Billet> getAll() {
         List<Billet> list = new ArrayList<>();
         String sql = "SELECT * FROM billet ORDER BY id_billet DESC";
@@ -66,9 +59,6 @@ public class ServiceBillet {
         return list;
     }
 
-    // =========================
-    // GET BY RESERVATION
-    // =========================
     public List<Billet> getByReservationId(int reservationId) {
         List<Billet> list = new ArrayList<>();
         String sql = "SELECT * FROM billet WHERE id_reservation=? ORDER BY id_billet DESC";
@@ -88,9 +78,6 @@ public class ServiceBillet {
         return list;
     }
 
-    // =========================
-    // UPDATE
-    // =========================
     public void update(Billet b) {
         String sql = """
             UPDATE billet
@@ -114,9 +101,6 @@ public class ServiceBillet {
         }
     }
 
-    // =========================
-    // DELETE
-    // =========================
     public void delete(int idBillet) {
         String sql = "DELETE FROM billet WHERE id_billet=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -127,9 +111,6 @@ public class ServiceBillet {
         }
     }
 
-    // =========================
-    // MAPPER
-    // =========================
     private Billet map(ResultSet rs) throws SQLException {
         Billet b = new Billet();
         b.setIdBillet(rs.getInt("id_billet"));

@@ -1,4 +1,4 @@
-package org.example.utils;
+package utils;
 
 public final class SessionContext {
 

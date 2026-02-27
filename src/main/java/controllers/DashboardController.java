@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import models.Client;
 import org.json.JSONObject;
@@ -134,6 +135,12 @@ public class DashboardController {
 
     public void initData(Client client) {
         this.currentClient = client;
+        
+        // Initialize SessionContext for other modules (like Reservations) to know who is logged in
+        if (client != null) {
+            utils.SessionContext.loginAsClient(client.getId());
+        }
+        
         initCurrencies();
         refreshView();
         switchView(dashboardView, btnNavAccueil);
@@ -190,7 +197,44 @@ public class DashboardController {
 
     @FXML
     void showTickets(ActionEvent event) {
+        try {
+            if (ticketsView != null) {
+                // Determine if we are still showing the placeholder
+                boolean isPlaceholder = isShowingPlaceholder(ticketsView);
+
+                if (isPlaceholder) {
+                    System.out.println("Chargement de ReservationsFrontView.fxml...");
+                    ticketsView.getChildren().clear();
+                    
+                    URL fxmlUrl = getClass().getResource("/views/ReservationsFrontView.fxml");
+                    if (fxmlUrl == null) throw new IOException("FXML /views/ReservationsFrontView.fxml introuvable");
+                    
+                    FXMLLoader loader = new FXMLLoader(fxmlUrl);
+                    Parent view = loader.load();
+                    ticketsView.getChildren().add(view);
+                    System.out.println("ReservationsFrontView chargé.");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur chargement Réservations: " + e.getMessage());
+            e.printStackTrace();
+            showErrorAlert("Module Réservations", e.getMessage());
+        }
         switchView(ticketsView, btnNavReservations);
+    }
+
+    private boolean isShowingPlaceholder(Parent root) {
+        if (root instanceof Label && ((Label) root).getText().contains("Liste des réservations")) {
+            return true;
+        }
+        if (root instanceof javafx.scene.layout.Pane) {
+            for (Node child : ((javafx.scene.layout.Pane) root).getChildren()) {
+                if (child instanceof Parent && isShowingPlaceholder((Parent) child)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @FXML

@@ -1,4 +1,4 @@
-package org.example.controllers;
+package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -7,8 +7,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import org.example.models.ReservationAdminRow;
-import org.example.services.ServiceReservation;
+import models.ReservationAdminRow;
+import services.ServiceReservation;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;

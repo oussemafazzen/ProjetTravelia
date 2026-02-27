@@ -1,8 +1,8 @@
-package org.example.services;
+package services;
 
-import org.example.models.Reservation;
-import org.example.models.ReservationAdminRow;
-import org.example.utils.MyDataBase;
+import models.Reservation;
+import models.ReservationAdminRow;
+import utils.MyDataBase;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,9 +17,6 @@ public class ServiceReservation {
         this.cnx = MyDataBase.getInstance().getCnx();
     }
 
-    // =========================
-    // ADD
-    // =========================
     public int add(Reservation r) {
         String sql = "INSERT INTO reservation (date_reservation, statut, modalites_paiement, id_client) VALUES (?,?,?,?)";
 
@@ -47,9 +44,6 @@ public class ServiceReservation {
         return -1;
     }
 
-    // =========================
-    // UPDATE
-    // =========================
     public void update(Reservation r) {
         String sql = "UPDATE reservation SET date_reservation=?, statut=?, modalites_paiement=? WHERE id_reservation=?";
 
@@ -67,9 +61,6 @@ public class ServiceReservation {
         }
     }
 
-    // =========================
-    // DELETE
-    // =========================
     public void delete(int idReservation) {
         String sql = "DELETE FROM reservation WHERE id_reservation=?";
 
@@ -81,9 +72,6 @@ public class ServiceReservation {
         }
     }
 
-    // =========================
-    // GET ALL
-    // =========================
     public List<Reservation> getAll() {
         List<Reservation> list = new ArrayList<>();
         String sql = "SELECT * FROM reservation ORDER BY id_reservation DESC";
@@ -102,9 +90,6 @@ public class ServiceReservation {
         return list;
     }
 
-    // =========================
-    // GET BY CLIENT
-    // =========================
     public List<Reservation> getByClientId(int clientId) {
         List<Reservation> list = new ArrayList<>();
         String sql = "SELECT * FROM reservation WHERE id_client = ? ORDER BY id_reservation DESC";
@@ -125,9 +110,6 @@ public class ServiceReservation {
         return list;
     }
 
-    // =========================
-    // DASHBOARD ADMIN ROWS
-    // =========================
     public List<ReservationAdminRow> getAllAdminRows() {
         List<ReservationAdminRow> list = new ArrayList<>();
 
@@ -198,9 +180,6 @@ public class ServiceReservation {
         return list;
     }
 
-    // =========================
-    // STATS
-    // =========================
     public int countAll() {
         String sql = "SELECT COUNT(*) FROM reservation";
         try (Statement st = cnx.createStatement();
@@ -231,9 +210,6 @@ public class ServiceReservation {
         }
     }
 
-    // =========================
-    // MAPPERS
-    // =========================
     private Reservation mapReservation(ResultSet rs) throws SQLException {
         Reservation r = new Reservation();
         r.setIdReservation(rs.getInt("id_reservation"));

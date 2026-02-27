@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.controllers.NewReservationDialogController"
+      fx:controller="controllers.NewReservationDialogController"
       spacing="14" styleClass="dialog-root">
 
     <padding>
@@ -32,7 +32,7 @@
         <Label text="Paiement" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="dialog-label"/>
         <ComboBox fx:id="cbPaiement" prefWidth="260" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-        <Label text="Statut" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="dialog-label"/>
+        <Label fx:id="lblStatut" text="Statut" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="dialog-label"/>
         <ComboBox fx:id="cbStatut" prefWidth="260" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
     </GridPane>
 

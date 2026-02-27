@@ -277,6 +277,7 @@ public class AdminPanelController {
     @FXML
     void showReservations() {
         switchView(reservationsView);
+        loadSubView("/views/ReservationAdminContentView.fxml", reservationsView);
     }
 
     @FXML
@@ -297,7 +298,7 @@ public class AdminPanelController {
         loadSubView("/views/ReservationHebergementView.fxml", accommodationsContent);
     }
 
-    private void loadSubView(String fxmlPath, StackPane container) {
+    private void loadSubView(String fxmlPath, javafx.scene.layout.Pane container) {
         try {
             container.getChildren().clear();
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));

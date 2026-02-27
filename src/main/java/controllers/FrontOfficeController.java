@@ -67,7 +67,14 @@ public class FrontOfficeController {
     @FXML
     private void handleReservations() {
         setActiveButton(reservationsBtn);
-        loadView("/views/PlaceholderView.fxml");
+        loadView("/views/ReservationsFrontView.fxml");
+        // Add the friend's CSS for reservation styling
+        if (contentArea.getScene() != null) {
+            var css = getClass().getResource("/css/app.css");
+            if (css != null && !contentArea.getScene().getStylesheets().contains(css.toExternalForm())) {
+                contentArea.getScene().getStylesheets().add(css.toExternalForm());
+            }
+        }
     }
 
     @FXML

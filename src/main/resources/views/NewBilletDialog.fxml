@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.controllers.NewBilletDialogController"
+      fx:controller="controllers.NewBilletDialogController"
       spacing="14" styleClass="dialog-root" prefWidth="520">
 
     <padding>

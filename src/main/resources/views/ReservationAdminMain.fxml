@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controllers.AdminDashboardController"
+            fx:controller="controllers.AdminDashboardController"
             styleClass="admin-root">
 
     <!-- SIDEBAR -->

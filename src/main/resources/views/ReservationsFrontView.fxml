@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- Embeddable version of the friend's reservations view (no navbar) -->
+<VBox spacing="24" stylesheets="@../css/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReservationsController">
+
+    <padding>
+        <Insets bottom="40" left="60" right="60" top="28" />
+    </padding>
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <StackPane styleClass="page-icon">
+            <Label styleClass="page-icon-text" text="▦" />
+        </StackPane>
+
+        <VBox spacing="3">
+            <Label styleClass="page-title" text="Mes Réservations" />
+            <Label styleClass="page-subtitle" text="Consultez vos réservations et billets" />
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS" />
+
+        <!-- New Reservation Button -->
+        <Button fx:id="btnNewReservation" onAction="#onNewReservation" styleClass="gradient-btn" text="Nouvelle Réservation">
+            <graphic>
+                <Label styleClass="gradient-btn-plus" text="+" />
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- RESERVATIONS LIST -->
+    <VBox fx:id="reservationsList" spacing="20" />
+
+    <!-- CALENDAR BUTTON -->
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="btnCalendar" onAction="#onOpenCalendar" styleClass="btn-outline" text="📅 Calendrier" />
+    </HBox>
+
+</VBox>
