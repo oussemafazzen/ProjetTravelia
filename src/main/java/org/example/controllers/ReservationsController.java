@@ -7,21 +7,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.models.Billet;
 import org.example.models.Reservation;
 import org.example.services.ServiceBillet;
 import org.example.services.ServiceReservation;
+import org.example.utils.SessionContext;
 
-import java.lang.reflect.Method;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import org.example.services.ServiceClient;
 
 public class ReservationsController {
 
@@ -31,116 +28,106 @@ public class ReservationsController {
     @FXML private Button btnHebergement;
     @FXML private Button btnActivites;
     @FXML private Button btnAvis;
+    @FXML private Button btnCalendar;
 
-    @FXML private Label lblTotalReservations;
-    @FXML private Label lblTotalBillets;
-    @FXML private Label lblMontantTotal;
     @FXML private VBox reservationsList;
+    @FXML private Button btnNewReservation;
 
     private final ServiceReservation sr = new ServiceReservation();
     private final ServiceBillet sb = new ServiceBillet();
-    private final DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private final ServiceClient sc = new ServiceClient();
+
+    private final DateTimeFormatter df  = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @FXML
     public void initialize() {
         setActive(btnReservations);
-        loadStats();
-        loadReservations();
-    }
 
-    /* ---------------- NAV ACTIVE ---------------- */
-
-    private void setActive(Button active) {
-        Button[] all = {btnHome, btnClients, btnReservations, btnHebergement, btnActivites, btnAvis};
-        for (Button b : all) {
-            if (b != null) b.getStyleClass().remove("nav-item-active");
-        }
-        if (active != null && !active.getStyleClass().contains("nav-item-active")) {
-            active.getStyleClass().add("nav-item-active");
-        }
-    }
-
-    /* ---------------- NAV ACTIONS ---------------- */
-
-    @FXML private void goHome(ActionEvent e) {
-        setActive(btnHome);
-        switchScene(e, "/fxml/test.fxml");
-    }
-
-    @FXML private void goClients(ActionEvent e) {
-        setActive(btnClients);
-        openIfExistsOrWarn(e, "/fxml/clients.fxml", "Clients", btnReservations);
-    }
-
-    @FXML private void goReservations(ActionEvent e) {
-        setActive(btnReservations);
-        // déjà sur la page
-    }
-
-    @FXML private void goHebergement(ActionEvent e) {
-        setActive(btnHebergement);
-        openIfExistsOrWarn(e, "/fxml/hebergement.fxml", "Hébergement", btnReservations);
-    }
-
-    @FXML private void goActivites(ActionEvent e) {
-        setActive(btnActivites);
-        openIfExistsOrWarn(e, "/fxml/activites.fxml", "Activités", btnReservations);
-    }
-
-    @FXML private void goAvis(ActionEvent e) {
-        setActive(btnAvis);
-        openIfExistsOrWarn(e, "/fxml/avis.fxml", "Avis", btnReservations);
-    }
-
-    private void openIfExistsOrWarn(ActionEvent e, String fxmlPath, String moduleName, Button fallbackActive) {
-        if (getClass().getResource(fxmlPath) == null) {
-            new Alert(
-                    Alert.AlertType.INFORMATION,
-                    "Module \"" + moduleName + "\" pas encore disponible.\nCrée " + fxmlPath + " pour l'activer."
-            ).showAndWait();
-            setActive(fallbackActive);
+        if (SessionContext.isAdmin()) {
+            loadAllReservationsAdmin();
             return;
         }
-        switchScene(e, fxmlPath);
+
+        Integer clientId = SessionContext.getCurrentUserId();
+        if (clientId == null) {
+            alert(Alert.AlertType.WARNING, "Aucun utilisateur connecté (SessionContext).");
+            return;
+        }
+
+        loadReservationsClient(clientId);
     }
 
-    private void switchScene(ActionEvent e, String fxmlPath) {
+    // =================== ACTIONS ===================
+
+    // ✅ POPUP Nouvelle réservation
+    @FXML
+    private void onNewReservation(ActionEvent e) {
+        Integer clientId = SessionContext.getCurrentUserId();
+        if (clientId == null && !SessionContext.isAdmin()) {
+            alert(Alert.AlertType.WARNING, "Aucun client connecté.");
+            return;
+        }
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewReservationDialog.fxml"));
             Parent root = loader.load();
 
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            NewReservationDialogController ctrl = loader.getController();
+            if (!SessionContext.isAdmin()) ctrl.setClientId(clientId);
+
+            ctrl.setOnSaved(r -> {
+                // refresh après save
+                if (SessionContext.isAdmin()) loadAllReservationsAdmin();
+                else loadReservationsClient(SessionContext.getCurrentUserId());
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Nouvelle réservation");
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
+
+            var css = getClass().getResource("/css/app.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
 
             stage.setScene(scene);
-            stage.setWidth(1300);
-            stage.setHeight(800);
-            stage.centerOnScreen();
-            stage.show();
+            stage.initOwner(((Node) e.getSource()).getScene().getWindow());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, ex.toString()).showAndWait();
+            alert(Alert.AlertType.ERROR, "Erreur ouverture popup: " + ex.getMessage());
         }
     }
 
-    /* ---------------- PAGE CONTENT ---------------- */
+    // ✅ POPUP CALENDRIER
+    @FXML
+    private void onOpenCalendar(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CalendarView.fxml"));
+            Parent root = loader.load();
 
-    private void loadStats() {
-        int totalReservations = sr.getTotalReservations();
-        int totalBillets = sb.getTotalBillets();
-        double montantTotal = sb.getMontantTotal();
+            Stage stage = new Stage();
+            stage.setTitle("Calendrier - Travelia");
+            stage.setScene(new Scene(root, 900, 520));
 
-        lblTotalReservations.setText(String.valueOf(totalReservations));
-        lblTotalBillets.setText(String.valueOf(totalBillets));
-        lblMontantTotal.setText(fmtDT(montantTotal));
+            var css = getClass().getResource("/css/app.css");
+            if (css != null) stage.getScene().getStylesheets().add(css.toExternalForm());
+
+            stage.initOwner(((Node) e.getSource()).getScene().getWindow());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erreur ouverture calendrier: " + ex.getMessage());
+        }
     }
 
-    private void loadReservations() {
-        if (reservationsList == null) return;
+    // =================== LOADERS ===================
 
+    private void loadAllReservationsAdmin() {
         reservationsList.getChildren().clear();
 
         List<Reservation> reservations = sr.getAll();
@@ -148,131 +135,119 @@ public class ReservationsController {
             List<Billet> billets = sb.getByReservationId(r.getIdReservation());
             reservationsList.getChildren().add(buildReservationCard(r, billets));
         }
+
+        if (reservations.isEmpty()) addEmpty();
     }
 
-    /* ========== NEW CARD LAYOUT (comme la 2ème photo) ========== */
+    private void loadReservationsClient(int clientId) {
+        reservationsList.getChildren().clear();
+
+        List<Reservation> reservations = sr.getByClientId(clientId);
+        for (Reservation r : reservations) {
+            List<Billet> billets = sb.getByReservationId(r.getIdReservation());
+            reservationsList.getChildren().add(buildReservationCard(r, billets));
+        }
+
+        if (reservations.isEmpty()) addEmpty();
+    }
+
+    private void addEmpty() {
+        Label empty = new Label("Aucune réservation pour le moment.");
+        empty.getStyleClass().add("muted");
+        reservationsList.getChildren().add(empty);
+    }
+
+    // =================== UI ===================
 
     private VBox buildReservationCard(Reservation r, List<Billet> billets) {
+
         VBox card = new VBox(14);
         card.getStyleClass().add("big-card");
 
-        // HEADER
-        HBox header = new HBox(10);
+        // --- header
+        HBox titleRow = new HBox(10);
         Label title = new Label("Réservation #" + r.getIdReservation());
         title.getStyleClass().add("card-title");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label status = new Label(normalizeStatusText(safe(r.getStatut())));
-        status.getStyleClass().addAll("status-badge", statusClass(safe(r.getStatut())));
+        Label badge = new Label(safe(r.getStatut()));
+        badge.getStyleClass().add(getBadgeClass(r.getStatut()));
 
-        header.getChildren().addAll(title, spacer, status);
+        titleRow.getChildren().addAll(title, spacer, badge);
 
-        // META ROW (date + paiement)
-        HBox metaRow = new HBox(18);
-        metaRow.getStyleClass().add("meta-row");
-        metaRow.setAlignment(Pos.CENTER_LEFT);
+        // --- meta
+        HBox meta = new HBox(18);
+        String dateTxt = (r.getDateReservation() != null) ? r.getDateReservation().format(df) : "-";
+        Label date = new Label(dateTxt);
+        date.getStyleClass().add("muted");
 
-        String dateTxt = (r.getDateReservation() != null) ? r.getDateReservation().format(df) : "";
-        String payTxt = safe(r.getModalitesPaiement());
+        Label pay = new Label(safe(r.getModalitesPaiement()));
+        pay.getStyleClass().add("muted");
 
-        metaRow.getChildren().addAll(
-                metaItem("🕒", dateTxt),
-                metaItem("💳", payTxt)
-        );
+        meta.getChildren().addAll(date, pay);
 
-        // CLIENT BOX (violet) - on tente de récupérer un nom client si dispo
-        VBox clientBox = new VBox(4);
-        clientBox.getStyleClass().add("client-box");
-
-        Label clientLbl = new Label("Client");
-        clientLbl.getStyleClass().add("muted-small");
-
-        String clientName = findClientName(r);
-        if (clientName.isBlank()) clientName = "Client";
-        Label clientNameLbl = new Label(clientName);
-        clientNameLbl.getStyleClass().add("client-name");
-
-        clientBox.getChildren().addAll(clientLbl, clientNameLbl);
-
-        // Billets title
-        int n = (billets == null) ? 0 : billets.size();
-        Label billetsTitle = new Label("Billets (" + n + ")");
+        // --- billets title
+        Label billetsTitle = new Label("Billets (" + billets.size() + ")");
         billetsTitle.getStyleClass().add("section-mini");
 
-        // Liste billets
-        VBox ticketsBox = new VBox(14);
-        if (billets != null) {
-            for (Billet b : billets) {
-                ticketsBox.getChildren().add(buildTicketRow(b));
-            }
+        card.getChildren().addAll(titleRow, meta, billetsTitle);
+
+        // --- billets list
+        if (billets.isEmpty()) {
+            Label noTickets = new Label("Aucun billet associé à cette réservation.");
+            noTickets.getStyleClass().add("muted-small");
+            card.getChildren().add(noTickets);
         }
 
-        // Separator soft
-        Separator sep = new Separator();
-        sep.getStyleClass().add("soft-sep");
-
-        // TOTAL
         double total = 0;
-        if (billets != null) {
-            for (Billet b : billets) total += b.getPrix();
+        for (Billet b : billets) {
+            total += b.getPrix();
+            card.getChildren().add(buildTicketRow(b));
         }
 
-        HBox totalRow = new HBox(10);
-        totalRow.getStyleClass().add("total-row");
+        Separator sep = new Separator();
+
+        // --- total row
+        HBox totalRow = new HBox(12);
         totalRow.setAlignment(Pos.CENTER_LEFT);
 
         Label totalLabel = new Label("Total de la réservation");
-        totalLabel.getStyleClass().add("total-label");
+        totalLabel.getStyleClass().add("section-mini");
 
-        Region spacer2 = new Region();
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
+        Region sp = new Region();
+        HBox.setHgrow(sp, Priority.ALWAYS);
 
-        Label totalAmount = new Label(fmtDT(total));
-        totalAmount.getStyleClass().add("total-amount");
+        Label totalValue = new Label(String.format("%.0f DT", total));
+        totalValue.getStyleClass().add("ticket-price");
 
-        totalRow.getChildren().addAll(totalLabel, spacer2, totalAmount);
+        totalRow.getChildren().addAll(totalLabel, sp, totalValue);
 
-        // ACTIONS
+        // --- actions row (✅ modifier + ajouter billet)
         HBox actions = new HBox(10);
-        actions.getStyleClass().add("actions-row");
-        actions.setAlignment(Pos.CENTER_LEFT);
+        actions.setAlignment(Pos.CENTER_RIGHT);
 
         Button btnEdit = new Button("Modifier");
         btnEdit.getStyleClass().add("btn-outline");
 
-        Button btnPrint = new Button("Imprimer");
-        btnPrint.getStyleClass().add("btn-outline");
+        Button btnAddBillet = new Button("Ajouter billet");
+        btnAddBillet.getStyleClass().add("btn-primary");
 
-        Button btnCancel = new Button("Annuler");
-        btnCancel.getStyleClass().add("btn-danger");
+        btnEdit.setOnAction(ev -> openEditReservationDialog(r));
+        btnAddBillet.setOnAction(ev -> openNewBilletDialog(r));
 
-        actions.getChildren().addAll(btnEdit, btnPrint, btnCancel);
+        actions.getChildren().addAll(btnEdit, btnAddBillet);
 
-        card.getChildren().addAll(header, metaRow, clientBox, billetsTitle, ticketsBox, sep, totalRow, actions);
+        card.getChildren().addAll(sep, totalRow, actions);
+
         return card;
     }
 
-    private HBox metaItem(String icon, String text) {
-        HBox box = new HBox(8);
-        box.getStyleClass().add("meta-item");
-        box.setAlignment(Pos.CENTER_LEFT);
-
-        Label ic = new Label(icon);
-        ic.getStyleClass().add("meta-icon");
-
-        Label t = new Label(text);
-        t.getStyleClass().add("muted");
-
-        box.getChildren().addAll(ic, t);
-        return box;
-    }
-
     private HBox buildTicketRow(Billet b) {
-        HBox row = new HBox(16);
+
+        HBox row = new HBox(14);
         row.getStyleClass().add("ticket-row");
-        row.setAlignment(Pos.CENTER_LEFT);
 
         StackPane icon = new StackPane();
         icon.getStyleClass().add("ticket-icon");
@@ -282,41 +257,119 @@ public class ReservationsController {
         icon.getChildren().add(ic);
 
         VBox left = new VBox(4);
-        HBox.setHgrow(left, Priority.ALWAYS);
 
-        // Titre: si tu as des villes dans Billet un jour, on pourra mettre "Paris → Tokyo"
         Label title = new Label(safe(b.getNumeroBillet()));
         title.getStyleClass().add("ticket-title");
 
         Label meta1 = new Label("Transport: " + safe(b.getTypeTransport()));
         meta1.getStyleClass().add("muted-small");
 
-        String depart = b.getDateDepart() != null ? b.getDateDepart().format(df) : "";
-        String arrivee = b.getDateArrivee() != null ? b.getDateArrivee().format(df) : "";
+        String depart  = (b.getDateDepart() != null) ? b.getDateDepart().format(dtf) : "-";
+        String arrivee = (b.getDateArrivee() != null) ? b.getDateArrivee().format(dtf) : "-";
+
         Label meta2 = new Label("Départ: " + depart + " → Arrivée: " + arrivee);
         meta2.getStyleClass().add("muted-small");
 
         left.getChildren().addAll(title, meta1, meta2);
 
-        VBox right = new VBox(10);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        VBox right = new VBox(8);
         right.setAlignment(Pos.CENTER_RIGHT);
 
-        Label price = new Label(fmtDT(b.getPrix()));
+        Label price = new Label(String.format("%.0f DT", b.getPrix()));
         price.getStyleClass().add("ticket-price");
 
-        Label badge = new Label(normalizeStatusText(safe(b.getStatut())));
-        badge.getStyleClass().addAll("status-badge", statusClass(safe(b.getStatut())));
+        Label badge = new Label(safe(b.getStatut()));
+        badge.getStyleClass().add(getBadgeClass(b.getStatut()));
 
         right.getChildren().addAll(price, badge);
 
-        row.getChildren().addAll(icon, left, right);
+        row.getChildren().addAll(icon, left, spacer, right);
+
         return row;
     }
 
-    /* ---------------- Helpers ---------------- */
+    // =================== POPUPS ===================
 
-    private String fmtDT(double amount) {
-        return String.format("%.0f DT", amount);
+    private void openEditReservationDialog(Reservation r) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditReservationDialog.fxml"));
+            Parent root = loader.load();
+
+            EditReservationDialogController ctrl = loader.getController();
+            ctrl.setReservation(r);
+
+            ctrl.setOnUpdated(updated -> {
+                // refresh après update
+                if (SessionContext.isAdmin()) loadAllReservationsAdmin();
+                else loadReservationsClient(SessionContext.getCurrentUserId());
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Modifier réservation #" + r.getIdReservation());
+            Scene scene = new Scene(root);
+
+            var css = getClass().getResource("/css/app.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erreur popup modifier: " + ex.getMessage());
+        }
+    }
+
+    private void openNewBilletDialog(Reservation r) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewBilletDialog.fxml"));
+            Parent root = loader.load();
+
+            NewBilletDialogController ctrl = loader.getController();
+            ctrl.setReservationId(r.getIdReservation());
+
+            ctrl.setOnSaved(b -> {
+                // refresh après ajout billet
+                if (SessionContext.isAdmin()) loadAllReservationsAdmin();
+                else loadReservationsClient(SessionContext.getCurrentUserId());
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Ajouter billet (Réservation #" + r.getIdReservation() + ")");
+            Scene scene = new Scene(root);
+
+            var css = getClass().getResource("/css/app.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erreur popup billet: " + ex.getMessage());
+        }
+    }
+
+    // =================== UTILS ===================
+
+    private String safe(String s) {
+        return (s == null || s.isBlank()) ? "-" : s;
+    }
+
+    private String getBadgeClass(String statut) {
+        if (statut == null) return "badge-neutral";
+        String s = statut.toLowerCase();
+        if (s.contains("attente")) return "badge-waiting";
+        if (s.contains("confirm")) return "badge-success";
+        if (s.contains("annul")) return "badge-danger";
+        return "badge-neutral";
     }
 
     private String getIconForTransport(String type) {
@@ -329,65 +382,40 @@ public class ReservationsController {
         };
     }
 
-    private String safe(String s) {
-        return s == null ? "" : s;
+    private void alert(Alert.AlertType t, String msg) {
+        new Alert(t, msg, ButtonType.OK).showAndWait();
     }
 
-    // Map statut -> class (confirmed/pending/cancelled)
-    private String statusClass(String raw) {
-        String s = safe(raw).toLowerCase();
-        if (s.contains("confirm")) return "status-confirmed";
-        if (s.contains("attente") || s.contains("en_attente") || s.contains("pending")) return "status-pending";
-        if (s.contains("annul") || s.contains("cancel")) return "status-cancelled";
-        return "status-pending";
-    }
+    // =================== NAVIGATION ===================
 
-    private String normalizeStatusText(String raw) {
-        String s = safe(raw).trim();
-        if (s.isEmpty()) return "en_attente";
-        return s.replace('_', ' ');
-    }
-
-    private String findClientName(Reservation r) {
-
-        // A) si Reservation contient déjà un nom client, on prend
-        String direct = tryGetString(r, "getClientName", "getNomClient", "getClientNom", "getClientFullName");
-        if (!direct.isBlank() && !"Client".equalsIgnoreCase(direct)) return direct;
-
-        // B) sinon on récupère l'id client depuis Reservation
-        Integer clientId = tryGetInt(r, "getIdClient", "getClientId", "getId_client", "getClient_id");
-        if (clientId != null && clientId > 0) {
-            return sc.getFullNameById(clientId);
+    private void setActive(Button active) {
+        Button[] all = {btnHome, btnReservations, btnClients, btnHebergement, btnActivites, btnAvis};
+        for (Button b : all) {
+            if (b != null) b.getStyleClass().remove("nav-item-active");
         }
-
-        return "Client";
+        if (active != null) active.getStyleClass().add("nav-item-active");
     }
 
-    private String tryGetString(Object obj, String... methods) {
-        for (String m : methods) {
-            try {
-                var method = obj.getClass().getMethod(m);
-                Object val = method.invoke(obj);
-                if (val != null) {
-                    String s = val.toString().trim();
-                    if (!s.isEmpty()) return s;
-                }
-            } catch (Exception ignored) {}
-        }
-        return "";
-    }
+    @FXML private void goHome(ActionEvent e) { setActive(btnHome); switchScene(e, "/fxml/test.fxml"); }
+    @FXML private void goReservations(ActionEvent e) { setActive(btnReservations); }
+    @FXML private void goClients(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Accès réservé à l'admin."); }
+    @FXML private void goHebergement(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Accès réservé à l'admin."); }
+    @FXML private void goActivites(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Accès réservé à l'admin."); }
+    @FXML private void goAvis(ActionEvent e) { switchScene(e, "/fxml/avis.fxml"); }
 
-    private Integer tryGetInt(Object obj, String... methods) {
-        for (String m : methods) {
-            try {
-                var method = obj.getClass().getMethod(m);
-                Object val = method.invoke(obj);
-                if (val == null) continue;
-                if (val instanceof Number n) return n.intValue();
-                String s = val.toString().trim();
-                if (!s.isEmpty()) return Integer.parseInt(s);
-            } catch (Exception ignored) {}
+    private void switchScene(ActionEvent e, String fxmlPath) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+
+            Scene scene = new Scene(root, 1300, 800);
+            var css = getClass().getResource("/css/app.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return null;
     }
 }

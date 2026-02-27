@@ -6,6 +6,7 @@ import org.example.services.ServiceBillet;
 import org.example.services.ServiceReservation;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Main {
 
@@ -14,26 +15,25 @@ public class Main {
         ServiceReservation sr = new ServiceReservation();
         ServiceBillet sb = new ServiceBillet();
 
-        Reservation r = new Reservation(
-                LocalDateTime.now(),
-                "confirmee",
-                "carte",
-                1
-        );
+        Reservation r = new Reservation();
+        r.setDateReservation(LocalDateTime.now());
+        r.setStatut("confirmee");
+        r.setModalitesPaiement("carte");
+        r.setClientId(1);
 
         sr.add(r);
 
-        Reservation lastReservation = sr.getAll().get(sr.getAll().size() - 1);
+        List<Reservation> reservations = sr.getAll();
+        Reservation lastReservation = reservations.get(reservations.size() - 1);
 
-        Billet b = new Billet(
-                "avion",
-                "BIL-" + System.currentTimeMillis(),
-                LocalDateTime.now(),
-                LocalDateTime.now().plusHours(2),
-                450,
-                "confirme",
-                lastReservation
-        );
+        Billet b = new Billet();
+        b.setTypeTransport("avion");
+        b.setNumeroBillet("BIL-" + System.currentTimeMillis());
+        b.setDateDepart(LocalDateTime.now());
+        b.setDateArrivee(LocalDateTime.now().plusHours(2));
+        b.setPrix(450);
+        b.setStatut("confirme");
+        b.setReservationId(lastReservation.getIdReservation());
 
         sb.add(b);
 

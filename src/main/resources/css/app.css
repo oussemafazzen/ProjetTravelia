@@ -392,3 +392,369 @@
     -fx-padding: 6 12 6 12;
     -fx-background-radius: 999;
 }
+/* ================= NOUVELLE RESERVATION BUTTON ================= */
+
+.gradient-btn {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+
+    -fx-padding: 10 24 10 18;
+    -fx-cursor: hand;
+
+    -fx-graphic-text-gap: 10;
+
+    -fx-effect: dropshadow(gaussian, rgba(122,44,255,0.35), 16, 0.25, 0, 6);
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.gradient-btn:hover {
+    -fx-opacity: 0.95;
+    -fx-effect: dropshadow(gaussian, rgba(122,44,255,0.45), 20, 0.25, 0, 8);
+}
+
+.gradient-btn:pressed {
+    -fx-translate-y: 1;
+    -fx-opacity: 0.90;
+}
+
+.gradient-btn-plus {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+/* ===================================================== */
+/* ================= CALENDAR POPUP ==================== */
+/* ===================================================== */
+
+/* ===== HEADER VIOLET (moins grand) ===== */
+.calendar-header {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+
+    /* ✅ hauteur réduite */
+    -fx-padding: 8 18 8 18;
+
+    /* ✅ ombre plus douce */
+    -fx-effect: dropshadow(gaussian, rgba(122,44,255,0.22), 16, 0.25, 0, 5);
+}
+
+/* Titre dans la bande */
+.calendar-header .page-title {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+}
+
+/* ===== Sous-titre ===== */
+.calendar-subtitle {
+    -fx-text-fill: #6b7a90;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+/* ===== Cartes principales ===== */
+.calendar-card {
+    -fx-background-color: rgba(255,255,255,0.95);
+
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-border-color: #eef2f7;
+    -fx-border-width: 1;
+
+    -fx-padding: 18;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.25, 0, 6);
+}
+
+/* ===== DatePicker plus clean ===== */
+.calendar-picker {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+/* ===== Jours avec réservation ===== */
+.has-reservation-day {
+    -fx-background-color: rgba(122,44,255,0.18);
+    -fx-background-radius: 10;
+}
+
+/* ===== Chip compteur (si utilisé) ===== */
+.chip {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-font-size: 12px;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 999;
+}
+
+/* ===== Carte détail réservation ===== */
+.ticket-row {
+    -fx-background-color: white;
+
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+
+    -fx-border-color: #eef2f7;
+    -fx-border-width: 1;
+
+    -fx-padding: 14;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0.2, 0, 3);
+}
+
+/* ===== Total violet ===== */
+.ticket-price {
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #7a2cff;
+}
+
+/* ===== ScrollPane plus clean ===== */
+.page-scroll {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+.page-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ===== Bouton retour ===== */
+.btn-outline {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+    -fx-padding: 6 14 6 14;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+
+.btn-outline:hover {
+    -fx-background-color: #f8fafc;
+}
+/* ===================================================== */
+/* =============== NEW RESERVATION DIALOG ============== */
+/* ===================================================== */
+
+.dialog-root {
+    -fx-background-color: #f3f6fb;
+    -fx-background-radius: 18;
+}
+
+.dialog-header {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+    -fx-background-radius: 18;
+    -fx-padding: 10 14 10 14;
+    -fx-effect: dropshadow(gaussian, rgba(122,44,255,0.22), 16, 0.25, 0, 5);
+}
+
+.dialog-header-icon {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+.dialog-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+.dialog-close {
+    -fx-background-color: rgba(255,255,255,0.18);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 10;
+    -fx-padding: 6 10 6 10;
+    -fx-cursor: hand;
+}
+.dialog-close:hover { -fx-background-color: rgba(255,255,255,0.28); }
+
+.dialog-content {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: #eef2f7;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.25, 0, 6);
+}
+
+.dialog-subtitle {
+    -fx-text-fill: #6b7a90;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.form-label {
+    -fx-text-fill: #0d1b2a;
+    -fx-font-weight: 800;
+}
+
+.form-control {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.form-error {
+    -fx-text-fill: #b91c1c;
+    -fx-font-weight: 700;
+}
+/* ================= DIALOG (New Reservation) ================= */
+
+.dialog-root {
+    -fx-background-color: #f3f6fb;
+    -fx-background-radius: 16;
+}
+
+.dialog-header {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+    -fx-background-radius: 16 16 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.25, 0, 6);
+}
+
+.dialog-header-icon {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+}
+
+.dialog-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+.dialog-close {
+    -fx-background-color: rgba(255,255,255,0.20);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 999;
+    -fx-padding: 6 10 6 10;
+    -fx-cursor: hand;
+}
+.dialog-close:hover { -fx-background-color: rgba(255,255,255,0.28); }
+
+.dialog-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.20, 0, 6);
+}
+
+.dialog-subtitle {
+    -fx-text-fill: #6b7a90;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.dialog-label {
+    -fx-text-fill: #0d1b2a;
+    -fx-font-weight: 800;
+}
+
+.dialog-input {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e6edf4;
+    -fx-border-width: 1;
+    -fx-padding: 8 10 8 10;
+}
+
+.dialog-primary {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 999;
+    -fx-padding: 9 16 9 16;
+    -fx-cursor: hand;
+}
+.dialog-primary:hover { -fx-opacity: 0.95; }
+
+.dialog-error {
+    -fx-background-color: #fff1f2;
+    -fx-text-fill: #991b1b;
+    -fx-font-weight: 800;
+    -fx-padding: 8 10 8 10;
+    -fx-background-radius: 10;
+}
+/* ================= DIALOG MODERNE ================= */
+.dialog-root {
+    -fx-background-color: #f3f6fb;
+}
+
+.dialog-header {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(122,44,255,0.25), 18, 0.25, 0, 6);
+}
+
+.dialog-header-icon {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+.dialog-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+.dialog-close {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: white;
+    -fx-background-radius: 999;
+    -fx-padding: 6 12 6 12;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+.dialog-close:hover { -fx-background-color: rgba(255,255,255,0.22); }
+
+.dialog-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.22, 0, 6);
+}
+
+.dialog-label {
+    -fx-text-fill: #334155;
+    -fx-font-weight: 800;
+}
+
+.dialog-input {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-padding: 8 10 8 10;
+}
+
+.dialog-error {
+    -fx-text-fill: #dc2626;
+    -fx-font-weight: 800;
+}
+
+.dialog-primary {
+    -fx-background-color: linear-gradient(to right, #ff4fd8, #7a2cff);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 999;
+    -fx-padding: 10 18 10 18;
+    -fx-cursor: hand;
+}
+.dialog-primary:hover { -fx-opacity: 0.95; }

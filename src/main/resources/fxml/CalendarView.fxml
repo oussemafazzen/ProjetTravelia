@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controllers.CalendarViewController"
+            styleClass="app-root">
+
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="calendar-header">
+            <padding>
+                <Insets top="12" right="20" bottom="12" left="20"/>
+            </padding>
+
+            <Label text="📅 Calendrier des réservations" styleClass="page-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="← Retour" onAction="#onClose" styleClass="btn-outline"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="14" styleClass="calendar-page">
+            <padding>
+                <Insets top="18" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <!-- Petit sous-titre -->
+            <Label text="Sélectionne une date pour voir les réservations et billets."
+                   styleClass="calendar-subtitle"/>
+
+            <!-- Layout 2 colonnes -->
+            <HBox spacing="18">
+
+                <!-- Colonne gauche -->
+                <VBox spacing="12" prefWidth="420" styleClass="calendar-card">
+                    <Label text="Choisir une date" styleClass="section-mini"/>
+                    <DatePicker fx:id="datePicker" styleClass="calendar-picker"/>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="ℹ" styleClass="info-icon"/>
+                        <Label text="Astuce : les jours avec réservations sont marqués."
+                               styleClass="muted-small"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Colonne droite -->
+                <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="calendar-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="Détails" styleClass="section-mini"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblCount" text="" styleClass="chip"/>
+                    </HBox>
+
+                    <ScrollPane fitToWidth="true" pannable="true" styleClass="page-scroll">
+                        <content>
+                            <VBox fx:id="detailsBox" spacing="10"/>
+                        </content>
+                    </ScrollPane>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.NewBilletDialogController"
+      spacing="14" styleClass="dialog-root" prefWidth="520">
+
+    <padding>
+        <Insets top="18" right="18" bottom="18" left="18"/>
+    </padding>
+
+    <Label text="Ajouter un billet" styleClass="dialog-title"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="140" prefWidth="160"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Transport" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="cbTransport" prefWidth="260" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Départ" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dpDepart" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Arrivée" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dpArrivee" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Prix (DT)" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfPrix" promptText="ex: 300" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Statut" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="cbStatut" prefWidth="260" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Label fx:id="lblError" text="" styleClass="error-text" managed="false" visible="false"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#onCancel" styleClass="btn-outline"/>
+        <Button text="Ajouter" onAction="#onSave" styleClass="btn-primary"/>
+    </HBox>
+
+</VBox>

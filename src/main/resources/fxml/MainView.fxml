@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controllers.AdminDashboardController"
+            styleClass="admin-root">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" spacing="10">
+            <padding>
+                <Insets top="18" right="16" bottom="16" left="16"/>
+            </padding>
+
+            <VBox spacing="2">
+                <Label text="Travelia Admin" styleClass="sidebar-title"/>
+                <Label text="Backoffice" styleClass="sidebar-subtitle"/>
+            </VBox>
+
+            <Separator opacity="0.25"/>
+
+            <Button text="Gestion Utilisateurs" onAction="#goUsers" styleClass="side-item"/>
+            <Button text="Gestion Administrateurs" onAction="#goAdmins" styleClass="side-item"/>
+            <Button text="Gestion Réservation &amp; billets" onAction="#goReservations" styleClass="side-item side-active"/>
+            <Button text="Gestion Hébergements &amp; Logements" onAction="#goHebergement" styleClass="side-item"/>
+            <Button text="Gestion d'Activités Touristiques" onAction="#goActivites" styleClass="side-item"/>
+            <Button text="Gestion Avis &amp; Recommendations" onAction="#goAvis" styleClass="side-item"/>
+            <Button text="Statistiques" onAction="#goStats" styleClass="side-item"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <CheckBox text="Mode Clair" styleClass="label"/>
+            </HBox>
+
+            <Button text="Déconnexion" onAction="#onLogout" styleClass="side-danger"/>
+        </VBox>
+    </left>
+
+    <!-- CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" styleClass="content-wrap">
+            <content>
+                <VBox spacing="18" styleClass="content-wrap">
+                    <padding>
+                        <Insets top="24" right="28" bottom="28" left="28"/>
+                    </padding>
+
+                    <!-- TOP ROW -->
+                    <HBox alignment="TOP_LEFT" spacing="18">
+                        <VBox spacing="4">
+                            <Label text="Gestion des Réservations" styleClass="page-title"/>
+                            <Label text="Gérez les réservations et billets depuis le backoffice" styleClass="page-subtitle"/>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <TextField fx:id="txtSearch" promptText="Rechercher par client, statut..." styleClass="search-field"/>
+                        <Button text="Rechercher" onAction="#onSearch" styleClass="btn-primary"/>
+                        <Button text="Actualiser" onAction="#onRefresh" styleClass="btn-secondary"/>
+                    </HBox>
+
+                    <!-- STATS -->
+                    <HBox spacing="14">
+                        <VBox styleClass="stat-card" spacing="6">
+                            <Label text="Total Réservations" styleClass="stat-label"/>
+                            <Label fx:id="lblTotalReservations" text="0" styleClass="stat-value"/>
+                        </VBox>
+
+                        <VBox styleClass="stat-card" spacing="6">
+                            <Label text="Billets Totaux" styleClass="stat-label"/>
+                            <Label fx:id="lblTotalBillets" text="0" styleClass="stat-value"/>
+                        </VBox>
+
+                        <VBox styleClass="stat-card" spacing="6">
+                            <Label text="Montant Total" styleClass="stat-label"/>
+                            <Label fx:id="lblMontantTotal" text="0 DT" styleClass="stat-value"/>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <!-- TABLE CARD -->
+                    <VBox styleClass="table-card" spacing="12">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="Liste des réservations" styleClass="table-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="Exporter" onAction="#onExport" styleClass="btn-outline"/>
+                        </HBox>
+
+                        <TableView fx:id="table" styleClass="admin-table" prefHeight="520">
+                            <!-- ✅ FIX resize policy (évite l'erreur CONSTRAINED_RESIZE_POLICY) -->
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+
+                            <columns>
+                                <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+                                <TableColumn fx:id="colClient" text="Client" prefWidth="220"/>
+                                <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
+                                <TableColumn fx:id="colStatut" text="Statut" prefWidth="160"/>
+                                <TableColumn fx:id="colPaiement" text="Paiement" prefWidth="160"/>
+                                <TableColumn fx:id="colActions" text="Actions (Edit / Suppr / Bloc)" prefWidth="280"/>
+                            </columns>
+                        </TableView>
+
+                    </VBox>
+
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

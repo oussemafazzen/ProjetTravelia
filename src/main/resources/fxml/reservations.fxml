@@ -45,8 +45,8 @@
                         <text>Clients</text>
                     </Button>
 
-                    <Button fx:id="btnReservations" onAction="#goReservations" styleClass="nav-item">
-                        <graphic><Label text="📅" styleClass="nav-icon"/></graphic>
+                    <Button fx:id="btnReservations" onAction="#goReservations" styleClass="nav-item nav-item-active">
+                        <graphic><Label text="▦" styleClass="nav-icon"/></graphic>
                         <text>Réservations</text>
                     </Button>
 
@@ -66,7 +66,6 @@
                     </Button>
 
                 </HBox>
-
             </HBox>
         </VBox>
     </top>
@@ -79,40 +78,42 @@
                         <Insets top="28" right="60" bottom="40" left="60"/>
                     </padding>
 
+                    <!-- HEADER -->
                     <HBox alignment="CENTER_LEFT" spacing="14">
                         <StackPane styleClass="page-icon">
-                            <Label text="📅" styleClass="page-icon-text"/>
+                            <Label text="▦" styleClass="page-icon-text"/>
                         </StackPane>
 
                         <VBox spacing="3">
-                            <Label text="Réservations &amp; Billets" styleClass="page-title"/>
-                            <Label text="Gérez toutes vos réservations de transport" styleClass="page-subtitle"/>
+                            <Label text="Mes Réservations" styleClass="page-title"/>
+                            <Label text="Consultez vos réservations et billets" styleClass="page-subtitle"/>
                         </VBox>
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Button text="+  Nouvelle Réservation" styleClass="gradient-btn"/>
+                        <!-- ✅ POPUP FORM -->
+                        <Button fx:id="btnNewReservation"
+                                onAction="#onNewReservation"
+                                styleClass="gradient-btn"
+                                text="Nouvelle Réservation">
+                            <graphic>
+                                <Label text="+" styleClass="gradient-btn-plus"/>
+                            </graphic>
+                        </Button>
                     </HBox>
 
-                    <!-- ✅ STATS -->
-                    <HBox spacing="20">
-                        <VBox styleClass="stat-card">
-                            <Label text="Total Réservations" styleClass="stat-title"/>
-                            <Label fx:id="lblTotalReservations" text="0" styleClass="stat-number stat-purple"/>
-                        </VBox>
-
-                        <VBox styleClass="stat-card">
-                            <Label text="Total Billets" styleClass="stat-title"/>
-                            <Label fx:id="lblTotalBillets" text="0" styleClass="stat-number stat-pink"/>
-                        </VBox>
-
-                        <VBox styleClass="stat-card">
-                            <Label text="Montant Total" styleClass="stat-title"/>
-                            <Label fx:id="lblMontantTotal" text="0 DT" styleClass="stat-number stat-blue"/>
-                        </VBox>
-                    </HBox>
-
+                    <!-- LISTE -->
                     <VBox fx:id="reservationsList" spacing="16"/>
+
+                    <!-- ACTIONS BAS -->
+                    <HBox alignment="CENTER_LEFT" spacing="14">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnCalendar"
+                                text="📅 Calendrier"
+                                onAction="#onOpenCalendar"
+                                styleClass="btn-outline"/>
+                    </HBox>
+
                 </VBox>
             </content>
         </ScrollPane>

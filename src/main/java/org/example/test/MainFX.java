@@ -12,11 +12,15 @@ public class MainFX extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        SessionContext.loginAsClient(1); // mets un id qui existe dans ta table reservation.id_client
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/my_reservations.fxml"));
+        SessionContext.loginAsClient(1);
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/test.fxml"));
+        Parent root = loader.load();
 
         Scene scene = new Scene(root, 1300, 800);
-        scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
+
+        var cssUrl = getClass().getResource("/css/app.css");
+        if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
 
         stage.setTitle("Travelia");
         stage.setScene(scene);
@@ -31,6 +35,6 @@ public class MainFX extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }
