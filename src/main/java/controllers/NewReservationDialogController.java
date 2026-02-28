@@ -5,6 +5,8 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.Reservation;
 import services.ServiceReservation;
+import services.ServiceBillet;
+import models.Billet;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,8 +22,10 @@ public class NewReservationDialogController {
     @FXML private Label lblError;
 
     private final ServiceReservation sr = new ServiceReservation();
+    private final ServiceBillet sb = new ServiceBillet();
 
     private Integer clientId;
+    private Billet initialBillet;
     private Consumer<Reservation> onSaved;
 
     @FXML
@@ -46,6 +50,10 @@ public class NewReservationDialogController {
 
     public void setClientId(Integer clientId) {
         this.clientId = clientId;
+    }
+
+    public void setInitialBillet(Billet b) {
+        this.initialBillet = b;
     }
 
     public void setOnSaved(Consumer<Reservation> onSaved) {
@@ -80,7 +88,15 @@ public class NewReservationDialogController {
         r.setClientId(clientId); // ✅
 
         try {
-            sr.add(r); // ✅ ajoute + récupère idReservation
+            int idRes = sr.add(r); // ✅ ajoute + récupère idReservation
+            r.setIdReservation(idRes);
+
+            // Auto-create billet if one was passed in
+            if (initialBillet != null) {
+                initialBillet.setReservationId(idRes);
+                sb.add(initialBillet);
+            }
+
             if (onSaved != null) onSaved.accept(r);
             closeWindow();
         } catch (Exception ex) {

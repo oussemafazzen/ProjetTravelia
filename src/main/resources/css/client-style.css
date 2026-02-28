@@ -74,6 +74,84 @@
     -fx-text-fill: #0156ff;
 }
 
+/* Stylish Profile Avatar (Booking.com Style) */
+.profile-vbox-btn {
+    -fx-padding: 4 12;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s;
+}
+
+.profile-vbox-btn:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+.avatar-circle {
+    -fx-background-color: #f59e0b;
+    /* Golden/Amber for Genius-like feel */
+    -fx-background-radius: 50;
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-max-width: 34;
+    -fx-max-height: 34;
+    -fx-alignment: center;
+}
+
+.avatar-initial {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.profile-name-mini {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+    -fx-font-size: 13px;
+}
+
+.profile-level-mini {
+    -fx-text-fill: #0156ff;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0, 0, 5);
+    -fx-padding: 8 0;
+    -fx-min-width: 220;
+}
+
+.dropdown-item {
+    -fx-padding: 10 20;
+    -fx-alignment: center-left;
+    -fx-spacing: 12;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+.dropdown-item-text {
+    -fx-text-fill: #1e293b;
+    -fx-font-size: 14px;
+}
+
+.dropdown-item-icon {
+    -fx-font-size: 16px;
+}
+
+.dropdown-divider {
+    -fx-background-color: #e2e8f0;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+    -fx-margin: 4 0;
+}
+
 /* ============================================
    HERO BANNER - Gradient Blue Card
    ============================================ */
@@ -492,4 +570,216 @@
     -fx-background-color: #334155;
     -fx-scale-x: 1.0;
     -fx-scale-y: 1.0;
+}
+
+/* ============================================
+   GO VOYAGE STYLE - Reservations Page
+   ============================================ */
+.booking-hero {
+    -fx-background-image: url("../images/plane_bg.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-min-height: 500;
+    -fx-background-radius: 25;
+}
+
+.booking-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-background-radius: 25;
+}
+
+.booking-search-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 20, 0, 0, 10);
+}
+
+.booking-tab-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: bold;
+    -fx-padding: 12 25;
+    -fx-cursor: hand;
+}
+
+.booking-tab-active {
+    -fx-background-color: #f8fafc;
+    -fx-text-fill: #0156ff;
+    -fx-border-color: transparent transparent #0156ff transparent;
+    -fx-border-width: 0 0 3 0;
+}
+
+.booking-input-group {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 10;
+    -fx-padding: 10 15;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 10;
+}
+
+.booking-label-small {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #64748b;
+    -fx-text-transform: uppercase;
+}
+
+.btn-go-voyage {
+    -fx-background-color: linear-gradient(to right, #0156ff, #00d1ff);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-font-size: 16px;
+    -fx-background-radius: 12;
+    -fx-padding: 15 40;
+    -fx-effect: dropshadow(gaussian, rgba(1, 86, 255, 0.4), 10, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+.btn-go-voyage:hover {
+    -fx-opacity: 0.9;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.btn-search-flights {
+    -fx-background-color: linear-gradient(to right, #0156ff, #00d1ff);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-font-size: 16px;
+    -fx-background-radius: 12;
+    -fx-padding: 15 40;
+    -fx-effect: dropshadow(gaussian, rgba(1, 86, 255, 0.4), 10, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+.btn-search-flights:hover {
+    -fx-opacity: 0.9;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* Flight Results Styles */
+.results-header-container {
+    -fx-padding: 20 0;
+}
+
+.result-option-card {
+    -fx-background-color: white;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 15 25;
+    -fx-cursor: hand;
+    -fx-min-width: 250;
+}
+
+.result-option-card:hover {
+    -fx-border-color: #0156ff;
+    -fx-background-color: #f8fafc;
+}
+
+.result-option-active {
+    -fx-border-color: #0156ff;
+    -fx-border-width: 2;
+    -fx-background-color: #f0f7ff;
+}
+
+.result-label-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.result-label-price {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0156ff;
+}
+
+.result-label-info {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+}
+
+.flight-item-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+}
+
+/* Flight Results Standalone View Styles */
+.results-view-container {
+    -fx-background-color: #f1f5f9;
+}
+
+.results-top-header {
+    -fx-background-color: white;
+    -fx-padding: 15 25;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 1);
+}
+
+.flight-card-premium {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 15, 0, 0, 4);
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-cursor: default;
+}
+
+.flight-card-premium:hover {
+    -fx-border-color: #0156ff;
+}
+
+.airline-badge {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 8;
+    -fx-padding: 5 10;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.status-badge-direct {
+    -fx-text-fill: #10b981;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.btn-select-flight {
+    -fx-background-color: linear-gradient(to right, #0156ff, #00d1ff);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 25;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(1, 86, 255, 0.2), 8, 0, 0, 2);
+}
+
+.btn-select-flight:hover {
+    -fx-opacity: 0.9;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.btn-back-research {
+    -fx-background-color: transparent;
+    -fx-text-fill: #0156ff;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 5 10;
+}
+
+.btn-back-research:hover {
+    -fx-text-fill: #00d1ff;
+    -fx-background-color: #f0f7ff;
+    -fx-background-radius: 5;
 }

@@ -10,6 +10,9 @@ import javafx.scene.control.DateCell;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.util.Duration;
 import models.Hebergement;
 import models.ReservationHebergement;
@@ -58,10 +61,25 @@ public class ReservationFrontFormController {
         res.setNombrePersonnes(Integer.parseInt(tfNbPersonnes.getText()));
         res.setHebergement(selectedHebergement);
         res.setStatut("En attente");
-        res.setIdClient(1); // Default client ID for testing
+        
+        Integer currentUserId = utils.SessionContext.getCurrentUserId();
+        if (currentUserId == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Connexion requise");
+            alert.setHeaderText("Vous devez être connecté");
+            alert.setContentText("Veuillez vous connecter pour effectuer une réservation.");
+            alert.showAndWait();
+            return;
+        }
+        res.setIdClient(currentUserId);
         
         try {
-            reservationService.ajouterReservation(res);
+            int resId = reservationService.ajouterReservation(res);
+            res.setIdReservationHebergement(resId);
+            
+            // Redirect to Payment View
+            openPaymentView(res);
+            
         } catch (java.sql.SQLException e) {
             Alert alertError = new Alert(Alert.AlertType.ERROR);
             alertError.setTitle("Erreur");
@@ -70,14 +88,33 @@ public class ReservationFrontFormController {
             alertError.showAndWait();
             return;
         }
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Succès");
-        alert.setHeaderText("Réservation effectuée");
-        alert.setContentText("Votre séjour à " + selectedHebergement.getNom() + " a bien été enregistré.");
-        alert.showAndWait();
         
         handleCancel();
+    }
+
+    private void openPaymentView(ReservationHebergement res) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/PaymentView.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            PaymentController controller = loader.getController();
+            controller.setReservation(res);
+
+            Stage stage = new Stage();
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.setTitle("Paiement Hôtel : " + res.getHebergement().getNom());
+            
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.setFill(null);
+            stage.setScene(scene);
+            stage.showAndWait();
+
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Erreur lors de l'ouverture du paiement : " + e.getMessage());
+            alert.show();
+        }
     }
 
     @FXML

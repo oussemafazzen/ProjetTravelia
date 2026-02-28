@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" prefWidth="500.0" spacing="0.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PaymentFlightController">
+    <children>
+        <!-- Top Gradient Header -->
+        <VBox alignment="CENTER" prefHeight="130.0" style="-fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6); -fx-background-radius: 20 20 0 0;">
+            <children>
+                <Label text="Finaliser le Paiement" textFill="white">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label text="Paiement sécurisé par Travelia" textFill="rgba(255,255,255,0.8)">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+
+        <VBox spacing="25.0" style="-fx-padding: 30;">
+            <!-- Order Summary Section -->
+            <VBox spacing="10.0" style="-fx-background-color: #f8fafc; -fx-padding: 15; -fx-background-radius: 12; -fx-border-color: #e2e8f0; -fx-border-width: 1;">
+                <children>
+                    <HBox alignment="CENTER_LEFT">
+                        <children>
+                            <VBox HBox.hgrow="ALWAYS">
+                                <children>
+                                    <Text fx:id="txtReservationTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Réservation #1">
+                                        <font>
+                                            <Font name="System Bold" size="16.0" />
+                                        </font>
+                                    </Text>
+                                    <Text fx:id="txtDetails" fill="#64748b" strokeType="OUTSIDE" strokeWidth="0.0" text="Billets: 2" />
+                                </children>
+                            </VBox>
+                            <Text fx:id="txtPrixTotal" strokeType="OUTSIDE" strokeWidth="0.0" text="450 DT">
+                                <font>
+                                    <Font name="System Bold" size="18.0" />
+                                </font>
+                            </Text>
+                        </children>
+                    </HBox>
+                </children>
+            </VBox>
+
+            <!-- Card Entry Section -->
+            <VBox spacing="15.0">
+                <children>
+                    <Label text="Informations de paiement" textFill="#1e293b">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    
+                    <VBox spacing="8.0">
+                        <children>
+                            <Label text="Numéro de carte" textFill="#64748b" />
+                            <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-width: 1; -fx-border-radius: 8; -fx-padding: 5 10;">
+                                <children>
+                                    <TextField fx:id="tfCardNumber" promptText="0000 0000 0000 0000" style="-fx-background-color: transparent; -fx-padding: 8;" HBox.hgrow="ALWAYS" />
+                                    <Text fill="#cbd5e1" text="💳" />
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+
+                    <HBox spacing="15.0">
+                        <children>
+                            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                <children>
+                                    <Label text="Date d'expiration" textFill="#64748b" />
+                                    <TextField fx:id="tfExpiry" promptText="MM/YY" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-width: 1; -fx-border-radius: 8; -fx-padding: 8;" />
+                                </children>
+                            </VBox>
+                            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                <children>
+                                    <Label text="CVC" textFill="#64748b" />
+                                    <TextField fx:id="tfCvc" promptText="123" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-width: 1; -fx-border-radius: 8; -fx-padding: 8;" />
+                                </children>
+                            </VBox>
+                        </children>
+                    </HBox>
+                </children>
+            </VBox>
+
+            <!-- Buttons -->
+            <VBox spacing="12.0">
+                <children>
+                    <Button fx:id="btnPayer" maxWidth="1.7976931348623157E308" onAction="#handlePayer" prefHeight="45.0" style="-fx-background-color: #4f46e5; -fx-background-radius: 10; -fx-text-fill: white; -fx-cursor: hand;" text="Confirmer le paiement">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="btnCancel" maxWidth="1.7976931348623157E308" onAction="#handleCancel" prefHeight="40.0" style="-fx-background-color: transparent; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 10; -fx-text-fill: #64748b; -fx-cursor: hand;" text="Annuler" />
+                </children>
+            </VBox>
+        </VBox>
+    </children>
+</VBox>

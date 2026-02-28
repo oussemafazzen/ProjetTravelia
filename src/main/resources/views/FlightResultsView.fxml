@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" spacing="0.0" styleClass="results-view-container" stylesheets="@../css/client-style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FlightResultsController">
+   <children>
+      <!-- Premium Header -->
+      <VBox styleClass="results-top-header">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <children>
+                  <Button fx:id="btnBack" onAction="#handleBackToResearch" styleClass="btn-back-research" text="← Modifier la recherche" />
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="lblRouteTitle" style="-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Vols de Tunis (TUN) vers Paris (PAR)" />
+                        <Label fx:id="lblDateSubtitle" text="Aller simple • 1 adulte • ven. 27 févr." textFill="#64748b" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+
+      <!-- Category Filter Bar -->
+      <HBox alignment="CENTER" spacing="15.0" styleClass="results-header-container">
+         <children>
+            <VBox fx:id="catMeilleur" onMouseClicked="#handleCategoryClick" styleClass="result-option-card, result-option-active">
+               <children>
+                  <Label styleClass="result-label-title" text="Le meilleur" />
+                  <Label fx:id="lblPriceMeilleur" styleClass="result-label-price" text="286 €" />
+                  <Label styleClass="result-label-info" text="2 h 38 min (moyenne)" />
+               </children>
+            </VBox>
+            <VBox fx:id="catMoinsCher" onMouseClicked="#handleCategoryClick" styleClass="result-option-card">
+               <children>
+                  <Label styleClass="result-label-title" text="Le moins cher" />
+                  <Label fx:id="lblPriceMoinsCher" styleClass="result-label-price" text="263 €" />
+                  <Label styleClass="result-label-info" text="8 h 50 min" />
+               </children>
+            </VBox>
+            <VBox fx:id="catPlusRapide" onMouseClicked="#handleCategoryClick" styleClass="result-option-card">
+               <children>
+                  <Label styleClass="result-label-title" text="Le plus rapide" />
+                  <Label fx:id="lblPricePlusRapide" styleClass="result-label-price" text="574 €" />
+                  <Label styleClass="result-label-info" text="2 h 25 min" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+
+      <!-- Scrollable Flight List -->
+      <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox fx:id="flightsListContainer" spacing="15.0">
+               <padding>
+                  <Insets bottom="30.0" left="40.0" right="40.0" top="10.0" />
+               </padding>
+               <children>
+                  <!-- Mock Card 1 -->
+                  <VBox styleClass="flight-card-premium">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="25.0">
+                           <children>
+                              <!-- Airline Info -->
+                              <VBox alignment="CENTER" spacing="5.0" styleClass="airline-badge">
+                                 <children>
+                                    <Label style="-fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Transavia" />
+                                    <Label style="-fx-font-size: 10px;" text="TO 4521" textFill="#64748b" />
+                                 </children>
+                              </VBox>
+
+                              <!-- Flight Times -->
+                              <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <VBox alignment="CENTER">
+                                             <children>
+                                                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="10:30" />
+                                                <Label style="-fx-font-size: 12px;" text="TUN" textFill="#64748b" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label style="-fx-font-size: 11px;" text="2h 40min" textFill="#64748b" />
+                                                <HBox alignment="CENTER" spacing="5.0">
+                                                   <children>
+                                                      <VBox prefHeight="1.0" style="-fx-background-color: #cbd5e1;" HBox.hgrow="ALWAYS" />
+                                                      <Label text="✈" textFill="#0156ff" />
+                                                      <VBox prefHeight="1.0" style="-fx-background-color: #cbd5e1;" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <Label styleClass="status-badge-direct" text="Direct" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER">
+                                             <children>
+                                                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="13:10" />
+                                                <Label style="-fx-font-size: 12px;" text="ORY" textFill="#64748b" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+
+                              <!-- Price & Action -->
+                              <VBox alignment="CENTER_RIGHT" spacing="10.0" style="-fx-border-color: transparent transparent transparent #e2e8f0; -fx-border-width: 0 0 0 1; -fx-padding: 0 0 0 25;">
+                                 <children>
+                                    <Label fx:id="lblFlightPrice1" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="286,04 €" />
+                                    <Button mnemonicParsing="false" onAction="#handleSelectFlight" styleClass="btn-select-flight" text="Sélectionner" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+
+                  <!-- Mock Card 2 -->
+                  <VBox styleClass="flight-card-premium">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="25.0">
+                           <children>
+                              <VBox alignment="CENTER" spacing="5.0" styleClass="airline-badge">
+                                 <children>
+                                    <Label style="-fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Air France" />
+                                    <Label style="-fx-font-size: 10px;" text="AF 1247" textFill="#64748b" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <VBox alignment="CENTER">
+                                             <children>
+                                                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="07:15" />
+                                                <Label style="-fx-font-size: 12px;" text="TUN" textFill="#64748b" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label style="-fx-font-size: 11px;" text="2h 30min" textFill="#64748b" />
+                                                <HBox alignment="CENTER" spacing="5.0">
+                                                   <children>
+                                                      <VBox prefHeight="1.0" style="-fx-background-color: #cbd5e1;" HBox.hgrow="ALWAYS" />
+                                                      <Label text="✈" textFill="#0156ff" />
+                                                      <VBox prefHeight="1.0" style="-fx-background-color: #cbd5e1;" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <Label styleClass="status-badge-direct" text="Direct" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER">
+                                             <children>
+                                                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="09:45" />
+                                                <Label style="-fx-font-size: 12px;" text="CDG" textFill="#64748b" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER_RIGHT" spacing="10.0" style="-fx-border-color: transparent transparent transparent #e2e8f0; -fx-border-width: 0 0 0 1; -fx-padding: 0 0 0 25;">
+                                 <children>
+                                    <Label fx:id="lblFlightPrice2" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="312,50 €" />
+                                    <Button mnemonicParsing="false" onAction="#handleSelectFlight" styleClass="btn-select-flight" text="Sélectionner" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

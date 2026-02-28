@@ -17,8 +17,15 @@ import javafx.scene.control.Button;
 import models.Client;
 import org.json.JSONObject;
 import services.ClientService;
+import utils.GeoLocationService;
+import utils.WeatherService;
+import utils.CurrencyService;
 
 import javafx.scene.control.Alert;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
+import javafx.geometry.Bounds;
+import javafx.application.Platform;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -43,6 +50,18 @@ public class DashboardController {
 
     @FXML
     private Label lblProgressPercent;
+
+    @FXML
+    private Label lblAvatarInitial;
+
+    @FXML
+    private Label lblLevelMini;
+
+    @FXML
+    private VBox profileDropdown;
+
+    @FXML
+    private HBox profileAvatarContainer;
 
     @FXML
     private Label lblWeather;
@@ -77,8 +96,6 @@ public class DashboardController {
     @FXML
     private Button btnNavAccueil;
 
-    @FXML
-    private Button btnNavClients;
 
     @FXML
     private Button btnNavReservations;
@@ -91,6 +108,13 @@ public class DashboardController {
 
     @FXML
     private Button btnNavAvis;
+
+    @FXML
+    private Button btnTabVols;
+
+
+    @FXML
+    private Button btnTabVoitures;
 
     @FXML
     private TextField txtNom;
@@ -113,6 +137,9 @@ public class DashboardController {
     @FXML
     private Label lblProfileMessage;
 
+    @FXML
+    private VBox flightSearchContainer;
+
     // vboxHistory removed to prevent NPE since it's removed from layout
 
     @FXML
@@ -120,6 +147,27 @@ public class DashboardController {
 
     @FXML
     private ComboBox<String> comboTo;
+
+    @FXML
+    private TextField txtFrom;
+
+    @FXML
+    private TextField txtTo;
+
+
+
+    @FXML
+    private StackPane heroSection;
+
+    @FXML
+    private DatePicker dateFlight;
+
+    @FXML
+    private Button btnContinuer;
+
+    @FXML
+    private Button btnRechercherVols;
+
 
     @FXML
     private TextField txtAmount;
@@ -144,6 +192,25 @@ public class DashboardController {
         initCurrencies();
         refreshView();
         switchView(dashboardView, btnNavAccueil);
+
+        // Setup click-away for profile dropdown
+        Platform.runLater(() -> {
+            if (lblNavUserName.getScene() != null) {
+                lblNavUserName.getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
+                    if (profileDropdown != null && profileDropdown.isVisible()) {
+                        double x = event.getSceneX();
+                        double y = event.getSceneY();
+                        
+                        Bounds dropdownBounds = profileDropdown.localToScene(profileDropdown.getBoundsInLocal());
+                        Bounds avatarBounds = profileAvatarContainer.localToScene(profileAvatarContainer.getBoundsInLocal());
+                        
+                        if (!dropdownBounds.contains(x, y) && !avatarBounds.contains(x, y)) {
+                            hideProfileDropdown();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void initCurrencies() {
@@ -175,7 +242,7 @@ public class DashboardController {
 
     @FXML
     void showProfile(ActionEvent event) {
-        switchView(profileView, btnNavClients);
+        switchView(profileView, null);
         if (currentClient != null) {
             txtNom.setText(currentClient.getNom());
             txtPrenom.setText(currentClient.getPrenom());
@@ -196,31 +263,193 @@ public class DashboardController {
     }
 
     @FXML
-    void showTickets(ActionEvent event) {
+    void showReservations(ActionEvent event) {
+        // This is the entry point for the "Réservations" navbar tab
+        // It should show the flight search interface
+        if (flightSearchContainer != null) {
+            flightSearchContainer.setVisible(true);
+            flightSearchContainer.setManaged(true);
+        }
+        // Remove any loaded reservation list or flight results
+        ticketsView.getChildren().removeIf(node -> !"heroSection".equals(node.getId()) && !"flightSearchContainer".equals(node.getId()) && ! (node instanceof StackPane && ((StackPane)node).getStyleClass().contains("booking-hero")));
+        
+        // Ensure hero section is visible
+        showSearchInterface();
+        
+        switchView(ticketsView, btnNavReservations);
+    }
+
+    @FXML
+    public controllers.ReservationsController showReservationsList(ActionEvent event) {
+        controllers.ReservationsController resCtrl = null;
+        // This is for "Mes réservations" in the profile dropdown
         try {
             if (ticketsView != null) {
-                // Determine if we are still showing the placeholder
-                boolean isPlaceholder = isShowingPlaceholder(ticketsView);
-
-                if (isPlaceholder) {
-                    System.out.println("Chargement de ReservationsFrontView.fxml...");
-                    ticketsView.getChildren().clear();
-                    
-                    URL fxmlUrl = getClass().getResource("/views/ReservationsFrontView.fxml");
-                    if (fxmlUrl == null) throw new IOException("FXML /views/ReservationsFrontView.fxml introuvable");
-                    
-                    FXMLLoader loader = new FXMLLoader(fxmlUrl);
-                    Parent view = loader.load();
-                    ticketsView.getChildren().add(view);
-                    System.out.println("ReservationsFrontView chargé.");
+                // Hide flight search and hero background
+                if (flightSearchContainer != null) {
+                    flightSearchContainer.setVisible(false);
+                    flightSearchContainer.setManaged(false);
                 }
+                if (heroSection != null) {
+                    heroSection.setVisible(false);
+                    heroSection.setManaged(false);
+                }
+                
+                // Remove custom flight results if any
+                ticketsView.getChildren().removeIf(node -> "activeFlightResults".equals(node.getId()));
+
+                // Load the list if not already there or if we want to refresh
+                System.out.println("Chargement de ReservationsFrontView.fxml pour la liste...");
+                
+                URL fxmlUrl = getClass().getResource("/views/ReservationsFrontView.fxml");
+                if (fxmlUrl == null) throw new IOException("FXML /views/ReservationsFrontView.fxml introuvable");
+                
+                FXMLLoader loader = new FXMLLoader(fxmlUrl);
+                Parent view = loader.load();
+                resCtrl = loader.getController();
+                view.setId("reservationsListView");
+                
+                // Add to ticketsView
+                ticketsView.getChildren().add(view);
+                System.out.println("ReservationsFrontView chargé.");
             }
         } catch (Exception e) {
-            System.err.println("Erreur chargement Réservations: " + e.getMessage());
             e.printStackTrace();
             showErrorAlert("Module Réservations", e.getMessage());
         }
         switchView(ticketsView, btnNavReservations);
+        return resCtrl;
+    }
+
+    public void triggerNewReservation(models.Billet flightBillet) {
+        controllers.ReservationsController resCtrl = showReservationsList(null);
+        if (resCtrl != null) {
+            // Pass the search query to the reservations controller to dynamically show "Billet de X vers Y"
+            String route = "Billet";
+            if (txtFrom != null && txtTo != null && !txtFrom.getText().isEmpty()) {
+                route = "Billet de " + txtFrom.getText() + " vers " + txtTo.getText();
+            }
+            resCtrl.setCustomBilletTitle(route);
+
+            javafx.application.Platform.runLater(() -> {
+                resCtrl.openNewReservationDialog(flightBillet);
+            });
+        }
+    }
+
+    @FXML
+    void handleBookingTabChange(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        
+        // Reset all tabs
+        btnTabVols.getStyleClass().remove("booking-tab-active");
+        btnTabVoitures.getStyleClass().remove("booking-tab-active");
+        
+        // Activate clicked tab
+        if (!clickedButton.getStyleClass().contains("booking-tab-active")) {
+            clickedButton.getStyleClass().add("booking-tab-active");
+        }
+        
+        // Reset search state when tab changes
+        btnContinuer.setVisible(true);
+        btnRechercherVols.setVisible(false);
+        
+        System.out.println("Booking Tab Changed: " + clickedButton.getText());
+    }
+
+    @FXML
+    void handleContinuerClick(ActionEvent event) {
+        btnContinuer.setVisible(false);
+        btnRechercherVols.setVisible(true);
+        System.out.println("Continuer clicked -> Show Rechercher des vols");
+    }
+
+    @FXML
+    void handleSearchFlightsClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/FlightResultsView.fxml"));
+            Parent resultsView = loader.load();
+            
+            FlightResultsController controller = loader.getController();
+            controller.setMainController(this);
+            
+            // Pass real data
+            String from = txtFrom != null ? txtFrom.getText() : "Tunis (TUN)";
+            String to = txtTo != null ? txtTo.getText() : "Paris (PAR)";
+            String date = dateFlight != null && dateFlight.getValue() != null ? dateFlight.getValue().toString() : java.time.LocalDate.now().plusDays(5).toString();
+            
+            controller.setRouteInfo(from, to, date);
+            
+            // Set ID for the results node for easy removal
+            resultsView.setId("activeFlightResults");
+            
+            // CRITICAL: Ensure ticketsView is visible
+            ticketsView.setVisible(true);
+            ticketsView.setManaged(true);
+            
+            // Hide the ENTIRE search UI but keep ticketsView children clean for results
+            if (heroSection != null) {
+                heroSection.setVisible(false);
+                heroSection.setManaged(false);
+            }
+            
+            // Hide suggestions too if we want a clean standalone view
+            // (Assuming we want to hide everything in ticketsView except the results)
+            for (Node node : ticketsView.getChildren()) {
+                if (node != resultsView) {
+                    node.setVisible(false);
+                    node.setManaged(false);
+                }
+            }
+            
+            ticketsView.getChildren().add(resultsView);
+            resultsView.setVisible(true);
+            resultsView.setManaged(true);
+            
+            System.out.println("Search Flights clicked -> FXML Loaded, Swapped, and Visible");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Could not load FlightResultsView.fxml");
+        }
+    }
+
+    public void showSearchInterface() {
+        // 1. Remove the results node
+        ticketsView.getChildren().removeIf(node -> "activeFlightResults".equals(node.getId()));
+        
+        // 2. Restore all nodes in ticketsView
+        for (Node node : ticketsView.getChildren()) {
+            node.setVisible(true);
+            node.setManaged(true);
+        }
+        
+        // 3. Specifically ensure heroSection is visible
+        if (heroSection != null) {
+            heroSection.setVisible(true);
+            heroSection.setManaged(true);
+        }
+        
+        // 4. Reset buttons to initial "Continuer" state
+        btnContinuer.setVisible(true);
+        btnRechercherVols.setVisible(false);
+        
+        System.out.println("Returned to Search Interface");
+    }
+
+    @FXML
+    void handleResultCategoryClick(javafx.scene.input.MouseEvent event) {
+        // Simple logic to switch active style between result categories
+        VBox clickedBox = (VBox) event.getSource();
+        HBox parent = (HBox) clickedBox.getParent();
+        
+        for (javafx.scene.Node node : parent.getChildren()) {
+            if (node instanceof VBox) {
+                node.getStyleClass().remove("result-option-active");
+            }
+        }
+        
+        clickedBox.getStyleClass().add("result-option-active");
+        System.out.println("Category selected: " + ((Label)clickedBox.getChildren().get(0)).getText());
     }
 
     private boolean isShowingPlaceholder(Parent root) {
@@ -236,6 +465,7 @@ public class DashboardController {
         }
         return false;
     }
+
 
     @FXML
     void showAccommodations(ActionEvent event) {
@@ -308,9 +538,53 @@ public class DashboardController {
         switchView(reviewsView, btnNavAvis);
     }
 
-    // Rename cards handlers to avoid ambiguity with ActionEvent methods (solves "random behavior" on run)
+    // Dropdown Item Handlers
+    @FXML void onDropdownProfileClick(javafx.scene.input.MouseEvent event) { 
+        hideProfileDropdown();
+        showProfile((ActionEvent) null); 
+    }
+    
+    @FXML void onDropdownTicketsClick(javafx.scene.input.MouseEvent event) { 
+        hideProfileDropdown();
+        showReservationsList((ActionEvent) null); 
+    }
+    
+    @FXML void onDropdownLogoutClick(javafx.scene.input.MouseEvent event) { 
+        hideProfileDropdown();
+        handleLogout((ActionEvent) null); 
+    }
+
+    // Rename cards handlers...
     @FXML void onModuleCardClickProfile(javafx.scene.input.MouseEvent event) { showProfile((ActionEvent) null); }
-    @FXML void onModuleCardClickTickets(javafx.scene.input.MouseEvent event) { showTickets((ActionEvent) null); }
+    @FXML void toggleProfileDropdown(javafx.scene.input.MouseEvent event) {
+        if (profileDropdown.isVisible()) {
+            hideProfileDropdown();
+        } else {
+            showProfileDropdown();
+        }
+    }
+
+    private void showProfileDropdown() {
+        profileDropdown.toFront();
+        profileDropdown.setManaged(true);
+        profileDropdown.setVisible(true);
+        FadeTransition ft = new FadeTransition(Duration.millis(200), profileDropdown);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
+    }
+
+    private void hideProfileDropdown() {
+        FadeTransition ft = new FadeTransition(Duration.millis(200), profileDropdown);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+        ft.setOnFinished(e -> {
+            profileDropdown.setVisible(false);
+            profileDropdown.setManaged(false);
+        });
+        ft.play();
+    }
+    @FXML void onModuleCardClickTickets(javafx.scene.input.MouseEvent event) { showReservationsList((ActionEvent) null); }
     @FXML void onModuleCardClickAccommodations(javafx.scene.input.MouseEvent event) { showAccommodations((ActionEvent) null); }
     @FXML void onModuleCardClickActivities(javafx.scene.input.MouseEvent event) { showActivities((ActionEvent) null); }
     @FXML void onModuleCardClickReviews(javafx.scene.input.MouseEvent event) { showReviews((ActionEvent) null); }
@@ -346,7 +620,7 @@ public class DashboardController {
         }
 
         // Reset all buttons style
-        Button[] allNavBtns = {btnNavAccueil, btnNavClients, btnNavReservations, btnNavHebergement, btnNavActivites, btnNavAvis};
+        Button[] allNavBtns = {btnNavAccueil, btnNavReservations, btnNavHebergement, btnNavActivites, btnNavAvis};
         for (Button btn : allNavBtns) {
             if (btn != null) {
                 btn.getStyleClass().remove("nav-button-active");
@@ -399,6 +673,9 @@ public class DashboardController {
             String fullName = prenom + " " + nom;
             
             lblNavUserName.setText(fullName);
+            lblAvatarInitial.setText(fullName.substring(0, 1).toUpperCase());
+            lblLevelMini.setText(currentClient.getNiveau_fidelite().toString() + " Genius");
+            
             lblPoints.setText(String.valueOf(currentClient.getPoints_fidelite()));
             lblNiveau.setText(currentClient.getNiveau_fidelite().toString());
             
@@ -410,12 +687,12 @@ public class DashboardController {
 
     private void updateWeather() {
         new Thread(() -> {
-            JSONObject loc = utils.GeoLocationService.getUserLocation();
+            JSONObject loc = GeoLocationService.getUserLocation();
             if (loc != null && loc.has("city")) {
                 String city = loc.getString("city");
                 double lat = loc.getDouble("lat");
                 double lon = loc.getDouble("lon");
-                String weather = utils.WeatherService.getWeather(lat, lon);
+                String weather = WeatherService.getWeather(lat, lon);
                 javafx.application.Platform.runLater(() -> {
                     lblCity.setText(city);
                     lblWeather.setText(weather);
@@ -472,7 +749,7 @@ public class DashboardController {
             lblConvertResult.setText("...");
             
             new Thread(() -> {
-                double result = utils.CurrencyService.convert(amount, from, to);
+                double result = CurrencyService.convert(amount, from, to);
                 javafx.application.Platform.runLater(() -> {
                     if (result != -1) {
                         lblConvertResult.setText(String.format("%.2f %s", result, to));

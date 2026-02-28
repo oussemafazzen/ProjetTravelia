@@ -39,6 +39,16 @@ public class ReservationsController {
     private final DateTimeFormatter df  = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    private String customBilletTitle = null;
+
+    public void setCustomBilletTitle(String title) {
+        this.customBilletTitle = title;
+        // Optionally reload the list
+        if (!SessionContext.isAdmin() && SessionContext.getCurrentUserId() != null) {
+            loadReservationsClient(SessionContext.getCurrentUserId());
+        }
+    }
+
     @FXML
     public void initialize() {
         setActive(btnReservations);
@@ -62,23 +72,26 @@ public class ReservationsController {
     // =================== ACTIONS ===================
 
     // ✅ POPUP Nouvelle réservation
-    @FXML
-    private void onNewReservation(ActionEvent e) {
-        Integer clientId = SessionContext.getCurrentUserId();
-        if (clientId == null && !SessionContext.isAdmin()) {
-            alert(Alert.AlertType.WARNING, "Aucun client connecté.");
-            return;
-        }
-
+    public void openNewReservationDialog(models.Billet autoBillet) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/NewReservationDialog.fxml"));
             Parent root = loader.load();
 
             NewReservationDialogController ctrl = loader.getController();
-            if (!SessionContext.isAdmin()) ctrl.setClientId(clientId);
+
+            // Client ID logic ...
+            if (SessionContext.isAdmin()) {
+                ctrl.setClientId(1); 
+            } else {
+                Integer uid = SessionContext.getCurrentUserId();
+                if (uid != null) ctrl.setClientId(uid);
+            }
+            
+            if (autoBillet != null) {
+                ctrl.setInitialBillet(autoBillet);
+            }
 
             ctrl.setOnSaved(r -> {
-                // refresh après save
                 if (SessionContext.isAdmin()) loadAllReservationsAdmin();
                 else loadReservationsClient(SessionContext.getCurrentUserId());
             });
@@ -91,15 +104,23 @@ public class ReservationsController {
             if (css != null) scene.getStylesheets().add(css.toExternalForm());
 
             stage.setScene(scene);
-            stage.initOwner(((Node) e.getSource()).getScene().getWindow());
+            
+            if (reservationsList != null && reservationsList.getScene() != null) {
+                stage.initOwner(reservationsList.getScene().getWindow());
+            }
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
             stage.showAndWait();
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            alert(Alert.AlertType.ERROR, "Erreur ouverture popup: " + ex.getMessage());
+            alert(Alert.AlertType.ERROR, "Erreur lors de l'ouverture:\n" + ex.getMessage());
         }
+    }
+
+    @FXML
+    void onNewReservation(ActionEvent event) {
+        openNewReservationDialog(null);
     }
 
     // ✅ POPUP CALENDRIER
@@ -133,9 +154,11 @@ public class ReservationsController {
         reservationsList.getChildren().clear();
 
         List<Reservation> reservations = sr.getAll();
+        boolean isFirst = true;
         for (Reservation r : reservations) {
             List<Billet> billets = sb.getByReservationId(r.getIdReservation());
-            reservationsList.getChildren().add(buildReservationCard(r, billets));
+            reservationsList.getChildren().add(buildReservationCard(r, billets, isFirst));
+            isFirst = false;
         }
 
         if (reservations.isEmpty()) addEmpty();
@@ -145,9 +168,11 @@ public class ReservationsController {
         reservationsList.getChildren().clear();
 
         List<Reservation> reservations = sr.getByClientId(clientId);
+        boolean isFirst = true;
         for (Reservation r : reservations) {
             List<Billet> billets = sb.getByReservationId(r.getIdReservation());
-            reservationsList.getChildren().add(buildReservationCard(r, billets));
+            reservationsList.getChildren().add(buildReservationCard(r, billets, isFirst));
+            isFirst = false;
         }
 
         if (reservations.isEmpty()) addEmpty();
@@ -161,7 +186,7 @@ public class ReservationsController {
 
     // =================== UI ===================
 
-    private VBox buildReservationCard(Reservation r, List<Billet> billets) {
+    private VBox buildReservationCard(Reservation r, List<Billet> billets, boolean isFirst) {
         VBox card = new VBox(20);
         card.getStyleClass().add("big-card");
 
@@ -192,7 +217,11 @@ public class ReservationsController {
         metaBox.getChildren().addAll(date, pay);
 
         // --- billets title
-        Label billetsTitle = new Label("Billets (" + billets.size() + ")");
+        String titleText = "Billets (" + billets.size() + ")";
+        if (isFirst && customBilletTitle != null && billets.size() > 0) {
+            titleText = customBilletTitle;
+        }
+        Label billetsTitle = new Label(titleText);
         billetsTitle.getStyleClass().add("section-mini");
         VBox.setMargin(billetsTitle, new javafx.geometry.Insets(10, 0, 0, 0));
 
@@ -243,10 +272,16 @@ public class ReservationsController {
         btnAddBillet.getStyleClass().add("gradient-btn");
         btnAddBillet.setCursor(javafx.scene.Cursor.HAND);
 
+        Button btnPaiement = new Button("Paiement");
+        btnPaiement.getStyleClass().add("gradient-btn");
+        btnPaiement.setCursor(javafx.scene.Cursor.HAND);
+        btnPaiement.setStyle("-fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6); -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 20; -fx-font-weight: bold;");
+
         btnEdit.setOnAction(ev -> openEditReservationDialog(r));
         btnAddBillet.setOnAction(ev -> openNewBilletDialog(r));
+        btnPaiement.setOnAction(ev -> openPaymentDialog(r));
 
-        actions.getChildren().addAll(btnEdit, btnAddBillet);
+        actions.getChildren().addAll(btnEdit, btnAddBillet, btnPaiement);
 
         card.getChildren().addAll(sep, totalRow, actions);
 
@@ -421,6 +456,38 @@ public class ReservationsController {
             stage.show();
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    // =================== PAYMENT ===================
+
+    private void openPaymentDialog(Reservation r) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/PaymentFlightView.fxml"));
+            Parent root = loader.load();
+
+            PaymentFlightController ctrl = loader.getController();
+            ctrl.setReservation(r);
+            ctrl.setOnPaymentSuccess(() -> {
+                // Refresh reservation list after payment
+                if (SessionContext.isAdmin()) loadAllReservationsAdmin();
+                else loadReservationsClient(SessionContext.getCurrentUserId());
+            });
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Paiement Réservation #" + r.getIdReservation());
+
+            Scene scene = new Scene(root);
+            var css = getClass().getResource("/css/app.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+
+            stage.setScene(scene);
+            stage.showAndWait();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Impossible d'ouvrir la page de paiement.");
         }
     }
 }

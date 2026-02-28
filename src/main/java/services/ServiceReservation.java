@@ -216,10 +216,11 @@ public class ServiceReservation {
         r.setClientId(rs.getInt("id_client"));
 
         Timestamp ts = rs.getTimestamp("date_reservation");
-        r.setDateReservation(ts != null ? ts.toLocalDateTime() : LocalDateTime.now());
+        r.setDateReservation((ts != null) ? ts.toLocalDateTime() : LocalDateTime.now());
 
         r.setStatut(rs.getString("statut"));
         r.setModalitesPaiement(rs.getString("modalites_paiement"));
+        
         return r;
     }
 
