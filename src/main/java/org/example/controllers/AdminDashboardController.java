@@ -1,15 +1,23 @@
 package org.example.controllers;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.geometry.Pos;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.example.models.ReservationAdminRow;
 import org.example.services.ServiceReservation;
+import org.example.utils.ExcelExportXlsxUtil;
 
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -22,164 +30,193 @@ public class AdminDashboardController {
     @FXML private Label lblMontantTotal;
 
     @FXML private TableView<ReservationAdminRow> table;
-
-    @FXML private TableColumn<ReservationAdminRow, Integer> colId;
+    @FXML private TableColumn<ReservationAdminRow, Number> colId;
     @FXML private TableColumn<ReservationAdminRow, String> colClient;
     @FXML private TableColumn<ReservationAdminRow, String> colDate;
     @FXML private TableColumn<ReservationAdminRow, String> colStatut;
     @FXML private TableColumn<ReservationAdminRow, String> colPaiement;
-    @FXML private TableColumn<ReservationAdminRow, Void> colActions;
+    @FXML private TableColumn<ReservationAdminRow, ReservationAdminRow> colActions;
 
     private final ServiceReservation sr = new ServiceReservation();
     private final DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @FXML
     public void initialize() {
-        setupColumns();
-        refreshAll();
+        setupTable();
+        loadAll();
     }
 
-    private void setupColumns() {
-        if (colId != null) colId.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+    private void setupTable() {
 
-        if (colClient != null) {
-            colClient.setCellValueFactory(cell -> {
-                ReservationAdminRow r = cell.getValue();
-                String full = (r == null) ? "" : r.getClientFullName();
-                return new javafx.beans.property.SimpleStringProperty(full);
-            });
-        }
+        colId.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getIdReservation()));
+        colClient.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(safe(c.getValue().getClientFullName())));
+        colDate.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(safe(c.getValue().getDateReservation())));
+        colStatut.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(safe(c.getValue().getStatut())));
+        colPaiement.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(safe(c.getValue().getModalitesPaiement())));
 
-        if (colDate != null) {
-            colDate.setCellValueFactory(cell -> {
-                ReservationAdminRow r = cell.getValue();
-                String date = (r != null && r.getDateReservation() != null) ? r.getDateReservation().format(df) : "-";
-                return new javafx.beans.property.SimpleStringProperty(date);
-            });
-        }
-
-        if (colStatut != null) colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
-        if (colPaiement != null) colPaiement.setCellValueFactory(new PropertyValueFactory<>("modalitesPaiement"));
-
-        if (colActions != null) {
-            colActions.setCellFactory(tc -> new TableCell<>() {
-
-                private final Button btnEdit = new Button("Modifier");
-                private final Button btnDelete = new Button("Supprimer");
-                private final Button btnBlock = new Button("Bloc/Débloq");
-
-                private final HBox box = new HBox(8, btnEdit, btnDelete, btnBlock);
-
-                {
-                    box.setAlignment(Pos.CENTER_LEFT);
-                    btnEdit.getStyleClass().add("btn-outline");
-                    btnDelete.getStyleClass().add("btn-danger");
-                    btnBlock.getStyleClass().add("btn-secondary");
-
-                    btnEdit.setOnAction(e -> onEditRow(getRow()));
-                    btnDelete.setOnAction(e -> onDeleteRow(getRow()));
-                    btnBlock.setOnAction(e -> onToggleBlockRow(getRow()));
+        // actions buttons
+        colActions.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
+        colActions.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(ReservationAdminRow row, boolean empty) {
+                super.updateItem(row, empty);
+                if (empty || row == null) {
+                    setGraphic(null);
+                    return;
                 }
 
-                private ReservationAdminRow getRow() {
-                    if (getIndex() < 0 || getIndex() >= getTableView().getItems().size()) return null;
-                    return getTableView().getItems().get(getIndex());
-                }
+                Button btnEdit = new Button("Modifier");
+                Button btnDelete = new Button("Supprimer");
+                Button btnBlock = new Button("Bloc/Débloq");
 
-                @Override
-                protected void updateItem(Void item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setGraphic(empty ? null : box);
-                }
-            });
-        }
+                btnEdit.getStyleClass().add("btn-primary");
+                btnDelete.getStyleClass().add("btn-secondary");
+                btnBlock.getStyleClass().add("btn-outline");
+
+                btnEdit.setOnAction(e -> onEditRow(row));
+                btnDelete.setOnAction(e -> onDeleteRow(row));
+                btnBlock.setOnAction(e -> onToggleBlockRow(row));
+
+                HBox box = new HBox(8, btnEdit, btnDelete, btnBlock);
+                box.setAlignment(Pos.CENTER);
+                setGraphic(box);
+            }
+        });
     }
 
-    // =================== EVENTS ===================
+    // ===================== LOAD =====================
 
-    @FXML
-    private void onSearch(ActionEvent e) {
-        String q = (txtSearch == null) ? "" : txtSearch.getText();
-        q = (q == null) ? "" : q.trim();
+    private void loadAll() {
+        try {
+            // KPI
+            int totalRes = sr.countAll();
+            int totalBil = sr.countBilletsAll();
+            double totalAmount = sr.sumBilletsAll();
 
-        List<ReservationAdminRow> rows = (q.isEmpty())
-                ? sr.getAllAdminRows()
-                : sr.searchAdminRows(q);
+            lblTotalReservations.setText(String.valueOf(totalRes));
+            lblTotalBillets.setText(String.valueOf(totalBil));
+            lblMontantTotal.setText(String.format("%.0f DT", totalAmount));
 
-        if (table != null) table.setItems(FXCollections.observableArrayList(rows));
-        updateStats();
+            // Table
+            List<ReservationAdminRow> rows = sr.getAllAdminRows(null);
+            table.setItems(FXCollections.observableArrayList(rows));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erreur loadAll: " + ex.getMessage());
+        }
     }
 
     @FXML
     private void onRefresh(ActionEvent e) {
-        refreshAll();
+        txtSearch.setText("");
+        loadAll();
     }
 
     @FXML
-    private void onExport(ActionEvent e) {
-        new Alert(Alert.AlertType.INFORMATION, "Export (à implémenter).", ButtonType.OK).showAndWait();
-    }
-
-    // ===== Sidebar navigation =====
-    @FXML private void goUsers(ActionEvent e) { info("Navigation", "Gestion Utilisateurs (à connecter)."); }
-    @FXML private void goAdmins(ActionEvent e) { info("Navigation", "Gestion Administrateurs (à connecter)."); }
-    @FXML private void goReservations(ActionEvent e) { /* déjà */ }
-    @FXML private void goHebergement(ActionEvent e) { info("Navigation", "Gestion Hébergements (à connecter)."); }
-    @FXML private void goActivites(ActionEvent e) { info("Navigation", "Gestion Activités (à connecter)."); }
-    @FXML private void goAvis(ActionEvent e) { info("Navigation", "Gestion Avis (à connecter)."); }
-    @FXML private void goStats(ActionEvent e) { info("Navigation", "Statistiques (à connecter)."); }
-    @FXML private void onLogout(ActionEvent e) { info("Session", "Déconnexion (à connecter)."); }
-
-    // =================== CORE ===================
-
-    private void refreshAll() {
-        List<ReservationAdminRow> rows = sr.getAllAdminRows();
-        if (table != null) table.setItems(FXCollections.observableArrayList(rows));
-        updateStats();
-    }
-
-    private void updateStats() {
-        int totalRes = sr.countAll();
-        int totalBil = sr.countBilletsAll();
-        double totalAmount = sr.sumBilletsAll();
-
-        if (lblTotalReservations != null) lblTotalReservations.setText(String.valueOf(totalRes));
-        if (lblTotalBillets != null) lblTotalBillets.setText(String.valueOf(totalBil));
-        if (lblMontantTotal != null) lblMontantTotal.setText(String.format("%.0f DT", totalAmount));
-    }
-
-    // =================== ACTIONS HELPERS ===================
-
-    private void onEditRow(ReservationAdminRow row) {
-        if (row == null) return;
-        info("Modifier", "Modifier réservation #" + row.getIdReservation() + " (à implémenter).");
-    }
-
-    private void onDeleteRow(ReservationAdminRow row) {
-        if (row == null) return;
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Supprimer la réservation #" + row.getIdReservation() + " ?",
-                ButtonType.YES, ButtonType.NO);
-        confirm.setHeaderText(null);
-
-        if (confirm.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            info("Supprimer", "Suppression (à implémenter) pour #" + row.getIdReservation());
-            refreshAll();
+    private void onSearch(ActionEvent e) {
+        try {
+            String q = txtSearch.getText();
+            List<ReservationAdminRow> rows = sr.getAllAdminRows(q);
+            table.setItems(FXCollections.observableArrayList(rows));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erreur recherche: " + ex.getMessage());
         }
     }
 
-    private void onToggleBlockRow(ReservationAdminRow row) {
-        if (row == null) return;
-        info("Bloc/Débloq", "Bloc/Débloq (à implémenter) pour #" + row.getIdReservation());
-        refreshAll();
+    // ===================== EXPORT EXCEL (REEL) =====================
+    @FXML
+    private void onExport(ActionEvent e) {
+        try {
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Exporter Excel");
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel (*.xlsx)", "*.xlsx"));
+            fc.setInitialFileName("reservations.xlsx");
+
+            Stage st = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            File file = fc.showSaveDialog(st);
+            if (file == null) return;
+
+            // ✅ Export (réel)
+            ExcelExportXlsxUtil.exportAdminReservations(sr, file.getAbsolutePath());
+
+            alert(Alert.AlertType.INFORMATION, "Export terminé ✅\n" + file.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Export échoué: " + ex.getMessage());
+        }
     }
 
-    // =================== UI HELPERS ===================
+    // ===================== ACTIONS ROWS (placeholders safe) =====================
 
-    private void info(String title, String msg) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
-        a.setHeaderText(title);
-        a.showAndWait();
+    private void onEditRow(ReservationAdminRow row) {
+        alert(Alert.AlertType.INFORMATION, "Modifier réservation #" + row.getIdReservation() + " (popup à brancher).");
+    }
+
+    private void onDeleteRow(ReservationAdminRow row) {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "Supprimer réservation #" + row.getIdReservation() + " ?",
+                ButtonType.YES, ButtonType.NO);
+        a.showAndWait().ifPresent(bt -> {
+            if (bt == ButtonType.YES) {
+                try {
+                    sr.delete(row.getIdReservation());
+                    loadAll();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    alert(Alert.AlertType.ERROR, "Erreur suppression: " + ex.getMessage());
+                }
+            }
+        });
+    }
+
+    private void onToggleBlockRow(ReservationAdminRow row) {
+        // si tu as un champ "blocked" côté user/client -> brancher ici
+        alert(Alert.AlertType.INFORMATION, "Bloc/Débloq (à brancher selon ta table user/client).");
+    }
+
+    // ===================== NAV (les méthodes doivent exister sinon bouton mort) =====================
+
+    @FXML private void goUsers(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Gestion Utilisateurs (à brancher)."); }
+    @FXML private void goAdmins(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Gestion Administrateurs (à brancher)."); }
+    @FXML private void goReservations(ActionEvent e) { /* déjà sur la page */ }
+    @FXML private void goHebergement(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Gestion Hébergements (à brancher)."); }
+    @FXML private void goActivites(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Gestion Activités (à brancher)."); }
+    @FXML private void goAvis(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Gestion Avis (à brancher)."); }
+
+    @FXML
+    private void goStats(ActionEvent e) {
+        switchScene(e, "/fxml/stats.fxml");
+    }
+
+    @FXML
+    private void onLogout(ActionEvent e) {
+        alert(Alert.AlertType.INFORMATION, "Déconnexion (à brancher).");
+    }
+
+    private void switchScene(ActionEvent e, String fxmlPath) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+
+            var css = getClass().getResource("/css/admin.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erreur ouverture: " + fxmlPath + "\n" + ex.getMessage());
+        }
+    }
+
+    private String safe(String s) {
+        return (s == null || s.isBlank()) ? "-" : s;
+    }
+
+    private void alert(Alert.AlertType t, String msg) {
+        new Alert(t, msg, ButtonType.OK).showAndWait();
     }
 }

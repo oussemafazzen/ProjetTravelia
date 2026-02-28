@@ -5,14 +5,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.utils.RecommendationApiServer;
 import org.example.utils.SessionContext;
 
 public class MainFX extends Application {
 
+    private final RecommendationApiServer apiServer = new RecommendationApiServer();
+    private int apiPort = -1;
+
     @Override
     public void start(Stage stage) throws Exception {
 
+        // ✅ test login
         SessionContext.loginAsClient(1);
+
+        // ✅ Start API on free port (0 = auto)
+        apiPort = apiServer.start(0);
+        System.out.println("✅ API started on port: " + apiPort);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/test.fxml"));
         Parent root = loader.load();
@@ -32,6 +41,15 @@ public class MainFX extends Application {
 
         stage.centerOnScreen();
         stage.show();
+    }
+
+    @Override
+    public void stop() {
+        // ✅ stop API when app closes
+        try {
+            apiServer.stop();
+            System.out.println("🛑 API stopped");
+        } catch (Exception ignored) {}
     }
 
     public static void main(String[] args) {

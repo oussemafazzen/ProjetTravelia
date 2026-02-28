@@ -18,250 +18,274 @@ public class ServiceReservation {
     }
 
     // =========================
-    // ADD
+    // CRUD (CLIENT / GENERAL)
     // =========================
-    public int add(Reservation r) {
-        String sql = "INSERT INTO reservation (date_reservation, statut, modalites_paiement, id_client) VALUES (?,?,?,?)";
 
-        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    public void add(Reservation r) {
+        String sql = "INSERT INTO reservation (date_reservation, statut, modalites_paiement, id_client, pays, ville) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-            ps.setTimestamp(1, Timestamp.valueOf(r.getDateReservation()));
+            if (r.getDateReservation() != null) {
+                ps.setTimestamp(1, Timestamp.valueOf(r.getDateReservation()));
+            } else {
+                ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            }
+
             ps.setString(2, r.getStatut());
             ps.setString(3, r.getModalitesPaiement());
             ps.setInt(4, r.getClientId());
+            ps.setString(5, r.getPays());
+            ps.setString(6, r.getVille());
 
             ps.executeUpdate();
-
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    int id = rs.getInt(1);
-                    r.setIdReservation(id);
-                    return id;
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur add Reservation: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur add reservation: " + e.getMessage());
         }
-
-        return -1;
     }
 
-    // =========================
-    // UPDATE
-    // =========================
     public void update(Reservation r) {
-        String sql = "UPDATE reservation SET date_reservation=?, statut=?, modalites_paiement=? WHERE id_reservation=?";
-
+        String sql = "UPDATE reservation SET date_reservation=?, statut=?, modalites_paiement=?, id_client=?, pays=?, ville=? " +
+                "WHERE id_reservation=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-            ps.setTimestamp(1, Timestamp.valueOf(r.getDateReservation()));
+            if (r.getDateReservation() != null) {
+                ps.setTimestamp(1, Timestamp.valueOf(r.getDateReservation()));
+            } else {
+                ps.setTimestamp(1, null);
+            }
+
             ps.setString(2, r.getStatut());
             ps.setString(3, r.getModalitesPaiement());
-            ps.setInt(4, r.getIdReservation());
+            ps.setInt(4, r.getClientId());
+            ps.setString(5, r.getPays());
+            ps.setString(6, r.getVille());
+            ps.setInt(7, r.getIdReservation());
 
             ps.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur update Reservation: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur update reservation: " + e.getMessage());
         }
     }
 
-    // =========================
-    // DELETE
-    // =========================
     public void delete(int idReservation) {
-        String sql = "DELETE FROM reservation WHERE id_reservation=?";
-
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setInt(1, idReservation);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur delete Reservation: " + e.getMessage(), e);
+        try {
+            // Supprimer billets d'abord (FK)
+            try (PreparedStatement ps = cnx.prepareStatement("DELETE FROM billet WHERE id_reservation=?")) {
+                ps.setInt(1, idReservation);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = cnx.prepareStatement("DELETE FROM reservation WHERE id_reservation=?")) {
+                ps.setInt(1, idReservation);
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur delete reservation: " + e.getMessage());
         }
     }
 
-    // =========================
-    // GET ALL
-    // =========================
+    // ✅ UTILISÉ PAR CalendarViewController (ADMIN)
     public List<Reservation> getAll() {
-        List<Reservation> list = new ArrayList<>();
-        String sql = "SELECT * FROM reservation ORDER BY id_reservation DESC";
-
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        List<Reservation> out = new ArrayList<>();
+        String sql = "SELECT id_reservation, date_reservation, statut, modalites_paiement, id_client, pays, ville " +
+                "FROM reservation ORDER BY id_reservation DESC";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(mapReservation(rs));
+                out.add(mapReservation(rs));
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur getAll Reservation: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur getAll reservations: " + e.getMessage());
         }
-
-        return list;
+        return out;
     }
 
-    // =========================
-    // GET BY CLIENT
-    // =========================
+    // ✅ UTILISÉ PAR CalendarViewController (CLIENT)
     public List<Reservation> getByClientId(int clientId) {
-        List<Reservation> list = new ArrayList<>();
-        String sql = "SELECT * FROM reservation WHERE id_client = ? ORDER BY id_reservation DESC";
-
+        List<Reservation> out = new ArrayList<>();
+        String sql = "SELECT id_reservation, date_reservation, statut, modalites_paiement, id_client, pays, ville " +
+                "FROM reservation WHERE id_client=? ORDER BY id_reservation DESC";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, clientId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(mapReservation(rs));
+                    out.add(mapReservation(rs));
                 }
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur getByClientId: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur getByClientId: " + e.getMessage());
         }
+        return out;
+    }
 
-        return list;
+    private Reservation mapReservation(ResultSet rs) throws SQLException {
+        Reservation r = new Reservation();
+        r.setIdReservation(rs.getInt("id_reservation"));
+
+        Timestamp ts = rs.getTimestamp("date_reservation");
+        r.setDateReservation(ts == null ? null : ts.toLocalDateTime());
+
+        r.setStatut(rs.getString("statut"));
+        r.setModalitesPaiement(rs.getString("modalites_paiement"));
+        r.setClientId(rs.getInt("id_client"));
+        r.setPays(rs.getString("pays"));
+        r.setVille(rs.getString("ville"));
+
+        return r;
     }
 
     // =========================
-    // DASHBOARD ADMIN ROWS
+    // KPI (ADMIN)
     // =========================
-    public List<ReservationAdminRow> getAllAdminRows() {
-        List<ReservationAdminRow> list = new ArrayList<>();
 
-        String sql = """
-            SELECT r.id_reservation,
-                   r.date_reservation,
-                   r.statut,
-                   r.modalites_paiement,
-                   r.id_client,
-                   c.nom,
-                   c.prenom
-            FROM reservation r
-            JOIN client c ON r.id_client = c.id
-            ORDER BY r.id_reservation DESC
-            """;
-
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                list.add(mapAdminRow(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur getAllAdminRows: " + e.getMessage(), e);
-        }
-
-        return list;
-    }
-
-    public List<ReservationAdminRow> searchAdminRows(String keyword) {
-        List<ReservationAdminRow> list = new ArrayList<>();
-
-        String sql = """
-            SELECT r.id_reservation,
-                   r.date_reservation,
-                   r.statut,
-                   r.modalites_paiement,
-                   r.id_client,
-                   c.nom,
-                   c.prenom
-            FROM reservation r
-            JOIN client c ON r.id_client = c.id
-            WHERE c.nom LIKE ?
-               OR c.prenom LIKE ?
-               OR r.statut LIKE ?
-               OR r.modalites_paiement LIKE ?
-            ORDER BY r.id_reservation DESC
-            """;
-
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            String k = "%" + keyword + "%";
-            ps.setString(1, k);
-            ps.setString(2, k);
-            ps.setString(3, k);
-            ps.setString(4, k);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapAdminRow(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur searchAdminRows: " + e.getMessage(), e);
-        }
-
-        return list;
-    }
-
-    // =========================
-    // STATS
-    // =========================
     public int countAll() {
         String sql = "SELECT COUNT(*) FROM reservation";
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur countAll: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 
     public int countBilletsAll() {
         String sql = "SELECT COUNT(*) FROM billet";
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur countBilletsAll: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 
     public double sumBilletsAll() {
-        String sql = "SELECT COALESCE(SUM(prix), 0) FROM billet";
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        String sql = "SELECT COALESCE(SUM(prix),0) FROM billet";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getDouble(1) : 0.0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur sumBilletsAll: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
         }
     }
 
     // =========================
-    // MAPPERS
+    // STATS (stats.fxml)
     // =========================
-    private Reservation mapReservation(ResultSet rs) throws SQLException {
-        Reservation r = new Reservation();
-        r.setIdReservation(rs.getInt("id_reservation"));
-        r.setClientId(rs.getInt("id_client"));
 
-        Timestamp ts = rs.getTimestamp("date_reservation");
-        r.setDateReservation(ts != null ? ts.toLocalDateTime() : LocalDateTime.now());
-
-        r.setStatut(rs.getString("statut"));
-        r.setModalitesPaiement(rs.getString("modalites_paiement"));
-        return r;
+    public List<Object[]> countReservationsByStatut() {
+        List<Object[]> out = new ArrayList<>();
+        String sql = "SELECT statut, COUNT(*) FROM reservation GROUP BY statut ORDER BY COUNT(*) DESC";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                out.add(new Object[]{rs.getString(1), rs.getInt(2)});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
     }
 
-    private ReservationAdminRow mapAdminRow(ResultSet rs) throws SQLException {
-        ReservationAdminRow row = new ReservationAdminRow();
+    public List<Object[]> topPays(int limit) {
+        List<Object[]> out = new ArrayList<>();
+        String sql = "SELECT pays, COUNT(*) FROM reservation " +
+                "WHERE pays IS NOT NULL GROUP BY pays ORDER BY COUNT(*) DESC LIMIT ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    out.add(new Object[]{rs.getString(1), rs.getInt(2)});
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
 
-        row.setIdReservation(rs.getInt("id_reservation"));
+    public List<Object[]> reservationsParMois() {
+        List<Object[]> out = new ArrayList<>();
+        String sql =
+                "SELECT DATE_FORMAT(date_reservation, '%Y-%m') AS mois, COUNT(*) " +
+                        "FROM reservation WHERE date_reservation IS NOT NULL " +
+                        "GROUP BY mois ORDER BY mois";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                out.add(new Object[]{rs.getString(1), rs.getInt(2)});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
 
-        Timestamp ts = rs.getTimestamp("date_reservation");
-        if (ts != null) row.setDateReservation(ts.toLocalDateTime().toLocalDate());
+    // =========================
+    // TABLE ADMIN (MainView)
+    // =========================
 
-        row.setStatut(rs.getString("statut"));
-        row.setModalitesPaiement(rs.getString("modalites_paiement"));
+    public List<ReservationAdminRow> getAllAdminRows(String filter) {
+        List<ReservationAdminRow> out = new ArrayList<>();
 
-        row.setIdClient(rs.getInt("id_client"));
-        row.setNomClient(rs.getString("nom"));
-        row.setPrenomClient(rs.getString("prenom"));
+        String base =
+                "SELECT r.id_reservation, r.date_reservation, r.statut, r.modalites_paiement, r.id_client, " +
+                        "       COALESCE(SUM(b.prix),0) AS montant " +
+                        "FROM reservation r " +
+                        "LEFT JOIN billet b ON b.id_reservation = r.id_reservation ";
 
-        return row;
+        String where = "";
+        if (filter != null && !filter.isBlank()) {
+            where = "WHERE (r.statut LIKE ? OR r.pays LIKE ? OR CAST(r.id_client AS CHAR) LIKE ?) ";
+        }
+
+        String sql = base + where +
+                "GROUP BY r.id_reservation, r.date_reservation, r.statut, r.modalites_paiement, r.id_client " +
+                "ORDER BY r.id_reservation DESC";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            if (filter != null && !filter.isBlank()) {
+                String like = "%" + filter.trim() + "%";
+                ps.setString(1, like);
+                ps.setString(2, like);
+                ps.setString(3, like);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ReservationAdminRow row = new ReservationAdminRow();
+                    row.setIdReservation(rs.getInt("id_reservation"));
+
+                    Timestamp ts = rs.getTimestamp("date_reservation");
+                    row.setDateReservation(ts == null ? "-" : ts.toLocalDateTime().toString());
+
+                    row.setStatut(rs.getString("statut"));
+                    row.setModalitesPaiement(rs.getString("modalites_paiement"));
+
+                    int idClient = rs.getInt("id_client");
+                    row.setClientFullName("Client #" + idClient);
+
+                    row.setMontantTotal(rs.getDouble("montant"));
+
+                    out.add(row);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur getAllAdminRows: " + e.getMessage());
+        }
+
+        return out;
     }
 }

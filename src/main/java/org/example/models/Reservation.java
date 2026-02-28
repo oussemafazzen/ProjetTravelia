@@ -10,6 +10,14 @@ public class Reservation {
     private String statut;
     private String modalitesPaiement;
 
+    // NOUVEAU
+    private String pays;
+    private String ville;
+
+    // =========================
+    // GETTERS / SETTERS
+    // =========================
+
     public int getIdReservation() { return idReservation; }
     public void setIdReservation(int idReservation) { this.idReservation = idReservation; }
 
@@ -25,6 +33,12 @@ public class Reservation {
     public String getModalitesPaiement() { return modalitesPaiement; }
     public void setModalitesPaiement(String modalitesPaiement) { this.modalitesPaiement = modalitesPaiement; }
 
+    public String getPays() { return pays; }
+    public void setPays(String pays) { this.pays = pays; }
+
+    public String getVille() { return ville; }
+    public void setVille(String ville) { this.ville = ville; }
+
     @Override
     public String toString() {
         return "Reservation{" +
@@ -33,6 +47,8 @@ public class Reservation {
                 ", dateReservation=" + dateReservation +
                 ", statut='" + statut + '\'' +
                 ", modalitesPaiement='" + modalitesPaiement + '\'' +
+                ", pays='" + pays + '\'' +
+                ", ville='" + ville + '\'' +
                 '}';
     }
 }

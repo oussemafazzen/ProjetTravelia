@@ -11,10 +11,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 import org.example.models.Billet;
 import org.example.models.Reservation;
+import org.example.models.DestinationRecommendation;
 import org.example.services.ServiceBillet;
 import org.example.services.ServiceReservation;
+import org.example.services.RecommendationService;
 import org.example.utils.SessionContext;
 
 import java.time.format.DateTimeFormatter;
@@ -33,9 +36,16 @@ public class ReservationsController {
     @FXML private VBox reservationsList;
     @FXML private Button btnNewReservation;
 
+    // ✅ RECO UI
+    @FXML private VBox boxRecommendations;
+    @FXML private VBox listRecommendations;
+    @FXML private Label lblRecoHint;
+
     private final ServiceReservation sr = new ServiceReservation();
     private final ServiceBillet sb = new ServiceBillet();
 
+    // ✅ Reco service
+    private final RecommendationService recoService = new RecommendationService();
     private final DateTimeFormatter df  = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -45,21 +55,99 @@ public class ReservationsController {
 
         if (SessionContext.isAdmin()) {
             loadAllReservationsAdmin();
+            // admin -> pas de reco (ou tu peux mettre une reco par client sélectionné plus tard)
+            hideReco();
             return;
         }
 
         Integer clientId = SessionContext.getCurrentUserId();
         if (clientId == null) {
             alert(Alert.AlertType.WARNING, "Aucun utilisateur connecté (SessionContext).");
+            hideReco();
             return;
         }
 
+        // ✅ Load reco + reservations
+        loadRecommendations(clientId);
         loadReservationsClient(clientId);
+    }
+
+    // =================== RECOMMANDATIONS ===================
+
+    @FXML
+    private void onRefreshRecommendations(ActionEvent e) {
+        Integer clientId = SessionContext.getCurrentUserId();
+        if (clientId == null || SessionContext.isAdmin()) {
+            hideReco();
+            return;
+        }
+        loadRecommendations(clientId);
+    }
+
+    private void loadRecommendations(int clientId) {
+
+        List<DestinationRecommendation> recs = recoService.recommendForClient(clientId, 3);
+
+        if (recs == null || recs.isEmpty()) {
+            hideReco();
+            return;
+        }
+
+        if (boxRecommendations != null) {
+            boxRecommendations.setVisible(true);
+            boxRecommendations.setManaged(true);
+        }
+
+        if (lblRecoHint != null) {
+            lblRecoHint.setText("Basé sur votre historique de réservations (pays).");
+        }
+
+        if (listRecommendations != null) {
+            listRecommendations.getChildren().clear();
+            for (DestinationRecommendation r : recs) {
+                listRecommendations.getChildren().add(createRecoRow(r));
+            }
+        }
+    }
+
+    private void hideReco() {
+        if (boxRecommendations != null) {
+            boxRecommendations.setVisible(false);
+            boxRecommendations.setManaged(false);
+        }
+    }
+
+    private HBox createRecoRow(DestinationRecommendation r) {
+
+        HBox row = new HBox(12);
+        row.getStyleClass().add("reco-row");
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        Label icon = new Label("🌍");
+        icon.getStyleClass().add("reco-icon");
+
+        VBox left = new VBox(2);
+
+        Label title = new Label(r.getPays());
+        title.getStyleClass().add("reco-title");
+
+        Label reason = new Label(r.getReason() == null ? "" : r.getReason());
+        reason.getStyleClass().add("reco-reason");
+
+        left.getChildren().addAll(title, reason);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label score = new Label(String.format("Score %.2f", r.getScore()));
+        score.getStyleClass().add("reco-score");
+
+        row.getChildren().addAll(icon, left, spacer, score);
+        return row;
     }
 
     // =================== ACTIONS ===================
 
-    // ✅ POPUP Nouvelle réservation
     @FXML
     private void onNewReservation(ActionEvent e) {
         Integer clientId = SessionContext.getCurrentUserId();
@@ -76,9 +164,12 @@ public class ReservationsController {
             if (!SessionContext.isAdmin()) ctrl.setClientId(clientId);
 
             ctrl.setOnSaved(r -> {
-                // refresh après save
                 if (SessionContext.isAdmin()) loadAllReservationsAdmin();
-                else loadReservationsClient(SessionContext.getCurrentUserId());
+                else {
+                    int cid = SessionContext.getCurrentUserId();
+                    loadRecommendations(cid);
+                    loadReservationsClient(cid);
+                }
             });
 
             Stage stage = new Stage();
@@ -100,7 +191,6 @@ public class ReservationsController {
         }
     }
 
-    // ✅ POPUP CALENDRIER
     @FXML
     private void onOpenCalendar(ActionEvent e) {
         try {
@@ -164,7 +254,6 @@ public class ReservationsController {
         VBox card = new VBox(14);
         card.getStyleClass().add("big-card");
 
-        // --- header
         HBox titleRow = new HBox(10);
         Label title = new Label("Réservation #" + r.getIdReservation());
         title.getStyleClass().add("card-title");
@@ -177,7 +266,6 @@ public class ReservationsController {
 
         titleRow.getChildren().addAll(title, spacer, badge);
 
-        // --- meta
         HBox meta = new HBox(18);
         String dateTxt = (r.getDateReservation() != null) ? r.getDateReservation().format(df) : "-";
         Label date = new Label(dateTxt);
@@ -188,13 +276,11 @@ public class ReservationsController {
 
         meta.getChildren().addAll(date, pay);
 
-        // --- billets title
         Label billetsTitle = new Label("Billets (" + billets.size() + ")");
         billetsTitle.getStyleClass().add("section-mini");
 
         card.getChildren().addAll(titleRow, meta, billetsTitle);
 
-        // --- billets list
         if (billets.isEmpty()) {
             Label noTickets = new Label("Aucun billet associé à cette réservation.");
             noTickets.getStyleClass().add("muted-small");
@@ -209,7 +295,6 @@ public class ReservationsController {
 
         Separator sep = new Separator();
 
-        // --- total row
         HBox totalRow = new HBox(12);
         totalRow.setAlignment(Pos.CENTER_LEFT);
 
@@ -224,7 +309,6 @@ public class ReservationsController {
 
         totalRow.getChildren().addAll(totalLabel, sp, totalValue);
 
-        // --- actions row (✅ modifier + ajouter billet)
         HBox actions = new HBox(10);
         actions.setAlignment(Pos.CENTER_RIGHT);
 
@@ -302,9 +386,12 @@ public class ReservationsController {
             ctrl.setReservation(r);
 
             ctrl.setOnUpdated(updated -> {
-                // refresh après update
                 if (SessionContext.isAdmin()) loadAllReservationsAdmin();
-                else loadReservationsClient(SessionContext.getCurrentUserId());
+                else {
+                    int cid = SessionContext.getCurrentUserId();
+                    loadRecommendations(cid);
+                    loadReservationsClient(cid);
+                }
             });
 
             Stage stage = new Stage();
@@ -334,9 +421,12 @@ public class ReservationsController {
             ctrl.setReservationId(r.getIdReservation());
 
             ctrl.setOnSaved(b -> {
-                // refresh après ajout billet
                 if (SessionContext.isAdmin()) loadAllReservationsAdmin();
-                else loadReservationsClient(SessionContext.getCurrentUserId());
+                else {
+                    int cid = SessionContext.getCurrentUserId();
+                    loadRecommendations(cid);
+                    loadReservationsClient(cid);
+                }
             });
 
             Stage stage = new Stage();

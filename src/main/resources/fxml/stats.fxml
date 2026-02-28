@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controllers.StatsController"
+            styleClass="admin-root">
+
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="18" right="18" bottom="18" left="18"/>
+            </padding>
+            <VBox spacing="2">
+                <Label text="Statistiques" styleClass="page-title"/>
+                <Label text="Vue globale des réservations et billets" styleClass="page-subtitle"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Retour" onAction="#onBack" styleClass="btn-secondary"/>
+            <Button text="Actualiser" onAction="#onRefresh" styleClass="btn-primary"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="14">
+            <padding>
+                <Insets top="18" right="18" bottom="18" left="18"/>
+            </padding>
+
+            <HBox spacing="14">
+                <VBox styleClass="stat-card" spacing="6">
+                    <Label text="Total Réservations" styleClass="stat-label"/>
+                    <Label fx:id="lblTotalReservations" text="0" styleClass="stat-value"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" spacing="6">
+                    <Label text="Billets Totaux" styleClass="stat-label"/>
+                    <Label fx:id="lblTotalBillets" text="0" styleClass="stat-value"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" spacing="6">
+                    <Label text="Montant Total" styleClass="stat-label"/>
+                    <Label fx:id="lblMontantTotal" text="0 DT" styleClass="stat-value"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <HBox spacing="14">
+                <PieChart fx:id="pieStatut" prefHeight="320" prefWidth="420"/>
+                <BarChart fx:id="barPays" prefHeight="320" prefWidth="520">
+                    <xAxis><CategoryAxis label="Pays"/></xAxis>
+                    <yAxis><NumberAxis label="Nb réservations"/></yAxis>
+                </BarChart>
+            </HBox>
+
+            <LineChart fx:id="lineMois" prefHeight="260">
+                <xAxis><CategoryAxis label="Mois"/></xAxis>
+                <yAxis><NumberAxis label="Nb réservations"/></yAxis>
+            </LineChart>
+
+        </VBox>
+    </center>
+
+</BorderPane>

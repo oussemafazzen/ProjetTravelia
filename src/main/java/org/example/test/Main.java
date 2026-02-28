@@ -20,6 +20,8 @@ public class Main {
         r.setStatut("confirmee");
         r.setModalitesPaiement("carte");
         r.setClientId(1);
+        r.setPays("France");
+        r.setVille("Paris");
 
         sr.add(r);
 
@@ -43,4 +45,5 @@ public class Main {
         System.out.println("BILLETS:");
         sb.getAll().forEach(System.out::println);
     }
+
 }

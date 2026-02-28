@@ -91,7 +91,6 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <!-- ✅ POPUP FORM -->
                         <Button fx:id="btnNewReservation"
                                 onAction="#onNewReservation"
                                 styleClass="gradient-btn"
@@ -101,6 +100,21 @@
                             </graphic>
                         </Button>
                     </HBox>
+
+                    <!-- ✅ RECOMMANDATIONS (NOUVEAU) -->
+                    <VBox fx:id="boxRecommendations" spacing="12"
+                          visible="false" managed="false"
+                          styleClass="reco-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="✨ Recommandations pour vous" styleClass="reco-header"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="Rafraîchir" onAction="#onRefreshRecommendations" styleClass="btn-outline"/>
+                        </HBox>
+
+                        <Label fx:id="lblRecoHint" text="" styleClass="muted-small"/>
+
+                        <VBox fx:id="listRecommendations" spacing="10"/>
+                    </VBox>
 
                     <!-- LISTE -->
                     <VBox fx:id="reservationsList" spacing="16"/>

@@ -758,3 +758,89 @@
     -fx-cursor: hand;
 }
 .dialog-primary:hover { -fx-opacity: 0.95; }
+
+/* ===================================================== */
+/* ================= RECOMMENDATIONS UI ================ */
+/* ===================================================== */
+
+.reco-card {
+    -fx-background-color: white;
+    -fx-background-radius: 22;
+    -fx-padding: 18 20 18 20;
+    -fx-border-radius: 22;
+    -fx-border-color: #e6edf4;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.22, 0, 6);
+}
+
+.reco-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0d1b2a;
+}
+
+.reco-row {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #eef2f7;
+    -fx-border-width: 1;
+    -fx-padding: 12 14 12 14;
+}
+
+.reco-icon {
+    -fx-font-size: 16px;
+}
+
+.reco-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0d1b2a;
+}
+
+.reco-reason {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7a90;
+}
+
+.reco-score {
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #7c3aed;
+}
+.admin-topbar { -fx-background-color: transparent; }
+
+.admin-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+    -fx-text-fill: white;
+}
+.admin-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.75);
+}
+
+.admin-page { -fx-background-color: transparent; }
+
+.kpi-card {
+    -fx-background-color: #1c273a;
+    -fx-background-radius: 16;
+    -fx-padding: 16;
+    -fx-min-width: 220;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0.25, 0, 6);
+}
+.kpi-title { -fx-text-fill: rgba(255,255,255,0.75); -fx-font-weight: 700; }
+.kpi-value { -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 900; }
+
+.chart-card {
+    -fx-background-color: #1c273a;
+    -fx-background-radius: 16;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0.25, 0, 6);
+}
+.chart-card .label { -fx-text-fill: white; }
+
+.card-title {
+    -fx-font-weight: 900;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
