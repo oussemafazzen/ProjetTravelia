@@ -14,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
 import models.Client;
 import org.json.JSONObject;
 import services.ClientService;
@@ -100,6 +101,8 @@ public class DashboardController {
     @FXML
     private Button btnNavAccueil;
 
+    @FXML
+    private MenuButton userMenu;
 
     @FXML
     private Button btnNavReservations;

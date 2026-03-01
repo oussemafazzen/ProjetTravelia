@@ -3,25 +3,46 @@ package utils;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class EmailService {
 
-    private String username = "VOTRE_EMAIL_ICI";
-    private String password = "VOTRE_MOT_DE_PASSE_ICI";
-    private final Properties props;
+    private String username;
+    private String password;
+    private final Properties mailProps;
 
     public EmailService() {
-        props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
+        mailProps = new Properties();
+        loadConfig();
+    }
+
+    private void loadConfig() {
+        try {
+            Properties configProps = new Properties();
+            InputStream is = getClass().getResourceAsStream("/config.properties");
+            if (is != null) {
+                configProps.load(is);
+                username = configProps.getProperty("smtp.email", "VOTRE_EMAIL_ICI");
+                password = configProps.getProperty("smtp.password", "VOTRE_MOT_DE_PASSE_APP_ICI");
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur chargement config email: " + e.getMessage());
+            username = "VOTRE_EMAIL_ICI";
+            password = "VOTRE_MOT_DE_PASSE_APP_ICI";
+        }
+
+        mailProps.put("mail.smtp.host", "smtp.gmail.com");
+        mailProps.put("mail.smtp.port", "587");
+        mailProps.put("mail.smtp.auth", "true");
+        mailProps.put("mail.smtp.starttls.enable", "true");
     }
 
     private Session getSession() {
         if (username == null || password == null) return null;
-        return Session.getInstance(props, new Authenticator() {
+        return Session.getInstance(mailProps, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
@@ -37,12 +58,27 @@ public class EmailService {
         return sendEmail(toEmail, subject, body);
     }
 
-    public boolean sendPasswordResetEmail(String toEmail, String resetCode) {
+    public boolean sendPasswordResetEmail(String toEmail, String resetToken) {
         String subject = "Réinitialisation de votre mot de passe - Travelia";
         String body = "Bonjour,\n\n" +
                 "Vous avez demandé la réinitialisation de votre mot de passe.\n" +
-                "Votre code de vérification est : " + resetCode + "\n\n" +
+                "Votre code de vérification est : " + resetToken + "\n\n" +
+                "Ce code expire dans 1 heure.\n\n" +
                 "Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer cet email.\n\n" +
+                "Cordialement,\nL'équipe Travelia";
+        return sendEmail(toEmail, subject, body);
+    }
+
+    /**
+     * Envoie un email de confirmation d'inscription avec un token sécurisé.
+     */
+    public boolean sendConfirmationEmail(String toEmail, String name, String confirmToken) {
+        String subject = "Confirmez votre inscription - Travelia";
+        String body = "Bonjour " + name + ",\n\n" +
+                "Merci de vous être inscrit chez Travelia !\n\n" +
+                "Veuillez confirmer votre adresse email en utilisant le code suivant :\n\n" +
+                "Code de confirmation : " + confirmToken + "\n\n" +
+                "Ce code expire dans 1 heure.\n\n" +
                 "Cordialement,\nL'équipe Travelia";
         return sendEmail(toEmail, subject, body);
     }

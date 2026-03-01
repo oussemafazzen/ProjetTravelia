@@ -10,12 +10,22 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import models.Client;
 import models.enums.Role;
 import models.enums.Statut;
 import services.ClientService;
+import services.FaceRecognitionService;
+import services.SecurityLogService;
+import services.TokenService;
 import utils.EmailService;
 
+import java.io.File;
+import java.io.IOException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import java.sql.SQLException;
 import java.util.function.UnaryOperator;
 import java.util.Arrays;
@@ -55,14 +65,37 @@ public class RegisterController {
     @FXML
     private Label lblMessage;
 
+    @FXML
+    private Label lblFaceStatus;
+
+    @FXML
+    private VBox mainForm;
+
+    @FXML
+    private VBox verificationBox;
+
+    @FXML
+    private TextField codeF;
+
+    @FXML
+    private Button btnRegister;
+
     private ClientService clientService = new ClientService();
     private EmailService emailService = new EmailService();
+    private FaceRecognitionService faceRecognitionService = new FaceRecognitionService();
+    private SecurityLogService securityLogService = new SecurityLogService();
+    private TokenService tokenService = new TokenService();
+
+    private File selectedFaceImage = null;
+    private String detectedFaceToken = null;
+    private String generatedCode = null;
+    private Client pendingUser = null;
 
     @FXML
     public void initialize() {
         // Initialize Country List - Using Java Locale for all countries
         List<String> countries = Arrays.stream(Locale.getISOCountries())
-                .map(code -> new Locale("", code).getDisplayCountry(Locale.FRENCH))
+                .map(code -> Locale.of("", code).getDisplayCountry(Locale.FRENCH))
                 .sorted()
                 .collect(Collectors.toList());
         nationaliteCombo.setItems(FXCollections.observableArrayList(countries));
@@ -93,6 +126,53 @@ public class RegisterController {
                 }
             });
         }).start();
+
+        // Initialize face status label
+        if (lblFaceStatus != null) {
+            lblFaceStatus.setText("");
+        }
+    }
+
+    /**
+     * Permet à l'utilisateur d'enregistrer une image de son visage.
+     */
+    @FXML
+    void handleCaptureFace(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sélectionnez une photo de votre visage");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.bmp")
+        );
+        File file = fileChooser.showOpenDialog(dateNaissanceF.getScene().getWindow());
+
+        if (file != null) {
+            selectedFaceImage = file;
+            if (lblFaceStatus != null) {
+                lblFaceStatus.setStyle("-fx-text-fill: #2196F3;");
+                lblFaceStatus.setText("Détection du visage en cours...");
+            }
+
+            // Detect face in background
+            new Thread(() -> {
+                String faceToken = faceRecognitionService.detectFace(file);
+                javafx.application.Platform.runLater(() -> {
+                    if (faceToken != null) {
+                        detectedFaceToken = faceToken;
+                        if (lblFaceStatus != null) {
+                            lblFaceStatus.setStyle("-fx-text-fill: green;");
+                            lblFaceStatus.setText("✓ Visage détecté avec succès !");
+                        }
+                    } else {
+                        detectedFaceToken = null;
+                        if (lblFaceStatus != null) {
+                            String errorMsg = faceRecognitionService.getLastErrorMessage();
+                            lblFaceStatus.setStyle("-fx-text-fill: red;");
+                            lblFaceStatus.setText("✗ " + (errorMsg.isEmpty() ? "Aucun visage détecté. Réessayez." : errorMsg));
+                        }
+                    }
+                });
+            }).start();
+        }
     }
 
     @FXML
@@ -104,77 +184,63 @@ public class RegisterController {
             String password = passwordF.getText();
             String telephoneNum = telephoneF.getText();
             String prefix = countryCodeCombo.getValue();
-            String telephone = prefix + " " + telephoneNum;
+            String telephone = (prefix != null ? prefix : "") + " " + (telephoneNum != null ? telephoneNum : "");
             
             String nationalite = nationaliteCombo.getValue();
             LocalDate dateNaissanceLocal = dateNaissanceF.getValue();
 
-            // 1. Champs vides
+            // 1. Validation de base
             if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || password.isEmpty() || 
                 telephoneNum.isEmpty() || nationalite == null || dateNaissanceLocal == null) {
                 lblMessage.setStyle("-fx-text-fill: red;");
-                lblMessage.setText("Veuillez remplir tous les champs obligatoires.");
+                lblMessage.setText("Veuillez remplir tous les champs.");
                 return;
             }
 
-            // 2. Format Email (Regex)
+            // 2. Format Email
             String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
             if (!email.matches(emailRegex)) {
                 lblMessage.setStyle("-fx-text-fill: red;");
-                lblMessage.setText("Format email invalide (ex: test@domaine.com).");
+                lblMessage.setText("Format email invalide.");
                 return;
             }
 
-            // 3. Unicité de l'Email
+            // 3. Unicité
             if (clientService.emailExists(email)) {
                 lblMessage.setStyle("-fx-text-fill: red;");
-                lblMessage.setText("Cet email est déjà utilisé.");
-                return;
-            }
-
-            // 4. Complexité Mot de passe
-            String passwordRegex = "^(?=.*[0-9])(?=.*[A-Z]).{8,}$";
-            if (!password.matches(passwordRegex)) {
-                lblMessage.setStyle("-fx-text-fill: red;");
-                lblMessage.setText("Mot de passe faible (min 8 car., 1 Maj, 1 Chiffre).");
-                return;
-            }
-
-            // 5. Validité Téléphone (On enlève le controle strict de 8 chiffres, on garde juste presence)
-            if (telephoneNum.length() < 4) {
-                lblMessage.setStyle("-fx-text-fill: red;");
-                lblMessage.setText("Numéro de téléphone trop court.");
-                return;
-            }
-
-            // 6. Contrôle d'Age (min 18 ans)
-            if (java.time.Period.between(dateNaissanceLocal, LocalDate.now()).getYears() < 18) {
-                lblMessage.setStyle("-fx-text-fill: red;");
-                lblMessage.setText("Vous devez avoir au moins 18 ans.");
+                lblMessage.setText("Email déjà utilisé.");
                 return;
             }
 
             Date dateNaissance = Date.valueOf(dateNaissanceLocal);
+            pendingUser = new Client(email, password, Role.USER, Statut.ACTIF, nom, prenom, telephone, nationalite, dateNaissance);
+            
+            // Génération du code
+            generatedCode = String.format("%06d", new java.util.Random().nextInt(999999));
+            
+            lblMessage.setStyle("-fx-text-fill: #2196F3;");
+            lblMessage.setText("Envoi du code...");
 
-            Client client = new Client(email, password, Role.USER, Statut.ACTIF, nom, prenom, telephone, nationalite, dateNaissance);
-            
-            clientService.add(client);
-            System.out.println("Client ajouté en base : " + email);
-            
-            lblMessage.setStyle("-fx-text-fill: green;");
-            lblMessage.setText("Inscription réussie !");
-            
-            // Send Welcome Email (in background)
-            new Thread(() -> emailService.sendWelcomeEmail(email, nom + " " + prenom)).start();
-            
-            // Clear fields
-            nomF.clear(); prenomF.clear(); emailF.clear(); passwordF.clear();
-            telephoneF.clear(); nationaliteCombo.setValue(null); dateNaissanceF.setValue(null);
-            
-        } catch (SQLException e) {
-            lblMessage.setStyle("-fx-text-fill: red;");
-            lblMessage.setText("Erreur Base de Données: " + e.getMessage());
-            e.printStackTrace();
+            new Thread(() -> {
+                try {
+                    emailService.sendConfirmationEmail(email, nom + " " + prenom, generatedCode);
+                    javafx.application.Platform.runLater(() -> {
+                        lblMessage.setStyle("-fx-text-fill: green;");
+                        lblMessage.setText("Code envoyé à " + email);
+                        
+                        mainForm.setVisible(false);
+                        mainForm.setManaged(false);
+                        verificationBox.setVisible(true);
+                        verificationBox.setManaged(true);
+                    });
+                } catch (Exception e) {
+                    javafx.application.Platform.runLater(() -> {
+                        lblMessage.setStyle("-fx-text-fill: red;");
+                        lblMessage.setText("Erreur d'envoi: " + e.getMessage());
+                    });
+                }
+            }).start();
+
         } catch (Exception e) {
             lblMessage.setStyle("-fx-text-fill: red;");
             lblMessage.setText("Erreur: " + e.getMessage());
@@ -182,14 +248,83 @@ public class RegisterController {
     }
 
     @FXML
-    void goToHome(ActionEvent event) {
+    void handleVerifyAndFinalize(ActionEvent event) {
+        String enteredCode = codeF.getText();
+        if (enteredCode == null || !enteredCode.equals(generatedCode)) {
+            lblMessage.setStyle("-fx-text-fill: red;");
+            lblMessage.setText("Code incorrect.");
+            return;
+        }
+
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/Home.fxml"));
-            javafx.scene.Parent root = loader.load();
+            clientService.add(pendingUser);
+            
+            // Initialiser la session
+            utils.SessionManager.saveSession(pendingUser.getEmail());
+
+            if (detectedFaceToken != null && pendingUser.getId() > 0) {
+                faceRecognitionService.storeFaceData(pendingUser.getId(), detectedFaceToken, "");
+                securityLogService.logEvent(pendingUser.getId(), "FACE_REGISTERED", "Visage enregistré");
+            }
+
+            securityLogService.logEvent(pendingUser.getId(), "REGISTRATION_COMPLETE", "Inscription terminée");
+
+            lblMessage.setStyle("-fx-text-fill: green;");
+            lblMessage.setText("Inscription réussie ! Connexion...");
+            
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1500);
+                    javafx.application.Platform.runLater(() -> {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Dashboard.fxml"));
+                            Parent root = loader.load();
+                            
+                            // Passer l'utilisateur au contrôleur du Dashboard
+                            DashboardController controller = loader.getController();
+                            controller.initData(pendingUser);
+                            
+                            lblMessage.getScene().setRoot(root);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            lblMessage.setText("Erreur redirection: " + e.getMessage());
+                        }
+                    });
+                } catch (InterruptedException e) {}
+            }).start();
+
+        } catch (SQLException e) {
+            lblMessage.setStyle("-fx-text-fill: red;");
+            lblMessage.setText("Erreur DB: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    void handleResendCode(ActionEvent event) {
+        if (pendingUser != null) {
+            handleRegister(null);
+        }
+    }
+
+    @FXML
+    void handleGoogleRegister(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/GoogleAuth.fxml"));
+            Parent root = loader.load();
             dateNaissanceF.getScene().setRoot(root);
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @FXML
+    void goToHome(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
+            Parent root = loader.load();
+            dateNaissanceF.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
