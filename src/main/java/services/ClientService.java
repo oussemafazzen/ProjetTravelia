@@ -5,7 +5,7 @@ import models.Client;
 import models.enums.NiveauFidelite;
 import models.enums.Role;
 import models.enums.Statut;
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.mindrot.jbcrypt.BCrypt;
 import utils.MyDataBase;
 
 import java.io.FileNotFoundException;
@@ -37,7 +37,7 @@ public class ClientService implements IService<Client> {
             ps.setString(3, client.getEmail());
             // Hash password
             String hashedPassword = (client.getPassword() != null && !client.getPassword().isEmpty()) 
-                    ? BCrypt.withDefaults().hashToString(12, client.getPassword().toCharArray()) 
+                    ? BCrypt.hashpw(client.getPassword(), BCrypt.gensalt(12)) 
                     : "";
             ps.setString(4, hashedPassword);
             ps.setString(5, client.getTelephone());

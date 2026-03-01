@@ -1,0 +1,8 @@
+﻿pom.xml
+src/main/java/controllers/DashboardController.java
+src/main/java/controllers/RegisterController.java
+src/main/java/test/MainFX.java
+src/main/resources/css/style.css
+src/main/resources/fxml/Dashboard.fxml
+src/main/resources/views/CameraView.fxml
+src/main/resources/views/GoogleAuth.fxml

@@ -6,7 +6,7 @@ import models.Administrateur;
 import models.enums.Role;
 import models.enums.Statut;
 import models.enums.NiveauFidelite;
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.mindrot.jbcrypt.BCrypt;
 import utils.MyDataBase;
 
 import java.sql.*;
@@ -91,7 +91,7 @@ public class UserService {
                     }
 
                     String storedHash = rs.getString("password");
-                    if (storedHash != null && BCrypt.verifyer().verify(password.toCharArray(), storedHash).verified) {
+                    if (storedHash != null && BCrypt.checkpw(password, storedHash)) {
                         // Reset failed attempts
                         String resetReq = "UPDATE " + tableName + " SET failed_attempts = 0 WHERE email = ?";
                         try (PreparedStatement psReset = cnx.prepareStatement(resetReq)) {
@@ -141,7 +141,7 @@ public class UserService {
     }
 
     public void updatePassword(String email, String newPassword) throws SQLException {
-        String hashedPassword = BCrypt.withDefaults().hashToString(12, newPassword.toCharArray());
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
         String req = "UPDATE client SET password = ? WHERE email = ?";
         try (PreparedStatement ps = cnx.prepareStatement(req)) {
             ps.setString(1, hashedPassword);

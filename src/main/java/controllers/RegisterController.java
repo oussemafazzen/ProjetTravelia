@@ -95,7 +95,7 @@ public class RegisterController {
     public void initialize() {
         // Initialize Country List - Using Java Locale for all countries
         List<String> countries = Arrays.stream(Locale.getISOCountries())
-                .map(code -> Locale.of("", code).getDisplayCountry(Locale.FRENCH))
+                .map(code -> new Locale("", code).getDisplayCountry(Locale.FRENCH))
                 .sorted()
                 .collect(Collectors.toList());
         nationaliteCombo.setItems(FXCollections.observableArrayList(countries));
@@ -320,7 +320,7 @@ public class RegisterController {
     @FXML
     void goToHome(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Home.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
             Parent root = loader.load();
             dateNaissanceF.getScene().setRoot(root);
         } catch (IOException e) {

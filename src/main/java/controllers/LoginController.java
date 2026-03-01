@@ -161,7 +161,7 @@ public class LoginController {
             }
 
             // Open Live Camera Stage
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/CameraView.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/CameraView.fxml"));
             javafx.scene.Parent root = loader.load();
             
             CameraController cameraController = loader.getController();
@@ -206,7 +206,7 @@ public class LoginController {
     @FXML
     void handleGoogleLogin(ActionEvent event) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/GoogleAuth.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/GoogleAuth.fxml"));
             javafx.scene.Parent root = loader.load();
             btnLogin.getScene().setRoot(root);
         } catch (IOException e) {
@@ -218,15 +218,15 @@ public class LoginController {
 
     private void navigateAfterLogin(User user) {
         try {
-            String fxmlPath = "/fxml/Dashboard.fxml";
+            String fxmlPath = "/views/Dashboard.fxml";
             if (user.getRole() == models.enums.Role.ADMINISTRATEUR) {
-                fxmlPath = "/fxml/AdminPanel.fxml";
+                fxmlPath = "/views/AdminPanel.fxml";
             }
 
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(fxmlPath));
             javafx.scene.Parent root = loader.load();
 
-            if (fxmlPath.equals("/fxml/Dashboard.fxml") && user instanceof models.Client) {
+            if (fxmlPath.equals("/views/Dashboard.fxml") && user instanceof models.Client) {
                 DashboardController dc = loader.getController();
                 if (dc != null) {
                     dc.initData((models.Client) user);

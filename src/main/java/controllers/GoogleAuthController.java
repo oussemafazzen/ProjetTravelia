@@ -144,15 +144,15 @@ public class GoogleAuthController {
 
     private void navigateToDashboard(Client user) {
         try {
-            String fxmlPath = "/fxml/Dashboard.fxml";
+            String fxmlPath = "/views/Dashboard.fxml";
             if (user.getRole() == models.enums.Role.ADMINISTRATEUR) {
-                fxmlPath = "/fxml/AdminPanel.fxml";
+                fxmlPath = "/views/AdminPanel.fxml";
             }
 
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(fxmlPath));
             javafx.scene.Parent root = loader.load();
 
-            if (fxmlPath.equals("/fxml/Dashboard.fxml")) {
+            if (fxmlPath.equals("/views/Dashboard.fxml")) {
                 DashboardController dc = (DashboardController) loader.getController();
                 if (dc != null) {
                     dc.initData(user);
@@ -171,7 +171,7 @@ public class GoogleAuthController {
     @FXML
     void handleCancel() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/Login.fxml"));
             javafx.scene.Parent root = loader.load();
             webView.getScene().setRoot(root);
         } catch (Exception e) {
