@@ -79,11 +79,134 @@
             transform: scale(1.05);
             transition: all 0.2s;
         }
+
+        /* ============ Weather Panel Styles ============ */
+        #weather-panel {
+            position: absolute;
+            top: 85px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            padding: 12px 14px;
+            width: 200px;
+            font-size: 13px;
+        }
+
+        #weather-panel label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 6px;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        #weather-panel input[type="date"] {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            color: #334155;
+            background: #f8fafc;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        #weather-panel input[type="date"]:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        #weather-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px 0;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        #weather-btn:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(217, 119, 6, 0.3);
+        }
+
+        #weather-btn:active {
+            transform: translateY(0);
+        }
+
+        #weather-clear-btn {
+            width: 100%;
+            margin-top: 5px;
+            padding: 6px 0;
+            background: transparent;
+            color: #64748b;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+
+        #weather-clear-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        #weather-status {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #64748b;
+            text-align: center;
+            min-height: 16px;
+        }
+
+        /* Weather badge on the map (temperature bubble) */
+        .weather-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            line-height: 22px;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);
+            white-space: nowrap;
+            padding: 2px 8px;
+            cursor: default;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
     </style>
 </head>
 
 <body>
     <div id="map"></div>
+
+    <!-- Weather Date Panel -->
+    <div id="weather-panel">
+        <label>📅 Date de réservation</label>
+        <input type="date" id="weather-date" />
+        <button id="weather-btn" onclick="fetchWeather()">☀️ Afficher Météo</button>
+        <button id="weather-clear-btn" onclick="clearWeather()">✕ Masquer Météo</button>
+        <div id="weather-status"></div>
+    </div>
+
     <script>
         // Initialize map centered roughly on North Africa / Europe
         // Fix for JavaFX fractional zoom bug: forces integer zoom levels, disables animations
@@ -108,6 +231,42 @@
 
         var group = L.featureGroup().addTo(map);
 
+        // Store marker positions for weather fetching
+        var markerPositions = []; // { lat, lon, marker, hebergement }
+        var weatherGroup = L.featureGroup().addTo(map);
+
+        // Set default date to today
+        var today = new Date();
+        document.getElementById('weather-date').value = today.toISOString().split('T')[0];
+
+        // WMO Weather Code to emoji mapping
+        function weatherCodeToEmoji(code) {
+            if (code === 0) return '☀️';
+            if (code >= 1 && code <= 3) return '⛅';
+            if (code >= 45 && code <= 48) return '🌫️';
+            if (code >= 51 && code <= 57) return '🌦️';
+            if (code >= 61 && code <= 67) return '🌧️';
+            if (code >= 71 && code <= 77) return '❄️';
+            if (code >= 80 && code <= 82) return '🌦️';
+            if (code >= 85 && code <= 86) return '🌨️';
+            if (code >= 95 && code <= 99) return '⛈️';
+            return '🌡️';
+        }
+
+        // WMO Weather Code to description (French)
+        function weatherCodeToDesc(code) {
+            if (code === 0) return 'Ciel dégagé';
+            if (code >= 1 && code <= 3) return 'Partiellement nuageux';
+            if (code >= 45 && code <= 48) return 'Brouillard';
+            if (code >= 51 && code <= 57) return 'Bruine';
+            if (code >= 61 && code <= 67) return 'Pluie';
+            if (code >= 71 && code <= 77) return 'Neige';
+            if (code >= 80 && code <= 82) return 'Averses';
+            if (code >= 85 && code <= 86) return 'Averses de neige';
+            if (code >= 95 && code <= 99) return 'Orage';
+            return 'Inconnu';
+        }
+
         // This function will be called from JavaFX WebView Engine
         function loadMarkers(jsonData) {
             // Fix Leaflet gray rendering in JavaFX WebView when hidden/resized initially
@@ -116,6 +275,7 @@
             var hebergements = JSON.parse(jsonData);
 
             group.clearLayers();
+            markerPositions = []; // Reset stored positions
 
             let markersAdded = 0;
 
@@ -127,8 +287,8 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data && data.length > 0) {
-                            var lat = data[0].lat;
-                            var lon = data[0].lon;
+                            var lat = parseFloat(data[0].lat);
+                            var lon = parseFloat(data[0].lon);
                             addMarker(lat, lon, h);
                             markersAdded++;
                         } else {
@@ -184,6 +344,121 @@
         `;
 
             marker.bindPopup(popupContent, { className: 'custom-popup' });
+
+            // Store position for weather fetching later
+            markerPositions.push({ lat: lat, lon: lon, marker: marker, hebergement: h });
+        }
+
+        // ============ Weather Feature ============
+
+        function fetchWeather() {
+            var dateInput = document.getElementById('weather-date').value;
+            var statusEl = document.getElementById('weather-status');
+            var clearBtn = document.getElementById('weather-clear-btn');
+
+            if (!dateInput) {
+                statusEl.textContent = '⚠️ Veuillez choisir une date';
+                statusEl.style.color = '#dc2626';
+                return;
+            }
+
+            if (markerPositions.length === 0) {
+                statusEl.textContent = '⏳ Attendez le chargement des marqueurs...';
+                statusEl.style.color = '#d97706';
+                return;
+            }
+
+            // Check if date is within forecast range (max ~16 days from today)
+            var selectedDate = new Date(dateInput);
+            var now = new Date();
+            now.setHours(0, 0, 0, 0);
+            var diffDays = Math.ceil((selectedDate - now) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+                statusEl.textContent = '⚠️ Date passée — prévisions indisponibles';
+                statusEl.style.color = '#dc2626';
+                return;
+            }
+
+            if (diffDays > 16) {
+                statusEl.textContent = '⚠️ Prévisions limitées à 16 jours';
+                statusEl.style.color = '#dc2626';
+                return;
+            }
+
+            statusEl.textContent = '⏳ Chargement météo...';
+            statusEl.style.color = '#2563eb';
+
+            // Clear previous weather markers
+            weatherGroup.clearLayers();
+
+            var completed = 0;
+            var total = markerPositions.length;
+
+            markerPositions.forEach(function (pos) {
+                var apiUrl = 'https://api.open-meteo.com/v1/forecast'
+                    + '?latitude=' + pos.lat
+                    + '&longitude=' + pos.lon
+                    + '&daily=temperature_2m_max,temperature_2m_min,weathercode'
+                    + '&start_date=' + dateInput
+                    + '&end_date=' + dateInput
+                    + '&timezone=auto';
+
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.daily && data.daily.temperature_2m_max) {
+                            var maxTemp = Math.round(data.daily.temperature_2m_max[0]);
+                            var minTemp = Math.round(data.daily.temperature_2m_min[0]);
+                            var weatherCode = data.daily.weathercode[0];
+                            var emoji = weatherCodeToEmoji(weatherCode);
+                            var desc = weatherCodeToDesc(weatherCode);
+
+                            // Create weather badge marker offset slightly above the accommodation marker
+                            var weatherIcon = L.divIcon({
+                                className: 'custom-div-icon',
+                                html: "<div class='weather-badge'>" + emoji + " " + maxTemp + "°C</div>",
+                                iconSize: [80, 26],
+                                iconAnchor: [40, 50] // Position above the accommodation marker
+                            });
+
+                            var weatherMarker = L.marker([pos.lat, pos.lon], { icon: weatherIcon, interactive: true }).addTo(weatherGroup);
+
+                            // Weather popup with details
+                            var weatherPopup = `
+                                <div style="text-align:center; min-width:140px;">
+                                    <div style="font-size:28px; margin-bottom:4px;">${emoji}</div>
+                                    <h4 style="margin:4px 0; color:#1e293b;">${pos.hebergement.nom}</h4>
+                                    <p style="margin:2px 0; font-size:12px; color:#64748b;">${desc}</p>
+                                    <div style="margin-top:6px;">
+                                        <span style="color:#dc2626; font-weight:bold;">↑ ${maxTemp}°C</span>
+                                        &nbsp;
+                                        <span style="color:#2563eb; font-weight:bold;">↓ ${minTemp}°C</span>
+                                    </div>
+                                    <p style="margin:4px 0 0; font-size:11px; color:#94a3b8;">${dateInput}</p>
+                                </div>
+                            `;
+                            weatherMarker.bindPopup(weatherPopup, { className: 'custom-popup' });
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Weather API error for " + pos.hebergement.nom + ":", err);
+                    })
+                    .finally(() => {
+                        completed++;
+                        if (completed >= total) {
+                            statusEl.textContent = '✅ Météo du ' + dateInput;
+                            statusEl.style.color = '#16a34a';
+                            clearBtn.style.display = 'block';
+                        }
+                    });
+            });
+        }
+
+        function clearWeather() {
+            weatherGroup.clearLayers();
+            document.getElementById('weather-status').textContent = '';
+            document.getElementById('weather-clear-btn').style.display = 'none';
         }
     </script>
 </body>

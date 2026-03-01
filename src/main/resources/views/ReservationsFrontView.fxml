@@ -32,6 +32,11 @@
         </Button>
     </HBox>
 
+    <!-- INSPIRATIONS DE VOYAGE (RECOMMENDATIONS) -->
+    <VBox fx:id="boxRecommendations" visible="false" managed="false" styleClass="recommendation-box" style="-fx-padding: 0 0 10 0;">
+        <!-- Container for the single large recommendation card -->
+    </VBox>
+
     <!-- RESERVATIONS LIST -->
     <VBox fx:id="reservationsList" spacing="20" />
 

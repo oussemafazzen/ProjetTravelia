@@ -9,6 +9,7 @@ public class Reservation {
     private LocalDateTime dateReservation;
     private String statut;
     private String modalitesPaiement;
+    private String paysdestination;
 
     public int getIdReservation() { return idReservation; }
     public void setIdReservation(int idReservation) { this.idReservation = idReservation; }
@@ -25,6 +26,9 @@ public class Reservation {
     public String getModalitesPaiement() { return modalitesPaiement; }
     public void setModalitesPaiement(String modalitesPaiement) { this.modalitesPaiement = modalitesPaiement; }
 
+    public String getPaysdestination() { return paysdestination; }
+    public void setPaysdestination(String paysdestination) { this.paysdestination = paysdestination; }
+
     @Override
     public String toString() {
         return "Reservation{" +
@@ -33,6 +37,7 @@ public class Reservation {
                 ", dateReservation=" + dateReservation +
                 ", statut='" + statut + '\'' +
                 ", modalitesPaiement='" + modalitesPaiement + '\'' +
+                ", paysdestination='" + paysdestination + '\'' +
                 '}';
     }
 }

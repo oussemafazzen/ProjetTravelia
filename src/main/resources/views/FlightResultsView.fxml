@@ -34,21 +34,21 @@
                <children>
                   <Label styleClass="result-label-title" text="Le meilleur" />
                   <Label fx:id="lblPriceMeilleur" styleClass="result-label-price" text="286 €" />
-                  <Label styleClass="result-label-info" text="2 h 38 min (moyenne)" />
+                  <Label fx:id="lblDurationMeilleur" styleClass="result-label-info" text="2 h 38 min (moyenne)" />
                </children>
             </VBox>
             <VBox fx:id="catMoinsCher" onMouseClicked="#handleCategoryClick" styleClass="result-option-card">
                <children>
                   <Label styleClass="result-label-title" text="Le moins cher" />
                   <Label fx:id="lblPriceMoinsCher" styleClass="result-label-price" text="263 €" />
-                  <Label styleClass="result-label-info" text="8 h 50 min" />
+                  <Label fx:id="lblDurationMoinsCher" styleClass="result-label-info" text="8 h 50 min" />
                </children>
             </VBox>
             <VBox fx:id="catPlusRapide" onMouseClicked="#handleCategoryClick" styleClass="result-option-card">
                <children>
                   <Label styleClass="result-label-title" text="Le plus rapide" />
                   <Label fx:id="lblPricePlusRapide" styleClass="result-label-price" text="574 €" />
-                  <Label styleClass="result-label-info" text="2 h 25 min" />
+                  <Label fx:id="lblDurationPlusRapide" styleClass="result-label-info" text="2 h 25 min" />
                </children>
             </VBox>
          </children>

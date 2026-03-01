@@ -18,7 +18,7 @@ public class ServiceReservation {
     }
 
     public int add(Reservation r) {
-        String sql = "INSERT INTO reservation (date_reservation, statut, modalites_paiement, id_client) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO reservation (date_reservation, statut, modalites_paiement, id_client, paysdestination) VALUES (?,?,?,?,?)";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -26,6 +26,7 @@ public class ServiceReservation {
             ps.setString(2, r.getStatut());
             ps.setString(3, r.getModalitesPaiement());
             ps.setInt(4, r.getClientId());
+            ps.setString(5, r.getPaysdestination());
 
             ps.executeUpdate();
 
@@ -45,14 +46,15 @@ public class ServiceReservation {
     }
 
     public void update(Reservation r) {
-        String sql = "UPDATE reservation SET date_reservation=?, statut=?, modalites_paiement=? WHERE id_reservation=?";
+        String sql = "UPDATE reservation SET date_reservation=?, statut=?, modalites_paiement=?, paysdestination=? WHERE id_reservation=?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
 
             ps.setTimestamp(1, Timestamp.valueOf(r.getDateReservation()));
             ps.setString(2, r.getStatut());
             ps.setString(3, r.getModalitesPaiement());
-            ps.setInt(4, r.getIdReservation());
+            ps.setString(4, r.getPaysdestination());
+            ps.setInt(5, r.getIdReservation());
 
             ps.executeUpdate();
 
@@ -119,6 +121,7 @@ public class ServiceReservation {
                    r.statut,
                    r.modalites_paiement,
                    r.id_client,
+                   r.paysdestination,
                    c.nom,
                    c.prenom
             FROM reservation r
@@ -149,6 +152,7 @@ public class ServiceReservation {
                    r.statut,
                    r.modalites_paiement,
                    r.id_client,
+                   r.paysdestination,
                    c.nom,
                    c.prenom
             FROM reservation r
@@ -220,6 +224,7 @@ public class ServiceReservation {
 
         r.setStatut(rs.getString("statut"));
         r.setModalitesPaiement(rs.getString("modalites_paiement"));
+        r.setPaysdestination(rs.getString("paysdestination"));
         
         return r;
     }
@@ -238,6 +243,7 @@ public class ServiceReservation {
         row.setIdClient(rs.getInt("id_client"));
         row.setNomClient(rs.getString("nom"));
         row.setPrenomClient(rs.getString("prenom"));
+        row.setPaysdestination(rs.getString("paysdestination"));
 
         return row;
     }

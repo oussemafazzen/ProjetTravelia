@@ -1,7 +1,7 @@
-package org.example.services;
+package services;
 
-import org.example.models.Billet;
-import org.example.models.Reservation;
+import models.Billet;
+import models.Reservation;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,45 +23,42 @@ public class ServiceBilletTest {
 
     @Test
     @Order(1)
-    void testAddBillet() {
-        Reservation r = new Reservation(LocalDateTime.now(), "confirmee", "carte", 1);
+    void testAddBillet() throws Exception {
+        Reservation r = new Reservation();
+        r.setDateReservation(LocalDateTime.now());
+        r.setStatut("confirmee");
+        r.setModalitesPaiement("carte");
+        r.setClientId(1);
         serviceReservation.add(r);
 
         List<Reservation> reservations = serviceReservation.getAll();
-        idReservationForBillet = reservations.get(reservations.size() - 1).getIdReservation();
+        idReservationForBillet = reservations.get(0).getIdReservation();
 
-        Reservation resRef = new Reservation();
-        resRef.setIdReservation(idReservationForBillet);
-
-        Billet b = new Billet(
-                "avion",
-                "TEST-" + System.currentTimeMillis(),
-                LocalDateTime.now(),
-                LocalDateTime.now().plusHours(2),
-                111,
-                "confirme",
-                resRef
-        );
+        Billet b = new Billet();
+        b.setTypeTransport("avion");
+        b.setNumeroBillet("TEST-" + System.currentTimeMillis());
+        b.setDateDepart(LocalDateTime.now());
+        b.setDateArrivee(LocalDateTime.now().plusHours(2));
+        b.setPrix(111);
+        b.setStatut("confirme");
+        b.setReservationId(idReservationForBillet);
 
         serviceBillet.add(b);
 
         List<Billet> billets = serviceBillet.getAll();
         assertFalse(billets.isEmpty());
 
-        Billet last = billets.get(billets.size() - 1);
+        Billet last = billets.get(0);
         idBilletTest = last.getIdBillet();
 
         assertEquals("avion", last.getTypeTransport());
         assertEquals("confirme", last.getStatut());
-        assertNotNull(last.getReservation());
+        assertEquals(idReservationForBillet, last.getReservationId());
     }
 
     @Test
     @Order(2)
-    void testUpdateBillet() {
-        Reservation resRef = new Reservation();
-        resRef.setIdReservation(idReservationForBillet);
-
+    void testUpdateBillet() throws Exception {
         Billet b = new Billet();
         b.setIdBillet(idBilletTest);
         b.setTypeTransport("train");
@@ -70,7 +67,7 @@ public class ServiceBilletTest {
         b.setDateArrivee(LocalDateTime.now().plusHours(1));
         b.setPrix(222);
         b.setStatut("confirme");
-        b.setReservation(resRef);
+        b.setReservationId(idReservationForBillet);
 
         serviceBillet.update(b);
 
@@ -84,11 +81,11 @@ public class ServiceBilletTest {
 
     @Test
     @Order(3)
-    void testDeleteBillet() {
+    void testDeleteBillet() throws Exception {
         Billet b = new Billet();
         b.setIdBillet(idBilletTest);
 
-        serviceBillet.delete(b);
+        serviceBillet.delete(b.getIdBillet());
 
         List<Billet> billets = serviceBillet.getAll();
         boolean exists = billets.stream().anyMatch(x -> x.getIdBillet() == idBilletTest);
@@ -97,6 +94,6 @@ public class ServiceBilletTest {
 
         Reservation r = new Reservation();
         r.setIdReservation(idReservationForBillet);
-        serviceReservation.delete(r);
+        serviceReservation.delete(r.getIdReservation());
     }
 }

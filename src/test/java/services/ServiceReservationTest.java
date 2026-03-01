@@ -1,6 +1,6 @@
-package org.example.services;
+package services;
 
-import org.example.models.Reservation;
+import models.Reservation;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,29 +19,33 @@ public class ServiceReservationTest {
 
     @Test
     @Order(1)
-    void testAddReservation() {
-        Reservation r = new Reservation(LocalDateTime.now(), "en_attente", "carte", 1);
+    void testAddReservation() throws Exception {
+        Reservation r = new Reservation();
+        r.setDateReservation(LocalDateTime.now());
+        r.setStatut("en_attente");
+        r.setModalitesPaiement("carte");
+        r.setClientId(1);
         service.add(r);
 
         List<Reservation> list = service.getAll();
         assertFalse(list.isEmpty());
 
-        Reservation last = list.get(list.size() - 1);
+        Reservation last = list.get(0); // service.getAll() returns list ordered by id DESC
         idReservationTest = last.getIdReservation();
 
-        assertEquals(1, last.getIdClient());
+        assertEquals(1, last.getClientId());
         assertEquals("carte", last.getModalitesPaiement());
     }
 
     @Test
     @Order(2)
-    void testUpdateReservation() {
+    void testUpdateReservation() throws Exception {
         Reservation r = new Reservation();
         r.setIdReservation(idReservationTest);
         r.setDateReservation(LocalDateTime.now());
         r.setStatut("confirmee");
         r.setModalitesPaiement("paypal");
-        r.setIdClient(1);
+        r.setClientId(1);
 
         service.update(r);
 
@@ -57,11 +61,11 @@ public class ServiceReservationTest {
 
     @Test
     @Order(3)
-    void testDeleteReservation() {
+    void testDeleteReservation() throws Exception {
         Reservation r = new Reservation();
         r.setIdReservation(idReservationTest);
 
-        service.delete(r);
+        service.delete(r.getIdReservation());
 
         List<Reservation> list = service.getAll();
         boolean exists = list.stream().anyMatch(x -> x.getIdReservation() == idReservationTest);

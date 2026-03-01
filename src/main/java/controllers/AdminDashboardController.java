@@ -7,9 +7,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import models.ReservationAdminRow;
 import services.ServiceReservation;
+import utils.ExcelExportUtil;
 
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class AdminDashboardController {
 
     @FXML private TableView<ReservationAdminRow> table;
 
-    @FXML private TableColumn<ReservationAdminRow, Integer> colId;
+    @FXML private TableColumn<ReservationAdminRow, String> colPays;
     @FXML private TableColumn<ReservationAdminRow, String> colClient;
     @FXML private TableColumn<ReservationAdminRow, String> colDate;
     @FXML private TableColumn<ReservationAdminRow, String> colStatut;
@@ -40,7 +43,7 @@ public class AdminDashboardController {
     }
 
     private void setupColumns() {
-        if (colId != null) colId.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+        if (colPays != null) colPays.setCellValueFactory(new PropertyValueFactory<>("paysdestination"));
 
         if (colClient != null) {
             colClient.setCellValueFactory(cell -> {
@@ -117,7 +120,24 @@ public class AdminDashboardController {
 
     @FXML
     private void onExport(ActionEvent e) {
-        new Alert(Alert.AlertType.INFORMATION, "Export (à implémenter).", ButtonType.OK).showAndWait();
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Exporter les réservations en Excel");
+        fc.setInitialFileName("reservations.xlsx");
+        fc.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Fichiers Excel (*.xlsx)", "*.xlsx"));
+
+        File file = fc.showSaveDialog(table != null ? table.getScene().getWindow() : null);
+        if (file == null) return;
+
+        try {
+            ExcelExportUtil.exportAdminReservations(sr, file.getAbsolutePath());
+            new Alert(Alert.AlertType.INFORMATION,
+                    "Export réussi !\n" + file.getAbsolutePath(), ButtonType.OK).showAndWait();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR,
+                    "Erreur lors de l'export : " + ex.getMessage(), ButtonType.OK).showAndWait();
+        }
     }
 
     // ===== Sidebar navigation =====

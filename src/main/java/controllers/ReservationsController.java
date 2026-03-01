@@ -13,9 +13,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Billet;
 import models.Reservation;
+import models.DestinationRecommendation;
 import services.ServiceBillet;
 import services.ServiceReservation;
+import services.RecommendationService;
 import utils.SessionContext;
+import javafx.geometry.Insets;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -33,13 +36,26 @@ public class ReservationsController {
     @FXML private VBox reservationsList;
     @FXML private Button btnNewReservation;
 
+    @FXML private VBox boxRecommendations;
+
     private final ServiceReservation sr = new ServiceReservation();
     private final ServiceBillet sb = new ServiceBillet();
+    private final RecommendationService recoService = new RecommendationService();
 
     private final DateTimeFormatter df  = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private String customBilletTitle = null;
+    private String preSelectedDestination = null;
+    private DashboardController mainController;
+
+    public void setMainController(DashboardController mainController) {
+        this.mainController = mainController;
+    }
+
+    public void setPreSelectedDestination(String dest) {
+        this.preSelectedDestination = dest;
+    }
 
     public void setCustomBilletTitle(String title) {
         this.customBilletTitle = title;
@@ -89,6 +105,9 @@ public class ReservationsController {
             
             if (autoBillet != null) {
                 ctrl.setInitialBillet(autoBillet);
+            }
+            if (preSelectedDestination != null) {
+                ctrl.setPaysDestination(preSelectedDestination);
             }
 
             ctrl.setOnSaved(r -> {
@@ -176,12 +195,115 @@ public class ReservationsController {
         }
 
         if (reservations.isEmpty()) addEmpty();
+
+        loadRecommendations(clientId);
     }
 
     private void addEmpty() {
         Label empty = new Label("Aucune réservation pour le moment.");
         empty.getStyleClass().add("muted");
         reservationsList.getChildren().add(empty);
+    }
+
+    private void loadRecommendations(int clientId) {
+        if (boxRecommendations == null) return;
+        
+        List<DestinationRecommendation> recos = recoService.recommendForClient(clientId, 3);
+        if (recos == null || recos.isEmpty()) {
+            boxRecommendations.setVisible(false);
+            boxRecommendations.setManaged(false);
+            return;
+        }
+
+        boxRecommendations.getChildren().clear();
+
+        // 1. Create the single large white card
+        VBox mainCard = new VBox(20);
+        mainCard.getStyleClass().add("big-card");
+        mainCard.setStyle("-fx-background-color: white; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4); -fx-background-radius: 12;");
+
+        // 2. Header Row: "✨ Recommandations pour vous" and "Rafraîchir"
+        HBox headerRow = new HBox();
+        headerRow.setAlignment(Pos.CENTER_LEFT);
+
+        HBox titleBox = new HBox(8);
+        titleBox.setAlignment(Pos.CENTER_LEFT);
+        Label iconLbl = new Label("✨");
+        iconLbl.setStyle("-fx-font-size: 18px;");
+        Label titleLbl = new Label("Recommandations pour vous");
+        titleLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1e293b;");
+        titleBox.getChildren().addAll(iconLbl, titleLbl);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label lblRefresh = new Label("Rafraîchir");
+        lblRefresh.setStyle("-fx-text-fill: #6366f1; -fx-font-size: 13px; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-background-color: #f1f5f9; -fx-background-radius: 6;");
+        lblRefresh.setOnMouseEntered(e -> lblRefresh.setStyle("-fx-text-fill: #4f46e5; -fx-font-size: 13px; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-background-color: #e2e8f0; -fx-background-radius: 6;"));
+        lblRefresh.setOnMouseExited(e -> lblRefresh.setStyle("-fx-text-fill: #6366f1; -fx-font-size: 13px; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-background-color: #f1f5f9; -fx-background-radius: 6;"));
+        
+        lblRefresh.setOnMouseClicked(e -> {
+            System.out.println("DEBUG: Refresh clicked for client " + clientId);
+            lblRefresh.setText("Mise à jour...");
+            
+            // Add a smooth fade out
+            javafx.animation.FadeTransition fade = new javafx.animation.FadeTransition(javafx.util.Duration.millis(300), boxRecommendations);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.3);
+            fade.setOnFinished(ev -> {
+                loadRecommendations(clientId);
+                // The new loadRecommendations will rebuild the box, so we need to fade it back in
+                javafx.animation.FadeTransition fadeIn = new javafx.animation.FadeTransition(javafx.util.Duration.millis(300), boxRecommendations);
+                fadeIn.setFromValue(0.3);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+            });
+            fade.play();
+        });
+
+        headerRow.getChildren().addAll(titleBox, spacer, lblRefresh);
+
+        // 3. Subtitle
+        Label subtitle = new Label("Basé sur votre historique de réservations (pays).");
+        subtitle.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13px;");
+        VBox.setMargin(subtitle, new Insets(-10, 0, 10, 0));
+
+        // 4. Rows (The List of destinations)
+        VBox rowsContainer = new VBox(15);
+        for (DestinationRecommendation r : recos) {
+            HBox row = new HBox();
+            row.setAlignment(Pos.CENTER_LEFT);
+            row.setStyle("-fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8;");
+            row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8; -fx-background-color: #f8fafc;"));
+            row.setOnMouseExited(e -> row.setStyle("-fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8;"));
+            
+            row.setOnMouseClicked(e -> {
+                // Open flights directly for this destination!
+                openFlightResultsPopup(r.getPays());
+            });
+
+            VBox leftCol = new VBox(4);
+            Label rowTitle = new Label(r.getPays());
+            rowTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #334155;");
+            Label rowReason = new Label(r.getReason());
+            rowReason.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
+            leftCol.getChildren().addAll(rowTitle, rowReason);
+
+            Region rowSpacer = new Region();
+            HBox.setHgrow(rowSpacer, Priority.ALWAYS);
+
+            Label lblScore = new Label(String.format("Score %.2f", r.getScore()));
+            lblScore.setStyle("-fx-text-fill: #8b5cf6; -fx-font-weight: bold; -fx-font-size: 14px;");
+
+            row.getChildren().addAll(leftCol, rowSpacer, lblScore);
+            rowsContainer.getChildren().add(row);
+        }
+
+        mainCard.getChildren().addAll(headerRow, subtitle, rowsContainer);
+        boxRecommendations.getChildren().add(mainCard);
+
+        boxRecommendations.setVisible(true);
+        boxRecommendations.setManaged(true);
     }
 
     // =================== UI ===================
@@ -194,7 +316,10 @@ public class ReservationsController {
         HBox titleRow = new HBox(10);
         titleRow.setAlignment(Pos.CENTER_LEFT);
         
-        Label title = new Label("Réservation #" + r.getIdReservation());
+        String dest = (r.getPaysdestination() != null && !r.getPaysdestination().trim().isEmpty()) 
+                        ? r.getPaysdestination() : "destination inconnue";
+        
+        Label title = new Label("Réservation de Tunis vers " + dest);
         title.getStyleClass().add("card-title");
 
         Region spacer = new Region();
@@ -366,35 +491,39 @@ public class ReservationsController {
     }
 
     private void openNewBilletDialog(Reservation r) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/NewBilletDialog.fxml"));
-            Parent root = loader.load();
-
-            NewBilletDialogController ctrl = loader.getController();
-            ctrl.setReservationId(r.getIdReservation());
-
-            ctrl.setOnSaved(b -> {
-                // refresh après ajout billet
-                if (SessionContext.isAdmin()) loadAllReservationsAdmin();
-                else loadReservationsClient(SessionContext.getCurrentUserId());
-            });
-
-            Stage stage = new Stage();
-            stage.setTitle("Ajouter billet (Réservation #" + r.getIdReservation() + ")");
-            Scene scene = new Scene(root);
-
-            var css = getClass().getResource("/css/app.css");
-            if (css != null) scene.getStylesheets().add(css.toExternalForm());
-
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
-            stage.showAndWait();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            alert(Alert.AlertType.ERROR, "Erreur popup billet: " + ex.getMessage());
+        if (mainController == null) {
+            alert(Alert.AlertType.ERROR, "Erreur interne: mainController est null.");
+            return;
         }
+
+        String dep = "Tunis";
+        String dest = (r.getPaysdestination() != null && !r.getPaysdestination().isEmpty()) ? r.getPaysdestination() : "Paris";
+        
+        // Use the DATE of the reservation
+        String date = (r.getDateReservation() != null) 
+            ? r.getDateReservation().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            : java.time.LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        mainController.showFlightResultsIntegrated(
+            dep, 
+            dest, 
+            date, 
+            b -> {
+                try {
+                    b.setReservationId(r.getIdReservation());
+                    new ServiceBillet().add(b);
+                    System.out.println("New billet added to reservation " + r.getIdReservation());
+                    
+                    // Return to reservations list and refresh
+                    mainController.showReservationsList(null);
+                    alert(Alert.AlertType.INFORMATION, "Le nouveau billet a été ajouté avec succès à la réservation #" + r.getIdReservation() + " !");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    alert(Alert.AlertType.ERROR, "Erreur lors de l'ajout du billet: " + ex.getMessage());
+                }
+            },
+            () -> mainController.showReservationsList(null) // Action for Back button
+        );
     }
 
     // =================== UTILS ===================
@@ -488,6 +617,44 @@ public class ReservationsController {
         } catch (Exception ex) {
             ex.printStackTrace();
             alert(Alert.AlertType.ERROR, "Impossible d'ouvrir la page de paiement.");
+        }
+    }
+
+    private void openFlightResultsPopup(String dest) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/FlightResultsView.fxml"));
+            Parent root = loader.load();
+
+            FlightResultsController frc = loader.getController();
+            frc.hideBackButton(); // Hide it here!
+            String dep = "Tunis"; // Assuming user is in Tunis
+            String date = java.time.LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            
+            // Set callback so "Sélectionner" opens the New Reservation dialog
+            frc.setOnBilletSelectedCallback(selectedBillet -> {
+                javafx.application.Platform.runLater(() -> {
+                    this.preSelectedDestination = dest;
+                    openNewReservationDialog(selectedBillet);
+                    this.preSelectedDestination = null; // reset after
+                });
+            });
+
+            // Set route and fetch from SerpApi 
+            frc.setRouteInfo(dep, dest, date);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Vols vers " + dest);
+            Scene scene = new Scene(root);
+            
+            var css = getClass().getResource("/css/app.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            alert(Alert.AlertType.ERROR, "Erreur lors du chargement des vols: " + ex.getMessage());
         }
     }
 }

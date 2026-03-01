@@ -8,6 +8,7 @@ public class ReservationAdminRow {
     private LocalDate dateReservation;
     private String statut;
     private String modalitesPaiement;
+    private String paysdestination;
 
     private int idClient;
     private String nomClient;
@@ -25,6 +26,9 @@ public class ReservationAdminRow {
 
     public String getModalitesPaiement() { return modalitesPaiement; }
     public void setModalitesPaiement(String modalitesPaiement) { this.modalitesPaiement = modalitesPaiement; }
+
+    public String getPaysdestination() { return paysdestination; }
+    public void setPaysdestination(String paysdestination) { this.paysdestination = paysdestination; }
 
     public int getIdClient() { return idClient; }
     public void setIdClient(int idClient) { this.idClient = idClient; }

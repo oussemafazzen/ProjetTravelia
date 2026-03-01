@@ -59,7 +59,7 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
             <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+                <TableColumn fx:id="colPays" text="Destination" prefWidth="120"/>
                 <TableColumn fx:id="colClient" text="Client" prefWidth="220"/>
                 <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
                 <TableColumn fx:id="colStatut" text="Statut" prefWidth="160"/>

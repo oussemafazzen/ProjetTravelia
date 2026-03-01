@@ -19,7 +19,7 @@ public class HebergementServiceTest {
 
     @Test
     @Order(1)
-    void testAjouterHebergement() {
+    void testAjouterHebergement() throws Exception {
         Hebergement h = new Hebergement(
                 "Hotel Test",
                 "hotel",
@@ -49,7 +49,7 @@ public class HebergementServiceTest {
 
     @Test
     @Order(2)
-    void testModifierHebergement() {
+    void testModifierHebergement() throws Exception {
         Hebergement h = new Hebergement();
         h.setIdHebergement(idHebergementTest);
         h.setNom("Hotel Modifie");
@@ -71,7 +71,7 @@ public class HebergementServiceTest {
 
     @Test
     @Order(3)
-    void testGetById() {
+    void testGetById() throws Exception {
         Hebergement h = service.recupParIdHebergement(idHebergementTest);
         assertNotNull(h);
         assertEquals("Hotel Modifie", h.getNom());
@@ -80,7 +80,7 @@ public class HebergementServiceTest {
 
     @Test
     @Order(4)
-    void testSupprimerHebergement() {
+    void testSupprimerHebergement() throws Exception {
         Hebergement h = new Hebergement();
         h.setIdHebergement(idHebergementTest);
         service.supprimerHebergement(h);

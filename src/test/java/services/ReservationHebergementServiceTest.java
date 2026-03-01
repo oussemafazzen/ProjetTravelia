@@ -17,7 +17,7 @@ public class ReservationHebergementServiceTest {
     static int idHebergementTest;
 
     @BeforeAll
-    static void setup() {
+    static void setup() throws Exception {
         service = new ReservationHebergementService();
         hebergementService = new HebergementService();
         
@@ -46,7 +46,7 @@ public class ReservationHebergementServiceTest {
 
     @Test
     @Order(1)
-    void testAjouterReservation() {
+    void testAjouterReservation() throws Exception {
         Hebergement h = hebergementService.recupParIdHebergement(idHebergementTest);
         assertNotNull(h, "L'hébergement doit exister");
         
@@ -80,7 +80,7 @@ public class ReservationHebergementServiceTest {
 
     @Test
     @Order(2)
-    void testModifierReservation() {
+    void testModifierReservation() throws Exception {
         Hebergement h = hebergementService.recupParIdHebergement(idHebergementTest);
         
         ReservationHebergement r = new ReservationHebergement();
@@ -102,7 +102,7 @@ public class ReservationHebergementServiceTest {
 
     @Test
     @Order(3)
-    void testSupprimerReservation() {
+    void testSupprimerReservation() throws Exception {
         ReservationHebergement r = new ReservationHebergement();
         r.setIdReservationHebergement(idReservationTest);
         service.supprimerReservation(r);
@@ -113,7 +113,7 @@ public class ReservationHebergementServiceTest {
     }
 
     @AfterAll
-    static void tearDown() {
+    static void tearDown() throws Exception {
         // Nettoyer l'hébergement de test après tous les tests
         if (idHebergementTest > 0) {
             Hebergement h = new Hebergement();

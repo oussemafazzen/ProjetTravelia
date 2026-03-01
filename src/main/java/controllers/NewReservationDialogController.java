@@ -26,6 +26,7 @@ public class NewReservationDialogController {
 
     private Integer clientId;
     private Billet initialBillet;
+    private String paysDestination;
     private Consumer<Reservation> onSaved;
 
     @FXML
@@ -54,6 +55,10 @@ public class NewReservationDialogController {
 
     public void setInitialBillet(Billet b) {
         this.initialBillet = b;
+    }
+
+    public void setPaysDestination(String paysDestination) {
+        this.paysDestination = paysDestination;
     }
 
     public void setOnSaved(Consumer<Reservation> onSaved) {
@@ -86,6 +91,13 @@ public class NewReservationDialogController {
         r.setModalitesPaiement(paiement);
         r.setStatut(statut);
         r.setClientId(clientId); // ✅
+        
+        // Ensure paysDestination is not null to prevent database constraints from failing
+        if (paysDestination == null || paysDestination.trim().isEmpty()) {
+            r.setPaysdestination("destination inconnue");
+        } else {
+            r.setPaysdestination(paysDestination);
+        }
 
         try {
             int idRes = sr.add(r); // ✅ ajoute + récupère idReservation

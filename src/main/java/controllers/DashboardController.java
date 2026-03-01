@@ -31,6 +31,10 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.Date;
 
+import javafx.util.StringConverter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class DashboardController {
 
     @FXML
@@ -181,8 +185,42 @@ public class DashboardController {
     private Client currentClient;
     private ClientService clientService = new ClientService();
 
+    public void initialize() {
+        // Setup DatePicker format to dd/MM/yyyy to prevent parsing errors when typing
+        if (dateFlight != null) {
+            String pattern = "dd/MM/yyyy";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+            dateFlight.setConverter(new StringConverter<LocalDate>() {
+                @Override
+                public String toString(LocalDate date) {
+                    if (date != null) {
+                        return formatter.format(date);
+                    } else {
+                        return "";
+                    }
+                }
+
+                @Override
+                public LocalDate fromString(String string) {
+                    if (string != null && !string.isEmpty()) {
+                        try {
+                            return LocalDate.parse(string, formatter);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+            });
+            dateFlight.setPromptText(pattern.toLowerCase());
+        }
+    }
+
     public void initData(Client client) {
         this.currentClient = client;
+        initialize(); // Ensure converter is set
         
         // Initialize SessionContext for other modules (like Reservations) to know who is logged in
         if (client != null) {
@@ -307,6 +345,7 @@ public class DashboardController {
                 FXMLLoader loader = new FXMLLoader(fxmlUrl);
                 Parent view = loader.load();
                 resCtrl = loader.getController();
+                resCtrl.setMainController(this); // Set the controller here
                 view.setId("reservationsListView");
                 
                 // Add to ticketsView
@@ -321,7 +360,7 @@ public class DashboardController {
         return resCtrl;
     }
 
-    public void triggerNewReservation(models.Billet flightBillet) {
+    public void triggerNewReservation(models.Billet flightBillet, String destination) {
         controllers.ReservationsController resCtrl = showReservationsList(null);
         if (resCtrl != null) {
             // Pass the search query to the reservations controller to dynamically show "Billet de X vers Y"
@@ -330,6 +369,7 @@ public class DashboardController {
                 route = "Billet de " + txtFrom.getText() + " vers " + txtTo.getText();
             }
             resCtrl.setCustomBilletTitle(route);
+            resCtrl.setPreSelectedDestination(destination);
 
             javafx.application.Platform.runLater(() -> {
                 resCtrl.openNewReservationDialog(flightBillet);
@@ -407,9 +447,51 @@ public class DashboardController {
             resultsView.setManaged(true);
             
             System.out.println("Search Flights clicked -> FXML Loaded, Swapped, and Visible");
-        } catch (IOException e) {
+        } catch (java.io.IOException e) {
             e.printStackTrace();
             System.err.println("Could not load FlightResultsView.fxml");
+        }
+    }
+
+    public void showFlightResultsIntegrated(String from, String to, String date, java.util.function.Consumer<models.Billet> callback, Runnable onBack) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/FlightResultsView.fxml"));
+            Parent resultsView = loader.load();
+            
+            FlightResultsController controller = loader.getController();
+            controller.setMainController(this);
+            
+            if (onBack != null) {
+                controller.setOnBackAction(onBack);
+            } else {
+                controller.hideBackButton();
+            }
+            
+            controller.setOnBilletSelectedCallback(callback);
+            controller.setRouteInfo(from, to, date);
+            
+            resultsView.setId("activeFlightResults");
+            ticketsView.setVisible(true);
+            ticketsView.setManaged(true);
+            
+            if (heroSection != null) {
+                heroSection.setVisible(false);
+                heroSection.setManaged(false);
+            }
+            
+            for (Node node : ticketsView.getChildren()) {
+                if (node != resultsView) {
+                    node.setVisible(false);
+                    node.setManaged(false);
+                }
+            }
+            
+            ticketsView.getChildren().add(resultsView);
+            resultsView.setVisible(true);
+            resultsView.setManaged(true);
+            
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
         }
     }
 
