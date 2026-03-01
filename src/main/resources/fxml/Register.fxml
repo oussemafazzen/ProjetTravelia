@@ -5,6 +5,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,23 +16,51 @@
    <children>
       <VBox alignment="CENTER" fillWidth="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" prefWidth="500.0" spacing="20.0" styleClass="card">
+            <VBox alignment="CENTER" prefWidth="500.0" spacing="15.0" styleClass="card">
                <children>
                   <Label styleClass="title-label" text="Inscription" />
-                  <TextField fx:id="nomF" promptText="Nom" styleClass="text-field" />
-                  <TextField fx:id="prenomF" promptText="Prénom" styleClass="text-field" />
-                  <TextField fx:id="emailF" promptText="Email" styleClass="text-field" />
-                  <PasswordField fx:id="passwordF" promptText="Mot de passe" styleClass="password-field" />
-                  <HBox maxWidth="Infinity" spacing="10.0">
-                     <children>
-                        <ComboBox fx:id="countryCodeCombo" prefWidth="100.0" promptText="+216" />
-                        <TextField fx:id="telephoneF" HBox.hgrow="ALWAYS" promptText="Téléphone" styleClass="text-field" />
-                     </children>
-                  </HBox>
-                  <ComboBox fx:id="nationaliteCombo" maxWidth="Infinity" promptText="Sélectionnez votre nationalité" />
-                  <DatePicker fx:id="dateNaissanceF" maxWidth="Infinity" promptText="Date de Naissance" styleClass="date-picker" />
-                  <Button fx:id="btnRegister" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleRegister" styleClass="button" text="S'inscrire" />
+                  <VBox fx:id="mainForm" spacing="15.0" alignment="CENTER">
+                      <children>
+                          <TextField fx:id="nomF" promptText="Nom" styleClass="text-field" />
+                          <TextField fx:id="prenomF" promptText="Prénom" styleClass="text-field" />
+                          <TextField fx:id="emailF" promptText="Email" styleClass="text-field" />
+                          <PasswordField fx:id="passwordF" promptText="Mot de passe" styleClass="password-field" />
+                          <HBox maxWidth="Infinity" spacing="10.0">
+                             <children>
+                                <ComboBox fx:id="countryCodeCombo" prefWidth="100.0" promptText="+216" />
+                                <TextField fx:id="telephoneF" HBox.hgrow="ALWAYS" promptText="Téléphone" styleClass="text-field" />
+                             </children>
+                          </HBox>
+                          <ComboBox fx:id="nationaliteCombo" maxWidth="Infinity" promptText="Sélectionnez votre nationalité" />
+                          <DatePicker fx:id="dateNaissanceF" maxWidth="Infinity" promptText="Date de Naissance" styleClass="date-picker" />
+
+                          <!-- Face Recognition -->
+                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                             <children>
+                                <Button mnemonicParsing="false" onAction="#handleCaptureFace" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12; -fx-background-radius: 8; -fx-padding: 8 15;" text="📷 Enregistrer mon visage" />
+                                <Label fx:id="lblFaceStatus" style="-fx-font-size: 11;" />
+                             </children>
+                          </HBox>
+
+                          <Button fx:id="btnRegister" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleRegister" styleClass="button" text="S'inscrire" />
+                      </children>
+                  </VBox>
+
+                  <VBox fx:id="verificationBox" visible="false" managed="false" spacing="20.0" alignment="CENTER">
+                      <children>
+                          <Label text="Vérification de l'email" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                          <Label text="Un code de confirmation a été envoyé à votre adresse." styleClass="subtitle-label" wrapText="true" alignment="CENTER" />
+                          <TextField fx:id="codeF" promptText="Code à 6 chiffres" styleClass="text-field" alignment="CENTER" style="-fx-font-size: 18px;" />
+                          <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleVerifyAndFinalize" styleClass="button" text="Finaliser l'inscription" />
+                          <Button mnemonicParsing="false" onAction="#handleResendCode" styleClass="secondary-button" text="Renvoyer le code" />
+                      </children>
+                  </VBox>
+
                   <Label fx:id="lblMessage" styleClass="error-label" textFill="#e40e0e" />
+
+                  <Separator style="-fx-padding: 5 0 5 0;" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleGoogleRegister" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 8; -fx-padding: 10 20;" text="🔵 S'inscrire avec Google" />
+
                   <Button mnemonicParsing="false" onAction="#goToHome" styleClass="secondary-button" text="Retour" />
                </children>
             </VBox>

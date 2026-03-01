@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
@@ -13,7 +14,7 @@
    <children>
       <VBox alignment="CENTER" fillWidth="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" prefWidth="400.0" spacing="20.0" styleClass="card">
+            <VBox alignment="CENTER" prefWidth="400.0" spacing="15.0" styleClass="card">
                <children>
                   <Label styleClass="title-label" text="Connexion" />
                   <TextField fx:id="emailF" promptText="Email" styleClass="text-field" />
@@ -21,6 +22,13 @@
                   <Button fx:id="btnLogin" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" styleClass="button" text="Se connecter" />
                   <Label fx:id="lblMessage" styleClass="error-label" textFill="#e40e0e" />
                   <Hyperlink fx:id="hlForgotPassword" onAction="#handleForgotPassword" text="Mot de passe oublié ?" />
+
+                  <Separator style="-fx-padding: 5 0 5 0;" />
+                  <Label text="— ou —" style="-fx-text-fill: #888; -fx-font-size: 12;" />
+
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleFaceLogin" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 8; -fx-padding: 10 20;" text="🔐 Connexion par reconnaissance faciale" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleGoogleLogin" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 8; -fx-padding: 10 20;" text="🔵 Se connecter avec Google" />
+
                   <Button mnemonicParsing="false" onAction="#goToHome" styleClass="secondary-button" text="Retour à l'accueil" />
                </children>
             </VBox>

@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
 import models.Client;
 import org.json.JSONObject;
 import services.ClientService;
@@ -75,7 +76,7 @@ public class DashboardController {
     private Button btnNavAccueil;
 
     @FXML
-    private Button btnNavClients;
+    private MenuButton userMenu;
 
     @FXML
     private Button btnNavReservations;
@@ -165,7 +166,7 @@ public class DashboardController {
 
     @FXML
     void showProfile(ActionEvent event) {
-        switchView(profileView, btnNavClients);
+        switchView(profileView, null);
         if (currentClient != null) {
             txtNom.setText(currentClient.getNom());
             txtPrenom.setText(currentClient.getPrenom());
@@ -235,7 +236,6 @@ public class DashboardController {
         // Reset all buttons style
         if (btnNavAccueil != null) {
             btnNavAccueil.getStyleClass().remove("nav-button-active");
-            btnNavClients.getStyleClass().remove("nav-button-active");
             btnNavReservations.getStyleClass().remove("nav-button-active");
             btnNavHebergement.getStyleClass().remove("nav-button-active");
             btnNavActivites.getStyleClass().remove("nav-button-active");

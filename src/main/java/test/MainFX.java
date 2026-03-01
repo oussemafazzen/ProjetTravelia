@@ -5,6 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import models.User;
+import models.Client;
+import models.enums.Role;
+import services.UserService;
+import utils.SessionManager;
+import controllers.DashboardController;
 
 import java.io.IOException;
 
@@ -26,15 +32,15 @@ public class MainFX extends Application {
             System.out.println("Fichier FXML trouvé : " + fxmlLocation);
             
             // Session Persistence / Auto-login logic
-            String savedEmail = utils.SessionManager.loadSession();
+            String savedEmail = SessionManager.loadSession();
             if (savedEmail != null) {
                 System.out.println("Session trouvée pour : " + savedEmail);
-                services.UserService userService = new services.UserService();
-                models.User user = userService.getUserByEmail(savedEmail);
+                UserService userService = new UserService();
+                User user = userService.getUserByEmail(savedEmail);
                 
                 if (user != null) {
                     String destinationFxml = "";
-                    if (user.getRole() == models.enums.Role.ADMINISTRATEUR) {
+                    if (user.getRole() == Role.ADMINISTRATEUR) {
                         destinationFxml = "/fxml/AdminPanel.fxml";
                     } else {
                         destinationFxml = "/fxml/Dashboard.fxml";
@@ -44,13 +50,13 @@ public class MainFX extends Application {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource(destinationFxml));
                     Parent root = loader.load();
                     
-                    if (destinationFxml.equals("/fxml/Dashboard.fxml") && user instanceof models.Client) {
-                        controllers.DashboardController dc = loader.getController();
-                        dc.initData((models.Client) user);
+                    if ("/fxml/Dashboard.fxml".equals(destinationFxml) && user instanceof Client) {
+                        DashboardController dc = loader.getController();
+                        dc.initData((Client) user);
                     }
                     
                     Scene scene = new Scene(root);
-                    primaryStage.setTitle("Travelia - " + (user.getRole() == models.enums.Role.ADMINISTRATEUR ? "Admin" : "Dashboard"));
+                    primaryStage.setTitle("Travelia - " + (user.getRole() == Role.ADMINISTRATEUR ? "Admin" : "Dashboard"));
                     primaryStage.setScene(scene);
                     primaryStage.setMaximized(true);
                     primaryStage.setResizable(true);

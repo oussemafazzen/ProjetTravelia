@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
@@ -37,7 +39,6 @@
                   <HBox alignment="CENTER" spacing="15.0">
                      <children>
                         <Button fx:id="btnNavAccueil" mnemonicParsing="false" onAction="#showDashboard" styleClass="nav-button, nav-button-active" text="🏠 Accueil" />
-                        <Button fx:id="btnNavClients" mnemonicParsing="false" onAction="#showProfile" styleClass="nav-button" text="👥 Profil" />
                         <Button fx:id="btnNavReservations" mnemonicParsing="false" onAction="#showTickets" styleClass="nav-button" text="📅 Réservations" />
                         <Button fx:id="btnNavHebergement" mnemonicParsing="false" onAction="#showAccommodations" styleClass="nav-button" text="🏨 Hébergement" />
                         <Button fx:id="btnNavActivites" mnemonicParsing="false" onAction="#showActivities" styleClass="nav-button" text="📍 Activités" />
@@ -47,8 +48,15 @@
                   <Region HBox.hgrow="ALWAYS" />
                   <HBox alignment="CENTER_RIGHT" spacing="15.0">
                      <children>
-                        <Label fx:id="lblNavUserName" styleClass="profile-nav-text" text="Chargement..." />
-                        <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="btn-outline-danger" text="Déconnexion" />
+                        <MenuButton fx:id="userMenu" mnemonicParsing="false" styleClass="user-menu-button">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#showProfile" text="👤 Profil" />
+                            <MenuItem mnemonicParsing="false" onAction="#handleLogout" text="🚪 Déconnexion" />
+                          </items>
+                          <graphic>
+                              <Label fx:id="lblNavUserName" styleClass="profile-nav-text" text="Chargement..." />
+                          </graphic>
+                        </MenuButton>
                      </children>
                   </HBox>
                </children>

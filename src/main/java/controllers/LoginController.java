@@ -6,12 +6,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import models.FaceData;
 import models.User;
+import services.FaceRecognitionService;
+import services.SecurityLogService;
 import services.UserService;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
+import java.io.File;
 import java.io.IOException;
 
 public class LoginController {
@@ -32,6 +38,8 @@ public class LoginController {
     private javafx.scene.control.Hyperlink hlForgotPassword;
 
     private UserService userService = new UserService();
+    private FaceRecognitionService faceRecognitionService = new FaceRecognitionService();
+    private SecurityLogService securityLogService = new SecurityLogService();
     private int localFailedAttempts = 0;
     private boolean isLockedOut = false;
     private int remainingCooldown = 30;
@@ -120,6 +128,117 @@ public class LoginController {
             lblMessage.setStyle("-fx-text-fill: red;");
             lblMessage.setText("Erreur Inattendue: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Connexion par reconnaissance faciale.
+     * L'utilisateur doit saisir son email, puis sélectionner une photo de son visage.
+     */
+    @FXML
+    void handleFaceLogin(ActionEvent event) {
+        String email = emailF.getText();
+        if (email.isEmpty()) {
+            lblMessage.setStyle("-fx-text-fill: red;");
+            lblMessage.setText("Veuillez saisir votre email pour la connexion faciale.");
+            return;
+        }
+
+        try {
+            // Check if user exists and has face data
+            User user = userService.getUserByEmail(email);
+            if (user == null) {
+                lblMessage.setStyle("-fx-text-fill: red;");
+                lblMessage.setText("Email non trouvé.");
+                return;
+            }
+
+            FaceData storedFace = faceRecognitionService.getFaceDataByEmail(email);
+            if (storedFace == null) {
+                lblMessage.setStyle("-fx-text-fill: red;");
+                lblMessage.setText("Aucune donnée faciale enregistrée pour ce compte.");
+                return;
+            }
+
+            // Open Live Camera Stage
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/CameraView.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            CameraController cameraController = loader.getController();
+            cameraController.initData(email, user.getId(), this);
+            
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Accès Caméra - Travelia");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.setResizable(false);
+            stage.initOwner(btnLogin.getScene().getWindow());
+            stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            stage.show();
+
+        } catch (Exception e) {
+            lblMessage.setStyle("-fx-text-fill: red;");
+            lblMessage.setText("Erreur: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Appelé par le CameraController en cas de succès.
+     */
+    public void completeFaceLogin(String email) {
+        try {
+            User user = userService.getUserByEmail(email);
+            if (user != null) {
+                utils.SessionManager.saveSession(user.getEmail());
+                lblMessage.setStyle("-fx-text-fill: green;");
+                lblMessage.setText("Connexion réussie !");
+                navigateAfterLogin(user);
+            }
+        } catch (Exception e) {
+            lblMessage.setStyle("-fx-text-fill: red;");
+            lblMessage.setText("Erreur finale: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Ouvre la page Google Sign-In dans un WebView.
+     */
+    @FXML
+    void handleGoogleLogin(ActionEvent event) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/GoogleAuth.fxml"));
+            javafx.scene.Parent root = loader.load();
+            btnLogin.getScene().setRoot(root);
+        } catch (IOException e) {
+            lblMessage.setStyle("-fx-text-fill: red;");
+            lblMessage.setText("Erreur chargement Google Auth: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void navigateAfterLogin(User user) {
+        try {
+            String fxmlPath = "/fxml/Dashboard.fxml";
+            if (user.getRole() == models.enums.Role.ADMINISTRATEUR) {
+                fxmlPath = "/fxml/AdminPanel.fxml";
+            }
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(fxmlPath));
+            javafx.scene.Parent root = loader.load();
+
+            if (fxmlPath.equals("/fxml/Dashboard.fxml") && user instanceof models.Client) {
+                DashboardController dc = loader.getController();
+                if (dc != null) {
+                    dc.initData((models.Client) user);
+                }
+            }
+
+            javafx.stage.Stage stage = (javafx.stage.Stage) btnLogin.getScene().getWindow();
+            btnLogin.getScene().setRoot(root);
+            stage.setMaximized(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMessage.setText("Erreur navigation: " + e.getMessage());
         }
     }
 

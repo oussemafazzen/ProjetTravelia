@@ -10,6 +10,8 @@ public abstract class User {
     protected Role role;
     protected Statut statut;
     protected int failed_attempts;
+    protected String googleId;
+    protected boolean emailConfirmed;
 
     public User() {
     }
@@ -75,6 +77,22 @@ public abstract class User {
 
     public void setFailed_attempts(int failed_attempts) {
         this.failed_attempts = failed_attempts;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public boolean isEmailConfirmed() {
+        return emailConfirmed;
+    }
+
+    public void setEmailConfirmed(boolean emailConfirmed) {
+        this.emailConfirmed = emailConfirmed;
     }
 
     @Override
