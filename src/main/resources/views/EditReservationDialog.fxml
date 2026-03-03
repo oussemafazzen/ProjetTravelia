@@ -7,35 +7,47 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.EditReservationDialogController"
-      spacing="14" styleClass="dialog-root" prefWidth="420">
+      styleClass="dialog-root" prefWidth="440">
 
-    <padding>
-        <Insets top="18" right="18" bottom="18" left="18"/>
-    </padding>
-
-    <Label text="Modifier réservation" styleClass="dialog-title"/>
-
-    <GridPane hgap="10" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints minWidth="120" prefWidth="140"/>
-            <ColumnConstraints hgrow="ALWAYS"/>
-        </columnConstraints>
-
-        <Label text="Date" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="dpDate" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-        <Label text="Paiement" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="cbPaiement" prefWidth="220" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-        <Label text="Statut" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="cbStatut" prefWidth="220" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-    </GridPane>
-
-    <Label fx:id="lblError" text="" styleClass="error-text" managed="false" visible="false"/>
-
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Annuler" onAction="#onCancel" styleClass="btn-outline"/>
-        <Button text="Enregistrer" onAction="#onSave" styleClass="btn-primary"/>
+    <!-- Header Section -->
+    <HBox styleClass="dialog-header" spacing="12" alignment="CENTER_LEFT">
+        <padding><Insets top="14" right="18" bottom="14" left="18"/></padding>
+        <Label text="📝" styleClass="dialog-header-icon"/>
+        <Label text="Modifier la Réservation" styleClass="dialog-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
     </HBox>
+
+    <!-- Content Section -->
+    <VBox spacing="20" styleClass="dialog-content">
+        <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+        
+        <Label text="Mise à jour des informations de réservation" styleClass="dialog-subtitle"/>
+
+        <VBox spacing="18">
+            <!-- Date Field -->
+            <VBox spacing="8">
+                <Label text="Date de réservation" styleClass="form-label"/>
+                <DatePicker fx:id="dpDate" prefWidth="400" styleClass="form-control" promptText="Choisir une date"/>
+            </VBox>
+
+            <!-- Payment Field -->
+            <VBox spacing="8">
+                <Label text="Modalité de paiement" styleClass="form-label"/>
+                <ComboBox fx:id="cbPaiement" prefWidth="400" styleClass="form-control" promptText="Sélectionner le mode"/>
+            </VBox>
+
+        </VBox>
+
+        <Label fx:id="lblError" text="" styleClass="form-error" managed="false" visible="false"/>
+
+        <!-- Action Buttons -->
+        <HBox spacing="14" alignment="CENTER_RIGHT">
+            <padding><Insets top="10" right="0" bottom="0" left="0"/></padding>
+            <Button text="Annuler" onAction="#onCancel" styleClass="btn-outline" 
+                    style="-fx-padding: 10 24; -fx-background-radius: 12;"/>
+            <Button text="Enregistrer" onAction="#onSave" styleClass="gradient-btn" 
+                    style="-fx-padding: 10 24; -fx-background-radius: 12;"/>
+        </HBox>
+    </VBox>
 
 </VBox>

@@ -208,21 +208,16 @@ public class ReservationsController {
     private void loadRecommendations(int clientId) {
         if (boxRecommendations == null) return;
         
-        List<DestinationRecommendation> recos = recoService.recommendForClient(clientId, 3);
-        if (recos == null || recos.isEmpty()) {
-            boxRecommendations.setVisible(false);
-            boxRecommendations.setManaged(false);
-            return;
-        }
-
+        boxRecommendations.setVisible(true);
+        boxRecommendations.setManaged(true);
         boxRecommendations.getChildren().clear();
 
-        // 1. Create the single large white card
-        VBox mainCard = new VBox(20);
+        // 1. Create the main wrapper card
+        VBox mainCard = new VBox(15);
         mainCard.getStyleClass().add("big-card");
         mainCard.setStyle("-fx-background-color: white; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4); -fx-background-radius: 12;");
 
-        // 2. Header Row: "✨ Recommandations pour vous" and "Rafraîchir"
+        // 2. Header Row: Title + Refresh Button
         HBox headerRow = new HBox();
         headerRow.setAlignment(Pos.CENTER_LEFT);
 
@@ -239,22 +234,18 @@ public class ReservationsController {
 
         Label lblRefresh = new Label("Rafraîchir");
         lblRefresh.setStyle("-fx-text-fill: #6366f1; -fx-font-size: 13px; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-background-color: #f1f5f9; -fx-background-radius: 6;");
-        lblRefresh.setOnMouseEntered(e -> lblRefresh.setStyle("-fx-text-fill: #4f46e5; -fx-font-size: 13px; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-background-color: #e2e8f0; -fx-background-radius: 6;"));
-        lblRefresh.setOnMouseExited(e -> lblRefresh.setStyle("-fx-text-fill: #6366f1; -fx-font-size: 13px; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-background-color: #f1f5f9; -fx-background-radius: 6;"));
+        lblRefresh.setOnMouseEntered(e -> lblRefresh.setStyle("-fx-text-fill: #4f46e5; -fx-background-color: #e2e8f0; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-font-size: 13px;"));
+        lblRefresh.setOnMouseExited(e -> lblRefresh.setStyle("-fx-text-fill: #6366f1; -fx-background-color: #f1f5f9; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 5 10; -fx-font-size: 13px;"));
         
         lblRefresh.setOnMouseClicked(e -> {
-            System.out.println("DEBUG: Refresh clicked for client " + clientId);
             lblRefresh.setText("Mise à jour...");
-            
-            // Add a smooth fade out
             javafx.animation.FadeTransition fade = new javafx.animation.FadeTransition(javafx.util.Duration.millis(300), boxRecommendations);
             fade.setFromValue(1.0);
-            fade.setToValue(0.3);
+            fade.setToValue(0.2);
             fade.setOnFinished(ev -> {
                 loadRecommendations(clientId);
-                // The new loadRecommendations will rebuild the box, so we need to fade it back in
                 javafx.animation.FadeTransition fadeIn = new javafx.animation.FadeTransition(javafx.util.Duration.millis(300), boxRecommendations);
-                fadeIn.setFromValue(0.3);
+                fadeIn.setFromValue(0.2);
                 fadeIn.setToValue(1.0);
                 fadeIn.play();
             });
@@ -262,48 +253,47 @@ public class ReservationsController {
         });
 
         headerRow.getChildren().addAll(titleBox, spacer, lblRefresh);
+        mainCard.getChildren().add(headerRow);
 
-        // 3. Subtitle
-        Label subtitle = new Label("Basé sur votre historique de réservations (pays).");
-        subtitle.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13px;");
-        VBox.setMargin(subtitle, new Insets(-10, 0, 10, 0));
+        // 3. Get recommendations from AI
+        List<DestinationRecommendation> recos = recoService.recommendForClient(clientId, 3);
+        
+        if (recos == null || recos.isEmpty()) {
+            Label noRec = new Label("Aucune suggestion pour le moment. Essayez de rafraîchir !");
+            noRec.setStyle("-fx-text-fill: #94a3b8; -fx-font-style: italic; -fx-padding: 10 0;");
+            mainCard.getChildren().add(noRec);
+        } else {
+            // Subtitle
+            Label subtitle = new Label("Basé sur votre historique de réservations (IA).");
+            subtitle.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13px;");
+            VBox.setMargin(subtitle, new Insets(-10, 0, 5, 0));
+            mainCard.getChildren().add(subtitle);
 
-        // 4. Rows (The List of destinations)
-        VBox rowsContainer = new VBox(15);
-        for (DestinationRecommendation r : recos) {
-            HBox row = new HBox();
-            row.setAlignment(Pos.CENTER_LEFT);
-            row.setStyle("-fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8;");
-            row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8; -fx-background-color: #f8fafc;"));
-            row.setOnMouseExited(e -> row.setStyle("-fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8;"));
-            
-            row.setOnMouseClicked(e -> {
-                // Open flights directly for this destination!
-                openFlightResultsPopup(r.getPays());
-            });
+            // Recommendations List
+            VBox rowsContainer = new VBox(10);
+            for (DestinationRecommendation r : recos) {
+                HBox row = new HBox();
+                row.setAlignment(Pos.CENTER_LEFT);
+                row.setStyle("-fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 8; -fx-background-color: #f8fafc;");
+                row.setOnMouseEntered(ev -> row.setStyle("-fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 8; -fx-background-color: #f1f5f9;"));
+                row.setOnMouseExited(ev -> row.setStyle("-fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 8; -fx-background-color: #f8fafc;"));
+                
+                row.setOnMouseClicked(ev -> openFlightResultsPopup(r.getPays()));
 
-            VBox leftCol = new VBox(4);
-            Label rowTitle = new Label(r.getPays());
-            rowTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #334155;");
-            Label rowReason = new Label(r.getReason());
-            rowReason.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
-            leftCol.getChildren().addAll(rowTitle, rowReason);
+                VBox leftCol = new VBox(4);
+                Label rowTitle = new Label(r.getPays());
+                rowTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #334155;");
+                Label rowReason = new Label(r.getReason());
+                rowReason.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px;");
+                leftCol.getChildren().addAll(rowTitle, rowReason);
 
-            Region rowSpacer = new Region();
-            HBox.setHgrow(rowSpacer, Priority.ALWAYS);
-
-            Label lblScore = new Label(String.format("Score %.2f", r.getScore()));
-            lblScore.setStyle("-fx-text-fill: #8b5cf6; -fx-font-weight: bold; -fx-font-size: 14px;");
-
-            row.getChildren().addAll(leftCol, rowSpacer, lblScore);
-            rowsContainer.getChildren().add(row);
+                row.getChildren().add(leftCol);
+                rowsContainer.getChildren().add(row);
+            }
+            mainCard.getChildren().add(rowsContainer);
         }
 
-        mainCard.getChildren().addAll(headerRow, subtitle, rowsContainer);
         boxRecommendations.getChildren().add(mainCard);
-
-        boxRecommendations.setVisible(true);
-        boxRecommendations.setManaged(true);
     }
 
     // =================== UI ===================
@@ -390,8 +380,9 @@ public class ReservationsController {
         actions.getStyleClass().add("actions-row");
 
         Button btnEdit = new Button("Modifier");
-        btnEdit.getStyleClass().add("btn-outline");
+        btnEdit.getStyleClass().add("gradient-btn");
         btnEdit.setCursor(javafx.scene.Cursor.HAND);
+        btnEdit.setStyle("-fx-background-color: linear-gradient(to right, #6366f1, #a855f7);"); // Matches "Ajouter billet" vibe but ensures visibility
 
         Button btnAddBillet = new Button("Ajouter billet");
         btnAddBillet.getStyleClass().add("gradient-btn");
@@ -565,7 +556,7 @@ public class ReservationsController {
         if (active != null) active.getStyleClass().add("nav-item-active");
     }
 
-    @FXML private void goHome(ActionEvent e) { setActive(btnHome); switchScene(e, "/views/Home.fxml"); }
+    @FXML private void goHome(ActionEvent e) { setActive(btnHome); switchScene(e, "/views/Login.fxml"); }
     @FXML private void goReservations(ActionEvent e) { setActive(btnReservations); }
     @FXML private void goClients(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Accès réservé à l'admin."); }
     @FXML private void goHebergement(ActionEvent e) { alert(Alert.AlertType.INFORMATION, "Accès réservé à l'admin."); }

@@ -19,14 +19,21 @@ import java.util.List;
 public class HebergementFrontController {
 
     @FXML private Text txtTotalHebergements;
-    @FXML private Text txtTotalCapacite;
     @FXML private Text txtMoyenTarif;
     @FXML private VBox cardsContainer;
     @FXML private javafx.scene.control.TextField tfSearchNom;
+    
+    @FXML private Button btnPrev;
+    @FXML private Button btnNext;
+    @FXML private Text txtCurrentPage;
+    @FXML private Text txtTotalPages;
 
     private HebergementService hs = new HebergementService();
     private List<Hebergement> hebergementList;
     private List<Hebergement> currentFilteredList; // Keeps track of currently displayed items
+    
+    private int currentPage = 0;
+    private static final int ITEMS_PER_PAGE = 3;
 
     @FXML
     public void initialize() {
@@ -34,6 +41,7 @@ public class HebergementFrontController {
         
         // Real-time search listener
         tfSearchNom.textProperty().addListener((obs, oldVal, newVal) -> {
+            currentPage = 0; // Reset pagination on search
             filterAndDisplay(newVal);
         });
     }
@@ -43,7 +51,7 @@ public class HebergementFrontController {
             hebergementList = hs.recupTousHebergements();
             currentFilteredList = hebergementList;
             updateStats(hebergementList);
-            populateCards(hebergementList);
+            populateCards();
         } catch (SQLException e) {
             System.err.println("Erreur chargement données: " + e.getMessage());
         }
@@ -53,7 +61,7 @@ public class HebergementFrontController {
         if (query == null || query.isEmpty()) {
             currentFilteredList = hebergementList;
             updateStats(hebergementList);
-            populateCards(hebergementList);
+            populateCards();
             return;
         }
 
@@ -63,22 +71,42 @@ public class HebergementFrontController {
                 .toList();
 
         updateStats(currentFilteredList);
-        populateCards(currentFilteredList);
+        populateCards();
     }
 
     private void updateStats(List<Hebergement> list) {
         int total = list.size();
-        int capacite = list.stream().mapToInt(Hebergement::getCapacite).sum();
         double avgTarif = list.stream().mapToDouble(Hebergement::getTarifParNuit).average().orElse(0.0);
 
         txtTotalHebergements.setText(String.valueOf(total));
-        txtTotalCapacite.setText(String.valueOf(capacite));
         txtMoyenTarif.setText(String.format("%.0f DT", avgTarif));
+        
+        // Update pagination numbers
+        int totalPages = (int) Math.ceil((double) total / ITEMS_PER_PAGE);
+        if (totalPages == 0) totalPages = 1;
+        
+        txtCurrentPage.setText(String.valueOf(currentPage + 1));
+        txtTotalPages.setText(String.valueOf(totalPages));
+        
+        // Disable/Enable buttons
+        btnPrev.setDisable(currentPage == 0);
+        btnNext.setDisable(currentPage >= totalPages - 1);
+        
+        // Hide pagination if only one page or empty
+        btnPrev.getParent().setVisible(total > ITEMS_PER_PAGE);
     }
 
-    private void populateCards(List<Hebergement> list) {
+    private void populateCards() {
         cardsContainer.getChildren().clear();
-        for (Hebergement h : list) {
+        
+        if (currentFilteredList == null || currentFilteredList.isEmpty()) return;
+        
+        int start = currentPage * ITEMS_PER_PAGE;
+        int end = Math.min(start + ITEMS_PER_PAGE, currentFilteredList.size());
+        
+        List<Hebergement> pageItems = currentFilteredList.subList(start, end);
+        
+        for (Hebergement h : pageItems) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/HebergementCard.fxml"));
                 Parent card = loader.load();
@@ -90,6 +118,25 @@ public class HebergementFrontController {
             } catch (IOException e) {
                 System.err.println("Erreur lors du chargement de la carte: " + e.getMessage());
             }
+        }
+    }
+
+    @FXML
+    private void handleNextPage() {
+        int totalPages = (int) Math.ceil((double) currentFilteredList.size() / ITEMS_PER_PAGE);
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            updateStats(currentFilteredList);
+            populateCards();
+        }
+    }
+
+    @FXML
+    private void handlePreviousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            updateStats(currentFilteredList);
+            populateCards();
         }
     }
 
@@ -225,16 +272,18 @@ public class HebergementFrontController {
 
     public void onCountrySelected(String country) {
         if (country == null) {
+            currentPage = 0;
             loadData(); // Reset
             return;
         }
         
         // Filter by country
+        currentPage = 0;
         currentFilteredList = hebergementList.stream()
                 .filter(h -> country.equalsIgnoreCase(h.getPays()))
                 .toList();
         
         updateStats(currentFilteredList);
-        populateCards(currentFilteredList);
+        populateCards();
     }
 }

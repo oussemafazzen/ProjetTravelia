@@ -27,6 +27,7 @@ public class ServiceReservation {
             ps.setString(3, r.getModalitesPaiement());
             ps.setInt(4, r.getClientId());
             ps.setString(5, r.getPaysdestination());
+            // old_statut est NULL par défaut à l'insertion
 
             ps.executeUpdate();
 
@@ -90,6 +91,21 @@ public class ServiceReservation {
         }
 
         return list;
+    }
+
+    public Reservation getById(int id) {
+        String sql = "SELECT * FROM reservation WHERE id_reservation = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapReservation(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur getById Reservation: " + e.getMessage(), e);
+        }
+        return null;
     }
 
     public List<Reservation> getByClientId(int clientId) {
@@ -212,6 +228,70 @@ public class ServiceReservation {
         } catch (SQLException e) {
             throw new RuntimeException("Erreur sumBilletsAll: " + e.getMessage(), e);
         }
+    }
+
+    public boolean isConfirmed(int reservationId) {
+        String sql = "SELECT COUNT(*) FROM billet WHERE id_reservation = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, reservationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public String getStatutOriginal(int reservationId) {
+        return isConfirmed(reservationId) ? "confirmé" : "en_attente";
+    }
+
+    public List<Object[]> countReservationsByStatut() {
+        List<Object[]> out = new ArrayList<>();
+        String sql = "SELECT statut, COUNT(*) FROM reservation GROUP BY statut ORDER BY COUNT(*) DESC";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                out.add(new Object[]{rs.getString(1), rs.getInt(2)});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+    public List<Object[]> topPays(int limit) {
+        List<Object[]> out = new ArrayList<>();
+        String sql = "SELECT paysdestination, COUNT(*) FROM reservation " +
+                "WHERE paysdestination IS NOT NULL GROUP BY paysdestination ORDER BY COUNT(*) DESC LIMIT ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    out.add(new Object[]{rs.getString(1), rs.getInt(2)});
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+    public List<Object[]> reservationsParMois() {
+        List<Object[]> out = new ArrayList<>();
+        String sql =
+                "SELECT DATE_FORMAT(date_reservation, '%Y-%m') AS mois, COUNT(*) " +
+                        "FROM reservation WHERE date_reservation IS NOT NULL " +
+                        "GROUP BY mois ORDER BY mois";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                out.add(new Object[]{rs.getString(1), rs.getInt(2)});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
     }
 
     private Reservation mapReservation(ResultSet rs) throws SQLException {

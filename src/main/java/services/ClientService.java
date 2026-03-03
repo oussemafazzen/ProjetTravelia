@@ -255,6 +255,13 @@ public class ClientService implements IService<Client> {
         }
     }
 
+    public int countAll() throws SQLException {
+        String req = "SELECT COUNT(*) FROM `client` WHERE `role` != 'ADMINISTRATEUR'";
+        Statement stm = cnx.createStatement();
+        ResultSet rs = stm.executeQuery(req);
+        return rs.next() ? rs.getInt(1) : 0;
+    }
+
     private Client mapResultSetToClient(ResultSet rs) throws SQLException {
         Client c = new Client();
         c.setId(rs.getInt("id"));

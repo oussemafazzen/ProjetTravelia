@@ -168,8 +168,5 @@ public class HebergementCardController {
         }
     }
 
-    @FXML
-    private void handleDetails() {
-        System.out.println("Details clicked for " + hebergement.getNom());
     }
-}
+

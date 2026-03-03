@@ -320,7 +320,7 @@ public class RegisterController {
     @FXML
     void goToHome(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
             Parent root = loader.load();
             dateNaissanceF.getScene().setRoot(root);
         } catch (IOException e) {

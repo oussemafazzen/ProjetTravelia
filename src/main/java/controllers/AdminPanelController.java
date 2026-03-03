@@ -64,11 +64,9 @@ public class AdminPanelController {
     @FXML private Label lblTotalRevenue;
 
     @FXML private TextField txtSearch;
-    @FXML private PieChart loyaltyPieChart;
-    @FXML private PieChart nationalityPieChart;
     @FXML private StackPane mainStackPane;
     @FXML private VBox userManagementView;
-    @FXML private VBox statisticsView;
+    @FXML private StackPane statisticsView;
     @FXML private VBox reservationsView;
     @FXML private VBox accommodationsView;
     @FXML private VBox activitiesView;
@@ -81,6 +79,10 @@ public class AdminPanelController {
     @FXML private StackPane accommodationsContent;
     @FXML private Button btnNavHebergement;
     @FXML private Button btnNavReservation;
+
+    @FXML private StackPane reservationsContent;
+    @FXML private Button btnNavAdminReservation;
+    @FXML private Button btnNavAdminBillet;
 
     private boolean isSidebarHidden = false;
     private boolean isLightMode = false;
@@ -134,9 +136,11 @@ public class AdminPanelController {
                     private final Button btnBlock = new Button("Bloq/Débloq");
 
                     {
-                        btnEdit.getStyleClass().add("btn-outline-primary");
-                        btnDelete.getStyleClass().add("btn-outline-danger");
-                        btnBlock.getStyleClass().add("btn-warning");
+                        btnEdit.getStyleClass().add("btn-warning");
+                        btnDelete.getStyleClass().add("btn-danger");
+                        btnBlock.getStyleClass().add("btn-secondary");
+                        btnEdit.setStyle("-fx-padding: 3 8; -fx-font-size: 11px;");
+                        btnDelete.setStyle("-fx-padding: 3 8; -fx-font-size: 11px;");
                         btnBlock.setStyle("-fx-padding: 3 8; -fx-font-size: 11px;");
 
                         btnEdit.setOnAction((ActionEvent event) -> {
@@ -269,7 +273,7 @@ public class AdminPanelController {
     @FXML
     void showStatistics() {
         switchView(statisticsView);
-        loadStatistics();
+        loadSubView("/views/StatsView.fxml", statisticsView);
     }
 
 
@@ -277,7 +281,7 @@ public class AdminPanelController {
     @FXML
     void showReservations() {
         switchView(reservationsView);
-        loadSubView("/views/ReservationAdminContentView.fxml", reservationsView);
+        showAdminReservationsContent();
     }
 
     @FXML
@@ -298,6 +302,18 @@ public class AdminPanelController {
         loadSubView("/views/ReservationHebergementView.fxml", accommodationsContent);
     }
 
+    @FXML
+    void showAdminReservationsContent() {
+        updateSubNavStyles(btnNavAdminReservation, btnNavAdminBillet);
+        loadSubView("/views/ReservationAdminContentView.fxml", reservationsContent);
+    }
+
+    @FXML
+    void showAdminBilletsContent() {
+        updateSubNavStyles(btnNavAdminBillet, btnNavAdminReservation);
+        loadSubView("/views/BilletAdminContentView.fxml", reservationsContent);
+    }
+
     private void loadSubView(String fxmlPath, javafx.scene.layout.Pane container) {
         try {
             container.getChildren().clear();
@@ -310,12 +326,18 @@ public class AdminPanelController {
         }
     }
 
-    private void updateSubNavStyles(Button active, Button inactive) {
-        active.getStyleClass().remove("btn-sub-nav");
+    private void updateSubNavStyles(Button active, Button... others) {
+        // Active button gets the active style
+        active.getStyleClass().removeAll("btn-sub-nav", "btn-sub-nav-active");
         active.getStyleClass().add("btn-sub-nav-active");
-        
-        inactive.getStyleClass().remove("btn-sub-nav-active");
-        inactive.getStyleClass().add("btn-sub-nav");
+
+        // Other buttons get the regular style
+        for (Button btn : others) {
+            if (btn != null) {
+                btn.getStyleClass().removeAll("btn-sub-nav", "btn-sub-nav-active");
+                btn.getStyleClass().add("btn-sub-nav");
+            }
+        }
     }
 
     @FXML
@@ -361,29 +383,6 @@ public class AdminPanelController {
         }
     }
 
-    private void loadStatistics() {
-        try {
-            // Loyalty Stats
-            Map<String, Integer> loyaltyStats = clientService.getStatsNiveau();
-            ObservableList<PieChart.Data> loyaltyData = FXCollections.observableArrayList();
-            loyaltyStats.forEach((niveau, count) -> {
-                loyaltyData.add(new PieChart.Data(niveau + " (" + count + ")", count));
-            });
-            loyaltyPieChart.setData(loyaltyData);
-
-            // Nationality Stats
-            Map<String, Integer> nationalityStats = clientService.getStatsNationalite();
-            ObservableList<PieChart.Data> nationalityData = FXCollections.observableArrayList();
-            nationalityStats.forEach((nat, count) -> {
-                nationalityData.add(new PieChart.Data(nat + " (" + count + ")", count));
-            });
-            nationalityPieChart.setData(nationalityData);
-
-            updateQuickStats();
-        } catch (SQLException e) {
-            showError("Erreur de chargement des statistiques", e.getMessage());
-        }
-    }
 
     private void handleEditClient(Client client) {
         try {
@@ -409,7 +408,7 @@ public class AdminPanelController {
         }
     }
 
-    private void switchView(VBox view) {
+    private void switchView(javafx.scene.layout.Pane view) {
         userManagementView.setVisible(false);
         statisticsView.setVisible(false);
         adminManagementView.setVisible(false);
@@ -425,7 +424,7 @@ public class AdminPanelController {
     void handleLogout(ActionEvent event) {
         try {
             utils.SessionManager.cleanSession();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
             Parent root = loader.load();
             mainStackPane.getScene().setRoot(root);
         } catch (IOException e) {

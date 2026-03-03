@@ -127,6 +127,13 @@
             <artifactId>javacv-platform</artifactId>
             <version>1.5.10</version>
         </dependency>
+
+        <!-- Weka for AI Recommendations -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>weka-stable</artifactId>
+            <version>3.8.6</version>
+        </dependency>
     </dependencies>
 
     <build>

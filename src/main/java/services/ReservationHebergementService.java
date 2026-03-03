@@ -7,6 +7,7 @@ import utils.MyDataBase;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ReservationHebergementService implements IReservationService {
 
@@ -116,5 +117,47 @@ public class ReservationHebergementService implements IReservationService {
             return r;
         }
         return null;
+    }
+
+    public int countAll() throws SQLException {
+        String req = "SELECT COUNT(*) FROM `reservationhebergement`";
+        Statement stm = this.cnx.createStatement();
+        ResultSet rs = stm.executeQuery(req);
+        return rs.next() ? rs.getInt(1) : 0;
+    }
+
+    public List<Object[]> getStatsStatut() throws SQLException {
+        List<Object[]> out = new ArrayList<>();
+        String req = "SELECT statut, COUNT(*) FROM `reservationhebergement` GROUP BY statut";
+        Statement stm = this.cnx.createStatement();
+        ResultSet rs = stm.executeQuery(req);
+        while (rs.next()) {
+            out.add(new Object[]{rs.getString(1), rs.getInt(2)});
+        }
+        return out;
+    }
+
+    public Map<String, Integer> getStatsSaisonnieres() throws SQLException {
+        Map<String, Integer> stats = new java.util.LinkedHashMap<>();
+        stats.put("Printemps 🌸", 0);
+        stats.put("Été ☀️", 0);
+        stats.put("Automne 🍂", 0);
+        stats.put("Hiver ❄️", 0);
+
+        String req = "SELECT date_debut FROM `reservationhebergement` WHERE statut LIKE '%confirm%'";
+        Statement stm = this.cnx.createStatement();
+        ResultSet rs = stm.executeQuery(req);
+        while (rs.next()) {
+            java.sql.Date d = rs.getDate(1);
+            if (d == null) continue;
+            int month = d.toLocalDate().getMonthValue();
+            String season;
+            if (month >= 3 && month <= 5) season = "Printemps 🌸";
+            else if (month >= 6 && month <= 8) season = "Été ☀️";
+            else if (month >= 9 && month <= 11) season = "Automne 🍂";
+            else season = "Hiver ❄️";
+            stats.put(season, stats.get(season) + 1);
+        }
+        return stats;
     }
 }

@@ -141,42 +141,32 @@
                   </VBox>
 
                   <!-- Statistics View -->
-                  <VBox fx:id="statisticsView" spacing="20.0" styleClass="content-pane" visible="false">
+                  <StackPane fx:id="statisticsView" styleClass="content-pane" visible="false" />
+
+
+                  <!-- Integrated Reservations & Billets View -->
+                  <VBox fx:id="reservationsView" spacing="20.0" styleClass="content-pane" visible="false">
                      <children>
-                        <Label styleClass="page-title" text="Analyses et Statistiques" />
-                        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
-                           <content>
-                              <HBox spacing="20.0">
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <Label styleClass="page-title" text="Gestion Réservation &amp; billets" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <HBox spacing="10.0" styleClass="sub-nav-bar">
                                  <children>
-                                    <VBox alignment="CENTER" spacing="10.0" styleClass="card" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Répartition par Niveau de Fidélité" />
-                                          <PieChart fx:id="loyaltyPieChart" prefHeight="350.0" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="CENTER" spacing="10.0" styleClass="card" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Répartition par Nationalité" />
-                                          <PieChart fx:id="nationalityPieChart" prefHeight="350.0" />
-                                       </children>
-                                    </VBox>
+                                    <Button fx:id="btnNavAdminReservation" mnemonicParsing="false" onAction="#showAdminReservationsContent" styleClass="btn-sub-nav" text="📋 Réservations" />
+                                    <Button fx:id="btnNavAdminBillet" mnemonicParsing="false" onAction="#showAdminBilletsContent" styleClass="btn-sub-nav" text="🎫 Billets" />
                                  </children>
                               </HBox>
-                           </content>
-                        </ScrollPane>
+                           </children>
+                        </HBox>
+                        
+                        <Separator styleClass="content-separator" />
+                        
+                        <StackPane fx:id="reservationsContent" VBox.vgrow="ALWAYS" />
                      </children>
                      <padding>
                         <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
                      </padding>
-                  </VBox>
-
-
-                  <!-- Placeholder: Reservations View -->
-                  <VBox fx:id="reservationsView" alignment="CENTER" spacing="20.0" styleClass="content-pane" visible="false">
-                     <children>
-                        <Label styleClass="page-title" text="Gestion Réservation Billets" />
-                        <Label styleClass="field-label" text="Cette section est en construction..." />
-                     </children>
                   </VBox>
 
                   <!-- Accommodations & Reservations Integrated View -->

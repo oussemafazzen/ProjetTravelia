@@ -60,19 +60,12 @@ public class ReservationHebergementController implements Initializable {
 
         // Actions column: Edit and Delete buttons
         colActions.setCellFactory(column -> new TableCell<ReservationHebergement, Void>() {
-            private final Button btnEdit = new Button("✏️");
             private final Button btnDelete = new Button("🗑️");
-            private final HBox container = new HBox(10, btnEdit, btnDelete);
+            private final HBox container = new HBox(10, btnDelete);
 
             {
-                btnEdit.getStyleClass().addAll("btn-action", "btn-warning");
                 btnDelete.getStyleClass().addAll("btn-action", "btn-danger");
                 container.setAlignment(Pos.CENTER);
-                
-                btnEdit.setOnAction(event -> {
-                    ReservationHebergement r = getTableView().getItems().get(getIndex());
-                    openModal(r);
-                });
                 
                 btnDelete.setOnAction(event -> {
                     ReservationHebergement r = getTableView().getItems().get(getIndex());
@@ -198,33 +191,6 @@ public class ReservationHebergementController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleStats() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/ReservationStatsView.fxml"));
-            Parent root = loader.load();
-
-            ReservationStatsController controller = loader.getController();
-            controller.setData(reservationList);
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Statistiques Saisonnières");
-
-            Scene scene = new Scene(root);
-            if (tableReservation.getScene() != null && !tableReservation.getScene().getStylesheets().isEmpty()) {
-                scene.getStylesheets().add(tableReservation.getScene().getStylesheets().get(0));
-            } else {
-                scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            }
-
-            stage.setScene(scene);
-            stage.showAndWait();
-
-        } catch (IOException e) {
-            System.err.println("Erreur chargement stats: " + e.getMessage());
-        }
-    }
 
     @FXML
     private void handleExportPdf() {

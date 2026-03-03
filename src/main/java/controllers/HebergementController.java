@@ -257,33 +257,6 @@ public class HebergementController implements Initializable {
         alert.show();
     }
 
-    @FXML
-    private void handleStats() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/HebergementStatsView.fxml"));
-            Parent root = loader.load();
-
-            HebergementStatsController controller = loader.getController();
-            controller.setData(tableHebergement.getItems());
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Statistiques par Ville");
-
-            Scene scene = new Scene(root);
-            if (tableHebergement.getScene() != null && !tableHebergement.getScene().getStylesheets().isEmpty()) {
-                scene.getStylesheets().add(tableHebergement.getScene().getStylesheets().get(0));
-            } else {
-                scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            }
-
-            stage.setScene(scene);
-            stage.showAndWait();
-
-        } catch (IOException e) {
-            System.err.println("Erreur chargement stats: " + e.getMessage());
-        }
-    }
 
     private void openModal(Hebergement hebergement) {
         try {

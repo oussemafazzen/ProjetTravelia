@@ -22,6 +22,7 @@
                   <Button fx:id="btnLogin" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" styleClass="button" text="Se connecter" />
                   <Label fx:id="lblMessage" styleClass="error-label" textFill="#e40e0e" />
                   <Hyperlink fx:id="hlForgotPassword" onAction="#handleForgotPassword" text="Mot de passe oublié ?" />
+                  <Hyperlink fx:id="hlRegister" onAction="#handleRegister" text="Pas encore de compte ? S'inscrire" />
 
                   <Separator style="-fx-padding: 5 0 5 0;" />
                   <Label text="— ou —" style="-fx-text-fill: #888; -fx-font-size: 12;" />
@@ -29,7 +30,6 @@
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleFaceLogin" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 8; -fx-padding: 10 20;" text="🔐 Connexion par reconnaissance faciale" />
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleGoogleLogin" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 8; -fx-padding: 10 20;" text="🔵 Se connecter avec Google" />
 
-                  <Button mnemonicParsing="false" onAction="#goToHome" styleClass="secondary-button" text="Retour à l'accueil" />
                </children>
             </VBox>
          </children>

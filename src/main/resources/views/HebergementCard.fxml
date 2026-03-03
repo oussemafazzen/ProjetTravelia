@@ -58,10 +58,8 @@
 
         <Region VBox.vgrow="ALWAYS"/>
 
-        <!-- Actions -->
         <HBox spacing="15" alignment="CENTER_LEFT">
             <Button text="Réserver" styleClass="card-btn, btn-outline" onAction="#handleReserve"/>
-            <Button text="Voir détails" styleClass="card-btn, btn-outline" onAction="#handleDetails"/>
         </HBox>
     </VBox>
 </HBox>

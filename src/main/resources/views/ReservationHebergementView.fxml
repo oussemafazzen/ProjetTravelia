@@ -15,9 +15,7 @@
         </VBox>
         <Region HBox.hgrow="ALWAYS"/>
         <HBox spacing="12">
-            <Button text="📊 Stats"     onAction="#handleStats"     styleClass="btn-info"      style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 9 18; -fx-background-radius: 9; -fx-cursor: hand;"/>
             <Button text="📄 PDF"       onAction="#handleExportPdf" styleClass="btn-secondary" style="-fx-padding: 9 18; -fx-background-radius: 9; -fx-cursor: hand;"/>
-            <Button text="➕ Nouvelle Réservation"   onAction="#handleAdd"       styleClass="btn-primary"   style="-fx-padding: 9 22; -fx-background-radius: 9; -fx-cursor: hand; -fx-font-weight: bold;"/>
             <Button text="🔄"           onAction="#handleRefresh"   styleClass="btn-secondary" style="-fx-padding: 9 12; -fx-background-radius: 9; -fx-cursor: hand;"/>
         </HBox>
     </HBox>

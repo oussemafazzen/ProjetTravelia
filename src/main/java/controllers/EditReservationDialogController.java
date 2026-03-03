@@ -15,7 +15,6 @@ public class EditReservationDialogController {
 
     @FXML private DatePicker dpDate;
     @FXML private ComboBox<String> cbPaiement;
-    @FXML private ComboBox<String> cbStatut;
     @FXML private Label lblError;
 
     private final ServiceReservation sr = new ServiceReservation();
@@ -26,7 +25,6 @@ public class EditReservationDialogController {
     @FXML
     public void initialize() {
         cbPaiement.getItems().setAll("carte", "espece", "virement");
-        cbStatut.getItems().setAll("en_attente", "confirmee", "annulee");
     }
 
     public void setReservation(Reservation r) {
@@ -36,7 +34,6 @@ public class EditReservationDialogController {
         else dpDate.setValue(LocalDate.now());
 
         cbPaiement.setValue(r.getModalitesPaiement() == null ? "carte" : r.getModalitesPaiement());
-        cbStatut.setValue(r.getStatut() == null ? "en_attente" : r.getStatut());
     }
 
     public void setOnUpdated(Consumer<Reservation> onUpdated) {
@@ -59,18 +56,15 @@ public class EditReservationDialogController {
 
         LocalDate date = dpDate.getValue();
         String paiement = cbPaiement.getValue();
-        String statut = cbStatut.getValue();
 
         if (date == null) { showError("Veuillez choisir une date."); return; }
         if (paiement == null || paiement.isBlank()) { showError("Veuillez choisir un paiement."); return; }
-        if (statut == null || statut.isBlank()) { showError("Veuillez choisir un statut."); return; }
 
         // on garde l'heure actuelle
         LocalDateTime dt = date.atTime(LocalTime.now().withSecond(0).withNano(0));
 
         reservation.setDateReservation(dt);
         reservation.setModalitesPaiement(paiement);
-        reservation.setStatut(statut);
 
         try {
             sr.update(reservation); // ✅ méthode ajoutée dans ServiceReservation (voir plus bas)

@@ -300,6 +300,16 @@
     -fx-border-color: #e94560;
 }
 
+.sort-group {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-radius: 20;
+    -fx-padding: 6 16;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: rgba(108, 114, 147, 0.2);
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+}
+
 .btn-sub-nav {
     -fx-background-color: #3d3d5c;
     -fx-text-fill: #e0e0e0;
@@ -335,7 +345,8 @@
 .table-stats-bar {
     -fx-background-color: linear-gradient(to right, #16213e, #1a1f3c);
     -fx-background-radius: 12;
-    -fx-padding: 14 20;
+    -fx-padding: 12 20;
+    -fx-min-height: 70;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 3);
 }
 

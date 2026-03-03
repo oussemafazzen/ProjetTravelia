@@ -27,23 +27,31 @@
     </HBox>
 
     <!-- STATS -->
-    <HBox spacing="14">
-        <VBox styleClass="stat-card" spacing="6">
-            <Label text="Total Réservations" styleClass="stat-label"/>
-            <Label fx:id="lblTotalReservations" text="0" styleClass="stat-value"/>
-        </VBox>
+    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="table-stats-bar">
+        <HBox spacing="14" alignment="CENTER_LEFT">
+            <VBox styleClass="stat-card" spacing="6">
+                <Label text="Total Réservations" styleClass="stat-label"/>
+                <Label fx:id="lblTotalReservations" text="0" styleClass="stat-value"/>
+            </VBox>
 
-        <VBox styleClass="stat-card" spacing="6">
-            <Label text="Billets Totaux" styleClass="stat-label"/>
-            <Label fx:id="lblTotalBillets" text="0" styleClass="stat-value"/>
-        </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label text="Billets Totaux" styleClass="stat-label"/>
+                <Label fx:id="lblTotalBillets" text="0" styleClass="stat-value"/>
+            </VBox>
 
-        <VBox styleClass="stat-card" spacing="6">
-            <Label text="Montant Total" styleClass="stat-label"/>
-            <Label fx:id="lblMontantTotal" text="0 DT" styleClass="stat-value"/>
-        </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label text="Montant Total" styleClass="stat-label"/>
+                <Label fx:id="lblMontantTotal" text="0 DT" styleClass="stat-value"/>
+            </VBox>
+        </HBox>
 
         <Region HBox.hgrow="ALWAYS"/>
+        
+        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="sort-group">
+            <Label text="Trier par:" style="-fx-text-fill: #6c7293; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+            <Button text="📅 Date" onAction="#onSortByDate" styleClass="btn-sort"/>
+            <Button text="🔄 Statut" onAction="#onSortByStatut" styleClass="btn-sort"/>
+        </HBox>
     </HBox>
 
     <!-- TABLE CARD -->

@@ -1,13 +1,20 @@
 package controllers;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import models.Reservation;
 import models.ReservationAdminRow;
 import services.ServiceReservation;
 import utils.ExcelExportUtil;
@@ -67,19 +74,19 @@ public class AdminDashboardController {
         if (colActions != null) {
             colActions.setCellFactory(tc -> new TableCell<>() {
 
-                private final Button btnEdit = new Button("Modifier");
                 private final Button btnDelete = new Button("Supprimer");
                 private final Button btnBlock = new Button("Bloc/Débloq");
 
-                private final HBox box = new HBox(8, btnEdit, btnDelete, btnBlock);
+                private final HBox box = new HBox(8, btnBlock, btnDelete);
 
                 {
                     box.setAlignment(Pos.CENTER_LEFT);
-                    btnEdit.getStyleClass().add("btn-outline");
                     btnDelete.getStyleClass().add("btn-danger");
                     btnBlock.getStyleClass().add("btn-secondary");
 
-                    btnEdit.setOnAction(e -> onEditRow(getRow()));
+                    btnDelete.setStyle("-fx-padding: 3 8; -fx-font-size: 11px;");
+                    btnBlock.setStyle("-fx-padding: 3 8; -fx-font-size: 11px;");
+
                     btnDelete.setOnAction(e -> onDeleteRow(getRow()));
                     btnBlock.setOnAction(e -> onToggleBlockRow(getRow()));
                 }
@@ -116,6 +123,32 @@ public class AdminDashboardController {
     @FXML
     private void onRefresh(ActionEvent e) {
         refreshAll();
+    }
+
+    @FXML
+    private void onSortByDate(ActionEvent e) {
+        if (table == null) return;
+        ObservableList<ReservationAdminRow> items = table.getItems();
+        if (items != null) {
+            items.sort((r1, r2) -> {
+                if (r1.getDateReservation() == null) return 1;
+                if (r2.getDateReservation() == null) return -1;
+                return r1.getDateReservation().compareTo(r2.getDateReservation());
+            });
+        }
+    }
+
+    @FXML
+    private void onSortByStatut(ActionEvent e) {
+        if (table == null) return;
+        ObservableList<ReservationAdminRow> items = table.getItems();
+        if (items != null) {
+            items.sort((r1, r2) -> {
+                String s1 = r1.getStatut() == null ? "" : r1.getStatut();
+                String s2 = r2.getStatut() == null ? "" : r2.getStatut();
+                return s1.compareToIgnoreCase(s2);
+            });
+        }
     }
 
     @FXML
@@ -172,27 +205,76 @@ public class AdminDashboardController {
 
     private void onEditRow(ReservationAdminRow row) {
         if (row == null) return;
-        info("Modifier", "Modifier réservation #" + row.getIdReservation() + " (à implémenter).");
+        
+        try {
+            Reservation r = sr.getById(row.getIdReservation());
+            if (r == null) {
+                new Alert(Alert.AlertType.ERROR, "Réservation introuvable en base.", ButtonType.OK).show();
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/EditReservationDialog.fxml"));
+            Parent root = loader.load();
+
+            EditReservationDialogController controller = loader.getController();
+            controller.setReservation(r);
+            controller.setOnUpdated(updated -> refreshAll());
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Modifier Réservation #" + r.getIdReservation());
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Erreur chargement Edition: " + ex.getMessage(), ButtonType.OK).show();
+        }
     }
 
     private void onDeleteRow(ReservationAdminRow row) {
         if (row == null) return;
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Supprimer la réservation #" + row.getIdReservation() + " ?",
+                "Supprimer définitivement la réservation #" + row.getIdReservation() + " ?",
                 ButtonType.YES, ButtonType.NO);
-        confirm.setHeaderText(null);
+        confirm.setHeaderText("Confirmation de suppression");
 
         if (confirm.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            info("Supprimer", "Suppression (à implémenter) pour #" + row.getIdReservation());
-            refreshAll();
+            try {
+                sr.delete(row.getIdReservation());
+                refreshAll();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, "Erreur suppression: " + ex.getMessage()).show();
+            }
         }
     }
 
     private void onToggleBlockRow(ReservationAdminRow row) {
         if (row == null) return;
-        info("Bloc/Débloq", "Bloc/Débloq (à implémenter) pour #" + row.getIdReservation());
-        refreshAll();
+        
+        try {
+            Reservation r = sr.getById(row.getIdReservation());
+            if (r == null) return;
+
+            String current = (r.getStatut() == null) ? "en_attente" : r.getStatut().toLowerCase();
+            
+            if (current.contains("annul")) {
+                // Débloquer : heuristique (si billets -> confirmé, sinon -> en_attente)
+                r.setStatut(sr.getStatutOriginal(r.getIdReservation()));
+            } else {
+                // Bloquer : statut pur "annulé" en base
+                r.setStatut("annulé");
+            }
+
+            sr.update(r);
+            refreshAll();
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Erreur Bloc/Débloq: " + ex.getMessage()).show();
+        }
     }
 
     // =================== UI HELPERS ===================

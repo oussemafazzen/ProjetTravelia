@@ -102,7 +102,14 @@ public class FrontOfficeController {
 
     @FXML
     private void handleLogout() {
-        System.out.println("Logout clicked");
+        try {
+            utils.SessionManager.cleanSession();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+            Parent root = loader.load();
+            contentArea.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setActiveButton(Button activeButton) {

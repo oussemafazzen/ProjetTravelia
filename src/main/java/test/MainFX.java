@@ -65,12 +65,13 @@ public class MainFX extends Application {
                 }
             }
 
-            System.out.println("Chargement du FXML Accueil...");
-            FXMLLoader loader = new FXMLLoader(fxmlLocation);
+            System.out.println("Chargement du FXML Login...");
+            java.net.URL loginLocation = getClass().getResource("/views/Login.fxml");
+            FXMLLoader loader = new FXMLLoader(loginLocation);
             Parent root = loader.load();
             
             Scene scene = new Scene(root);
-            primaryStage.setTitle("Gestion Utilisateur - Accueil");
+            primaryStage.setTitle("Travelia - Connexion");
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
             primaryStage.setResizable(true);

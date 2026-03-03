@@ -152,7 +152,8 @@
 .table-stats-bar {
     -fx-background-color: linear-gradient(to right, #ffffff, #f8f9fa);
     -fx-background-radius: 12;
-    -fx-padding: 14 20;
+    -fx-padding: 12 20;
+    -fx-min-height: 70;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 3);
     -fx-border-color: #dee2e6;
     -fx-border-radius: 12;
@@ -369,6 +370,16 @@
     -fx-padding: 0 10;
 }
 
+.sort-group {
+    -fx-background-color: #f1f3f5;
+    -fx-background-radius: 20;
+    -fx-padding: 6 16;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+}
+
 .search-field {
     -fx-background-color: transparent;
     -fx-border-width: 0;
@@ -378,6 +389,36 @@
 .search-field:focused {
     -fx-border-width: 0;
     -fx-effect: none;
+}
+
+/* === NAVIGATION BOXES === */
+.sub-nav-bar {
+    -fx-padding: 5;
+    -fx-background-color: #e9ecef;
+    -fx-background-radius: 8;
+}
+
+.btn-sub-nav {
+    -fx-background-color: transparent;
+    -fx-text-fill: #495057;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-sub-nav:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-sub-nav-active {
+    -fx-background-color: #e94560;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(233, 69, 96, 0.4), 8, 0, 0, 2);
 }
 
 /* === BUTTONS (Synced with Dark Mode) === */
@@ -423,16 +464,18 @@
 }
 
 .btn-secondary {
-    -fx-background-color: #3d3d5c;
-    -fx-text-fill: #e0e0e0;
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #495057;
     -fx-font-weight: bold;
     -fx-padding: 10 20;
     -fx-background-radius: 6;
     -fx-cursor: hand;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1;
 }
 
 .btn-secondary:hover {
-    -fx-background-color: #4d4d6d;
+    -fx-background-color: #dee2e6;
 }
 
 .btn-sort {

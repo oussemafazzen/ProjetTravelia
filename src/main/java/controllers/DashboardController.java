@@ -267,7 +267,7 @@ public class DashboardController {
     void handleLogout(ActionEvent event) {
         try {
             utils.SessionManager.cleanSession();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
             Parent root = loader.load();
             lblNavUserName.getScene().setRoot(root);
         } catch (IOException e) {

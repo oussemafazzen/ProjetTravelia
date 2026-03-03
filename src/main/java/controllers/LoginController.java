@@ -37,6 +37,9 @@ public class LoginController {
     @FXML
     private javafx.scene.control.Hyperlink hlForgotPassword;
 
+    @FXML
+    private javafx.scene.control.Hyperlink hlRegister;
+
     private UserService userService = new UserService();
     private FaceRecognitionService faceRecognitionService = new FaceRecognitionService();
     private SecurityLogService securityLogService = new SecurityLogService();
@@ -275,9 +278,21 @@ public class LoginController {
     }
 
     @FXML
+    void handleRegister(ActionEvent event) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/Register.fxml"));
+            javafx.scene.Parent root = loader.load();
+            btnLogin.getScene().setRoot(root);
+            // Optionally maximize if needed, but setRoot usually keeps the stage state
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     void goToHome(ActionEvent event) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/Home.fxml"));
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/views/Login.fxml"));
             javafx.scene.Parent root = loader.load();
             btnLogin.getScene().setRoot(root);
         } catch (java.io.IOException e) {
