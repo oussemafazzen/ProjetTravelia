@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AvisFormController" spacing="20" prefWidth="550" style="-fx-background-color: white; -fx-background-radius: 15;">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    
+    <VBox spacing="5">
+        <Label text="Laisser un avis" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        <Label text="Partagez votre expérience avec la communauté Travelia" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+    </VBox>
+
+    <Separator/>
+
+    <GridPane vgap="20" hgap="20">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="140"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        
+        <!-- Service Type -->
+        <Label text="Type de Service" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #475569;"/>
+        <ComboBox fx:id="cbTypeService" promptText="Choisir le type" maxWidth="Infinity" GridPane.rowIndex="0" GridPane.columnIndex="1" 
+                  style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+
+        <!-- Service Name / Type -->
+        <Label text="Nom / Type Service" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #475569;"/>
+        <TextField fx:id="tfIdService" promptText="Ex: Hôtel Regency / Avion" GridPane.rowIndex="1" GridPane.columnIndex="1" 
+                   style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10;"/>
+
+        <!-- Note -->
+        <Label text="Votre Note" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #475569;"/>
+        <HBox fx:id="starContainer" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <!-- Stars will be handled in controller for interactivity -->
+            <Label fx:id="star1" text="☆" style="-fx-font-size: 24px; -fx-cursor: hand; -fx-text-fill: #f59e0b;"/>
+            <Label fx:id="star2" text="☆" style="-fx-font-size: 24px; -fx-cursor: hand; -fx-text-fill: #f59e0b;"/>
+            <Label fx:id="star3" text="☆" style="-fx-font-size: 24px; -fx-cursor: hand; -fx-text-fill: #f59e0b;"/>
+            <Label fx:id="star4" text="☆" style="-fx-font-size: 24px; -fx-cursor: hand; -fx-text-fill: #f59e0b;"/>
+            <Label fx:id="star5" text="☆" style="-fx-font-size: 24px; -fx-cursor: hand; -fx-text-fill: #f59e0b;"/>
+            <Label fx:id="lblNoteValue" text="(0/5)" style="-fx-font-size: 14px; -fx-text-fill: #94a3b8; -fx-padding: 0 0 0 10;"/>
+        </HBox>
+
+        <!-- Comment -->
+        <Label text="Commentaire" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #475569;"/>
+        <TextArea fx:id="taCommentaire" promptText="Racontez-nous votre séjour..." prefHeight="120" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                  style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 5;"/>
+
+        <!-- Photo -->
+        <Label text="Photo (Optionnel)" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #475569;"/>
+        <VBox spacing="10" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button fx:id="btnChoosePhoto" text="📁 Choisir une photo" onAction="#handleChoosePhoto"
+                        style="-fx-background-color: #f1f5f9; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                <Label fx:id="lblPhotoPath" text="Aucun fichier sélectionné" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" maxWidth="200" textOverrun="CENTER_ELLIPSIS"/>
+            </HBox>
+            <!-- Preview of the selected photo -->
+            <StackPane fx:id="photoPreviewContainer" prefHeight="100" prefWidth="150" maxWidth="150" managed="false" visible="false"
+                       style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                <Label text="🖼️" style="-fx-font-size: 24px; -fx-text-fill: #cbd5e1;"/>
+            </StackPane>
+        </VBox>
+    </GridPane>
+
+    <Separator/>
+
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel"
+                style="-fx-background-color: white; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-padding: 10 25; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-cursor: hand;"/>
+        <Button text="Publier l'avis" onAction="#handlePublish"
+                style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30; -fx-background-radius: 8; -fx-cursor: hand;"/>
+    </HBox>
+    
+</VBox>

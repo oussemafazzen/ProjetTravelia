@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.ActiviteFormController" spacing="20" styleClass="modal-pane" prefWidth="500">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    
+    <Label fx:id="lblTitle" text="Ajouter une Activité" styleClass="modal-title"/>
+    
+    <GridPane vgap="15" hgap="15">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        
+        <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="tfNom" promptText="Nom de l'activité"/>
+            <Label fx:id="lblErrorNom" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Description" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <TextArea fx:id="taDescription" promptText="Description de l'activité" prefRowCount="3" style="-fx-text-fill: #1a1a2e;"/>
+            <Label fx:id="lblErrorDescription" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Lieu" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <TextField fx:id="tfLieu" promptText="Lieu de l'activité"/>
+            <Label fx:id="lblErrorLieu" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Durée (min)" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <TextField fx:id="tfDuree" promptText="Durée en minutes"/>
+            <Label fx:id="lblErrorDuree" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Prix (DT)" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <TextField fx:id="tfPrix" promptText="Prix de l'activité"/>
+            <Label fx:id="lblErrorPrix" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Capacité Max" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <TextField fx:id="tfCapaciteMax" promptText="Nombre de places max"/>
+            <Label fx:id="lblErrorCapaciteMax" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+        
+        <Label text="Catégorie" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="2" GridPane.rowIndex="6" GridPane.columnIndex="1">
+            <ComboBox fx:id="cbCategorie" promptText="Choisir la catégorie" maxWidth="Infinity"/>
+            <Label fx:id="lblErrorCategorie" style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+        </VBox>
+    </GridPane>
+    
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel" styleClass="btn-secondary"/>
+        <Button text="Enregistrer" onAction="#handleSave" styleClass="btn-primary"/>
+    </HBox>
+    
+</VBox>

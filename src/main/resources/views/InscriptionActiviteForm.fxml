@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefWidth="450" spacing="0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0, 0, 5);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InscriptionActiviteFormController">
+    
+    <!-- Header -->
+    <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #f8fafc; -fx-background-radius: 15 15 0 0; -fx-border-color: transparent transparent #e2e8f0 transparent; -fx-border-width: 0 0 1 0; -fx-padding: 30 20;">
+        <StackPane prefHeight="50" prefWidth="50" style="-fx-background-color: #e0e7ff; -fx-background-radius: 25;">
+            <Label style="-fx-font-size: 24px; -fx-text-fill: #4f46e5;" text="✨"/>
+        </StackPane>
+        <Label fx:id="lblTitle" style="-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #1e293b;" text="Nouvelle Inscription"/>
+        <Label style="-fx-font-size: 13px; -fx-text-fill: #64748b;" text="Renseignez les détails pour valider l'activité"/>
+    </VBox>
+
+    <!-- Form Body -->
+    <VBox spacing="25" style="-fx-padding: 30 40 40 40;">
+        
+        <!-- Date Activité -->
+        <VBox spacing="8">
+            <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #475569;" text="Date de l'activité"/>
+            <DatePicker fx:id="dpDateActivite" maxWidth="Infinity" prefHeight="45" promptText="Choisir une date..." style="-fx-font-size: 14px; -fx-background-radius: 8; -fx-border-color: #cbd5e1; -fx-border-radius: 8;" />
+            <Label fx:id="lblErrorDate" managed="false" style="-fx-text-fill: #ef4444; -fx-font-size: 12px; -fx-font-weight: bold;" visible="false"/>
+        </VBox>
+
+        <!-- Nombre Participants -->
+        <VBox spacing="8">
+            <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #475569;" text="Nombre de participants"/>
+            <TextField fx:id="tfNombreParticipants" prefHeight="45" promptText="Ex: 2" style="-fx-font-size: 14px; -fx-background-color: #f8fafc; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;" />
+            <Label fx:id="lblErrorParticipants" managed="false" style="-fx-text-fill: #ef4444; -fx-font-size: 12px; -fx-font-weight: bold;" visible="false"/>
+        </VBox>
+
+        <!-- Buttons -->
+        <HBox alignment="CENTER_RIGHT" spacing="15" style="-fx-padding: 10 0 0 0;">
+            <Button onAction="#handleCancel" prefHeight="45" prefWidth="120" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Annuler"/>
+            <Button onAction="#handleSave" prefHeight="45" prefWidth="150" style="-fx-background-color: #22c55e; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(34,197,94,0.4), 10, 0, 0, 4);" text="Enregistrer"/>
+        </HBox>
+
+    </VBox>
+</VBox>

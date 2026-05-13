@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AvisAdminController" spacing="16" styleClass="content-pane">
+    <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+
+    <!-- Top bar: Title + Search + Actions -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <VBox spacing="2">
+            <Label text="Gestion des Avis" styleClass="page-title"/>
+            <Label text="Modérez les avis et recommandations des clients" style="-fx-text-fill: #6c757d; -fx-font-size: 12px;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-container">
+            <Label text="🔍" style="-fx-font-size: 14px;"/>
+            <TextField fx:id="tfSearch" promptText="Rechercher par client, service..." prefWidth="250" styleClass="search-field"/>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox spacing="12">
+            <Button text="🔄" onAction="#handleRefresh" styleClass="btn-secondary" style="-fx-padding: 9 12; -fx-background-radius: 9; -fx-cursor: hand;"/>
+        </HBox>
+    </HBox>
+
+    <!-- Stats Bar -->
+    <HBox spacing="16" styleClass="table-stats-bar" alignment="CENTER_LEFT">
+        <!-- Total card -->
+        <HBox styleClass="stat-card" alignment="CENTER_LEFT" spacing="4">
+            <Label text="⭐" styleClass="stat-icon"/>
+            <VBox spacing="1">
+                <Label text="TOTAL" styleClass="stat-label"/>
+                <Label fx:id="lblTotalAvis" text="0" styleClass="stat-value"/>
+            </VBox>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <ComboBox fx:id="cbTypeService" promptText="Tous les services" styleClass="combo-box" style="-fx-background-color: #16213e; -fx-border-color: #e94560; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #ffffff; -fx-effect: dropshadow(gaussian, rgba(233,69,96,0.25), 6, 0, 0, 0);"/>
+            <Label text="Trier par:" style="-fx-text-fill: #6c7293; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 0 0 0 10;"/>
+            <Button text="📅 Date" onAction="#handleSortByDate" styleClass="btn-sort"/>
+            <Button text="⭐ Note" onAction="#handleSortByNote" styleClass="btn-sort"/>
+        </HBox>
+    </HBox>
+
+    <!-- Table -->
+    <TableView fx:id="tableAvis" VBox.vgrow="ALWAYS" styleClass="data-table">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="colClient" text="Client" prefWidth="140"/>
+            <TableColumn fx:id="colService" text="Service" prefWidth="120"/>
+            <TableColumn fx:id="colNote" text="Note" prefWidth="80"/>
+            <TableColumn fx:id="colCommentaire" text="Commentaire" prefWidth="250"/>
+            <TableColumn fx:id="colDate" text="Date de publication" prefWidth="140"/>
+            <TableColumn fx:id="colPhotos" text="Photos" prefWidth="90" sortable="false"/>
+            <TableColumn fx:id="colActions" text="Actions" prefWidth="100" sortable="false"/>
+        </columns>
+        <placeholder>
+            <Label text="⭐ Aucun avis trouvé" style="-fx-font-size: 16px; -fx-text-fill: #6c7293; -fx-font-style: italic;"/>
+        </placeholder>
+    </TableView>
+
+</VBox>

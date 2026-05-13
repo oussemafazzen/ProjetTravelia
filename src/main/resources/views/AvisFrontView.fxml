@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox prefWidth="1100" spacing="30" style="-fx-background-color: #f8fafc;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AvisFrontController">
+    
+    <padding>
+        <Insets bottom="40" left="60" right="60" top="40" />
+    </padding>
+
+    <!-- Header Section -->
+    <HBox alignment="CENTER_LEFT">
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <!-- Decorative Icon -->
+            <VBox alignment="CENTER" prefHeight="48" prefWidth="48" style="-fx-background-color: #f59e0b; -fx-background-radius: 12;">
+                <Label text="⭐" style="-fx-font-size: 24px; -fx-text-fill: white;" />
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Avis &amp; Recommandations" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                <Label text="Consultez tous les avis de vos clients" style="-fx-font-size: 14px; -fx-text-fill: #64748b;" />
+            </VBox>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="btnNewAvis" onAction="#handleNewAvis" text="+  Nouvel Avis" style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;" />
+    </HBox>
+
+    <!-- Statistics Cards -->
+    <HBox spacing="20">
+        <!-- Avg Note -->
+        <VBox prefWidth="300" spacing="8" style="-fx-background-color: white; -fx-padding: 24; -fx-background-radius: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+            <Label text="Note Moyenne" style="-fx-font-size: 14px; -fx-text-fill: #64748b;" />
+            <Label fx:id="lblAvgNote" text="0.0/5" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #3b82f6;" />
+            <Label fx:id="lblAvgStars" text="☆☆☆☆☆" style="-fx-font-size: 20px; -fx-text-fill: #f59e0b;" />
+        </VBox>
+
+        <!-- Total Avis -->
+        <VBox prefWidth="300" spacing="8" style="-fx-background-color: white; -fx-padding: 24; -fx-background-radius: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+            <Label text="Total Avis" style="-fx-font-size: 14px; -fx-text-fill: #64748b;" />
+            <Label fx:id="lblTotalAvis" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;" />
+        </VBox>
+
+        <!-- Total Photos -->
+        <VBox prefWidth="300" spacing="8" style="-fx-background-color: white; -fx-padding: 24; -fx-background-radius: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+            <Label text="Photos Partagées" style="-fx-font-size: 14px; -fx-text-fill: #64748b;" />
+            <Label fx:id="lblTotalPhotos" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;" />
+        </VBox>
+    </HBox>
+
+    <!-- Reviews List Container -->
+    <VBox fx:id="reviewsContainer" spacing="20">
+        <!-- Review cards will be injected here programmatically -->
+    </VBox>
+
+    <!-- Distribution des Notes (Bottom Card) -->
+    <VBox spacing="20" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 12;">
+        <VBox spacing="4">
+            <Label text="Distribution des Notes" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+            <Label text="Répartition des avis par note" style="-fx-font-size: 13px; -fx-text-fill: #64748b;" />
+        </VBox>
+
+        <VBox spacing="10">
+            <!-- 5 Stars -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="5 ⭐" prefWidth="35" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <ProgressBar fx:id="pb5" progress="0.0" prefWidth="500" prefHeight="10" style="-fx-accent: #f59e0b;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblCount5" text="0 avis" style="-fx-font-size: 13px; -fx-text-fill: #64748b;" />
+            </HBox>
+            <!-- 4 Stars -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="4 ⭐" prefWidth="35" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <ProgressBar fx:id="pb4" progress="0.0" prefWidth="500" prefHeight="10" style="-fx-accent: #f59e0b;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblCount4" text="0 avis" style="-fx-font-size: 13px; -fx-text-fill: #64748b;" />
+            </HBox>
+            <!-- 3 Stars -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="3 ⭐" prefWidth="35" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <ProgressBar fx:id="pb3" progress="0.0" prefWidth="500" prefHeight="10" style="-fx-accent: #f59e0b;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblCount3" text="0 avis" style="-fx-font-size: 13px; -fx-text-fill: #64748b;" />
+            </HBox>
+            <!-- 2 Stars -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="2 ⭐" prefWidth="35" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <ProgressBar fx:id="pb2" progress="0.0" prefWidth="500" prefHeight="10" style="-fx-accent: #e2e8f0;"/>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblCount2" text="0 avis" style="-fx-font-size: 13px; -fx-text-fill: #64748b;" />
+            </HBox>
+            <!-- 1 Star -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="1 ⭐" prefWidth="35" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <ProgressBar fx:id="pb1" progress="0.0" prefWidth="500" prefHeight="10" style="-fx-accent: #e2e8f0;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblCount1" text="0 avis" style="-fx-font-size: 13px; -fx-text-fill: #64748b;" />
+            </HBox>
+        </VBox>
+    </VBox>
+    
+    <!-- Footer -->
+    <HBox alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+        <Label text="© 2026 DevTravel - Travelia. Tous droits réservés." style="-fx-text-fill: #94a3b8; -fx-font-size: 12px;"/>
+    </HBox>
+
+</VBox>
