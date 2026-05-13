@@ -4,7 +4,7 @@
 
 ### All-in-one Travel Management Desktop Application
 
-*Esprit School of Engineering — Projet Intégré de Développement Logiciel (PIDL) — 3A25 · 2025/2026*
+*Esprit School of Engineering — Projet Intégré de Développement Logiciel (PIDL) — Travelia · 2025/2026*
 
 [![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
 [![JavaFX](https://img.shields.io/badge/JavaFX-21.0.1-4B8BBE?style=for-the-badge&logo=java&logoColor=white)](https://openjfx.io/)
@@ -20,7 +20,7 @@
 
 **ProjetTravelia** is a fully-featured **Java desktop application** built with **JavaFX**, designed to manage all aspects of a travel agency. It covers the entire customer journey — from browsing accommodations and booking flights, to activity management, payment processing, and intelligent AI-powered recommendations.
 
-This project was developed as an academic group project at **ESPRIT School of Engineering** by the **3A25** student cohort (2025/2026). Each module was implemented by a dedicated team member, and all modules are fully integrated into a unified platform.
+This project was developed as an academic group project at **ESPRIT School of Engineering** by the **Travelia** student cohort (2025/2026). Each module was implemented by a dedicated team member, and all modules are fully integrated into a unified platform.
 
 ---
 
@@ -252,7 +252,7 @@ ProjetTravelia/
 
 ## 👥 Team
 
-This project was built collaboratively by the **3A25** student team at **Esprit School of Engineering** as part of the PIDL integrated project module.
+This project was built collaboratively by the **Travelia** student team at **Esprit School of Engineering** as part of the PIDL integrated project module.
 
 | Name | Role / Module |
 |---|---|
@@ -284,6 +284,6 @@ This project is developed for **academic purposes only** as part of the ESPRIT S
 
 <div align="center">
 
-Made with ❤️ by the **3A25 Team** · ESPRIT School of Engineering · 2025/2026
+Made with ❤️ by the **Travelia Team** · ESPRIT School of Engineering · 2025/2026
 
 </div>
